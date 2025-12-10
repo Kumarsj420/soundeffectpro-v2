@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -9,9 +11,30 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .scrollbar-mini::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #51A2FF;
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #E6E7EB;
+  }
+
+  .dark ::-webkit-scrollbar-track {
+    background: #27272A;
+  }
 }
 
-button{
+button {
   cursor: pointer;
 }
 
@@ -31,6 +54,10 @@ button{
   cursor: pointer;
 }
 
+.mini-btn .sound-btn {
+  --scale-factor: 0.5;
+}
+
 .btn-animation {
   animation: btn-anime 1s infinite linear;
 }
@@ -48,4 +75,3 @@ button{
     filter: hue-rotate(360deg);
   }
 }
-

@@ -2,11 +2,7 @@
 import React, { useState } from 'react';
 import SoundButton from '../components/SoundButton';
 import { HomeIcon } from '@heroicons/react/20/solid'
-import ShareModal from '../components/ShareModal';
-import AddToSoundboardModal, {
-  SoundDetails as SoundInfo,
-  Soundboard,
-} from '../components/AddToSoundboardModal';
+import { AddToSoundboardModal, SoundDetails as SoundInfo, Soundboard, ShareModal, ReportSound, EmbedModal, DownloadModal } from '../components/MyModals';
 
 import {
   Download,
@@ -16,148 +12,8 @@ import {
   Share2,
   Plus,
   ChevronRight,
-  Home,
-  Flag,
-  X
+  Flag
 } from 'lucide-react';
-
-import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import Dropdown from '../components/Dropdown';
-
-const reportReason = [
-  { id: 1, val: 'Inappropriate Content' },
-  { id: 2, val: 'Hate Speech' },
-  { id: 3, val: 'Sexual Content' },
-  { id: 4, val: 'Violence Promotion' },
-  { id: 5, val: 'Harassment & Bullying' },
-  { id: 6, val: 'Terrorism Advocacy' },
-  { id: 7, val: 'Misinformation' },
-  { id: 8, val: 'Spam & Scams' },
-  { id: 9, val: 'Copyright Violation' },
-  { id: 10, val: 'Privacy Violation' },
-  { id: 11, val: 'Other' },
-]
-
-
-function ReportSound() {
-  const [open, setOpen] = useState(false);
-  const [reason, setReason] = useState(reportReason[0])
-
-  return (
-    <div>
-      {/* Trigger button */}
-      <button onClick={() => setOpen(true)} className="flex items-center gap-2 bg-rose-500 hover:bg-rose-400 text-white rounded-xl px-4 py-2.5 text-sm transition-colors">
-        <Flag size={16} />
-        Report Sound
-      </button>
-
-      {/* Modal */}
-      <Dialog open={open} onClose={setOpen} className="relative z-50">
-        {/* Backdrop */}
-        <DialogBackdrop
-          transition
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity data-closed:opacity-0"
-        />
-
-        {/* Modal container */}
-        <div className="fixed inset-0 z-10 flex items-center justify-center p-3">
-          <DialogPanel
-            transition
-            className="relative w-full max-w-lg transform overflow-hidden rounded-2xl bg-gradient-to-b from-zinc-800 to-zinc-900 py-4 px-6 shadow-2xl transition-all data-closed:scale-95 data-closed:opacity-0 sm:py-7 sm:px-7 z-10 after:absolute after:-z-10 after:inset-0.5 after:bg-zinc-900 after:rounded-[inherit]"
-          >
-            {/* Close button */}
-            <button
-              onClick={() => setOpen(false)}
-              className="absolute right-5 top-5 text-zinc-500 cursor-pointer hover:rotate-90 transition-transform duration-200 hover:text-zinc-400">
-              <X size={24} />
-            </button>
-
-            {/* Header */}
-            <div className="text-center">
-              <DialogTitle
-                as="h3"
-                className="text-xl font-semibold text-white tracking-tight flex justify-center items-center gap-3"
-              >
-                <div className="p-2 bg-rose-500/20 rounded-full">
-                  <Flag size={20} className="text-rose-400" />
-                </div>
-                Report Sound
-              </DialogTitle>
-
-              <div className="mt-4 ring-1 ring-inset ring-rose-700/30 rounded-xl bg-rose-500/10">
-                <dl className='flex flex-col gap-2 items-start px-5 py-3'>
-                  <div className='flex gap-3 text-sm w-full overflow-hidden'>
-                    <dt className='whitespace-nowrap text-rose-300'>Sound Title :</dt>
-                    <dd className='truncate text-rose-100'>Example Sound Title Example Sound Title Title Title Title Title Title Title Title</dd>
-                  </div>
-                  <div className='flex gap-3 text-sm w-full overflow-hidden'>
-                    <dt className='whitespace-nowrap text-rose-300'>Sound Id :</dt>
-                    <dd className='truncate text-rose-100'>4zedfe</dd>
-                  </div>
-                </dl>
-              </div>
-            </div>
-
-            {/* Form */}
-            <div className="mt-6 space-y-5">
-
-              <div>
-                <Dropdown select={reportReason} label='Reason' value={reason} onChange={setReason} />
-              </div>
-
-              {/* Email Input */}
-              <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">
-                  Your Email
-                </label>
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="w-full rounded-xl border border-zinc-700 bg-zinc-800/80 px-4 py-2.5 text-white placeholder-zinc-500 shadow-inner focus:ring-1 focus:ring-blue-400 focus:outline-none"
-                />
-              </div>
-
-
-
-              {/* Description Textarea */}
-              <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">
-                  Description
-                </label>
-                <textarea
-                  rows={4}
-                  placeholder="Describe the issue in detail"
-                  className="w-full rounded-xl border border-zinc-700 bg-zinc-800/80 px-4 py-2.5 text-white placeholder-zinc-500 shadow-inner focus:ring-1 focus:ring-blue-400 focus:outline-none resize-none"
-                ></textarea>
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="mt-8 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="rounded-xl bg-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-300 hover:bg-zinc-700 transition"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  // handle report submission
-                  setOpen(false)
-                }}
-                className="rounded-xl bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg hover:bg-blue-400 transition"
-              >
-                Submit Report
-              </button>
-            </div>
-          </DialogPanel>
-        </div>
-      </Dialog>
-    </div>
-  )
-}
 
 
 // Type definitions
@@ -197,36 +53,39 @@ const mockSound: Sound = {
 const Breadcrumbs: React.FC<{ sound: Sound }> = ({ sound }) => {
   return (
     <nav className="flex items-center gap-1 text-sm mb-6">
-      <button className="text-zinc-400 hover:text-blue-400 transition-colors flex items-center gap-1">
+      <button className="text-gray-500 dark:text-zinc-400 hover:text-blue-400 transition-colors flex items-center gap-1">
         <HomeIcon className='size-4' />
       </button>
-      <ChevronRight size={14} className="text-zinc-600" />
-      <button className="text-zinc-400 hover:text-blue-400 transition-colors">
+      <ChevronRight size={14} className="text-gray-600 dark:text-zinc-600" />
+      <button className="text-gray-500 dark:text-zinc-400 hover:text-blue-400 transition-colors">
         {sound.category}
       </button>
-      <ChevronRight size={14} className="text-zinc-600" />
-      <span className="text-zinc-300 truncate max-w-xs">
+      <ChevronRight size={14} className="text-gray-600 dark:text-zinc-600" />
+      <span className="text-gray-900 dark:text-zinc-300 truncate max-w-xs">
         {sound.title}
       </span>
     </nav>
   );
 };
 
+const boards: Soundboard[] = [
+  { id: "board_1", title: "Sci-Fi FX", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6C6i8zewFSehCN-rDAQ-uOlSNTIgk18DQuA&s" },
+  { id: "board_2", title: "Retro", imageUrl: "https://st.depositphotos.com/1695227/2328/v/450/depositphotos_23280162-stock-illustration-vintage-car-design-flyer-grungy.jpg" },
+  { id: "board_3", title: "UI Tones" },
+  { id: "board_4", title: "Fun", imageUrl: "https://img.freepik.com/premium-vector/children-balloons-word-fun_1308-3614.jpg" },
+];
+
 // Sound Player Component
 const SoundPlayer: React.FC<{ sound: Sound }> = ({ sound }) => {
   const [openAdd, setOpenAdd] = useState(false);
+  const [openEmbed, setOpenEmbed] = useState(false);
+  const [openDownload, setOpenDownload] = useState(false);
+
   const sfx: SoundInfo = {
     id: "sfx_12345",
-    title: "Laser Zap",
-    description: "Short laser zap SFX",
-    thumbnailUrl: "https://via.placeholder.com/150x150.png?text=Laser",
+    title: "Laser Zap Laser Zap Laser Zap Laser Zap Laser Zap Laser Zap",
   };
-  const boards: Soundboard[] = [
-    { id: "board_1", title: "Sci-Fi FX", imageUrl: "https://via.placeholder.com/100x100.png?text=Sci" },
-    { id: "board_2", title: "Retro", imageUrl: "https://via.placeholder.com/100x100.png?text=Retro" },
-    { id: "board_3", title: "UI Tones" },
-    { id: "board_4", title: "Retro", imageUrl: "https://via.placeholder.com/100x100.png?text=Retro" },
-  ];
+
 
   const handleAddToBoard = (soundId: string, boardId: string) => {
     console.log("Add to board:", soundId, boardId);
@@ -234,19 +93,19 @@ const SoundPlayer: React.FC<{ sound: Sound }> = ({ sound }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-xl shadow-lg p-6 flex flex-col gap-5 justify-between min-h-[390px]">
+    <div className="bg-gradient-to-br from-white to-gray-100/70 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl p-6 flex flex-col gap-5 justify-between min-h-[390px] ring-1 ring-gray-300/80 dark:ring-0 shadow-xl shadow-gray-300/60 dark:shadow-none">
       <div className='flex justify-center items-center flex-1 mt-5 '>
         <div className="scale-220">
           <SoundButton />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3 ">
-        <button className="flex items-center justify-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 px-4 py-3 rounded-xl transition-colors ring-zinc-700 ring-1 ring-inset hover:ring-zinc-600">
-          <Heart size={18} className='text-zinc-400/90' />
-          Like Sound
+        <button className="flex items-center justify-center gap-2 bg-gray-100 dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-600/90 dark:text-zinc-300 px-4 py-3 rounded-xl transition-colors ring-gray-300 dark:ring-zinc-700 ring-1 ring-inset hover:ring-gray-300 dark:hover:ring-zinc-600">
+          <Heart size={18} className='text-gray-500/80 dark:text-zinc-400/90' />
+          Like <span className="hidden sm:inline">Sound</span>
         </button>
-        <button onClick={() => setOpenAdd(true)} className="flex items-center justify-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 px-4 py-3 rounded-xl transition-colors ring-zinc-700 ring-1 ring-inset hover:ring-zinc-600">
-          <Plus size={18} className='text-zinc-400/90' />
+        <button onClick={() => setOpenAdd(true)} className="flex items-center justify-center gap-2 bg-gray-100 dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-600/90 dark:text-zinc-300 px-4 py-3 rounded-xl transition-colors ring-gray-300 dark:ring-zinc-700 ring-1 ring-inset hover:ring-gray-300 dark:hover:ring-zinc-600">
+          <Plus size={18} className='text-gray-500/80 dark:text-zinc-400/90' />
           Soundboard
         </button>
         <AddToSoundboardModal
@@ -256,16 +115,27 @@ const SoundPlayer: React.FC<{ sound: Sound }> = ({ sound }) => {
           soundboards={boards}
           onAdd={handleAddToBoard}
         />
-        <button className="flex items-center justify-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 px-4 py-3 rounded-xl transition-colors ring-zinc-700 ring-1 ring-inset hover:ring-zinc-600">
+        <button onClick={() => setOpenEmbed(true)} className="flex items-center justify-center gap-2 bg-gray-100 dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-600/90 dark:text-zinc-300 px-4 py-3 rounded-xl transition-colors ring-gray-300 dark:ring-zinc-700 ring-1 ring-inset hover:ring-gray-300 dark:hover:ring-zinc-600">
           <span>
-            <svg xmlns="http://www.w3.org/2000/svg" className='size-5 text-zinc-400/90' viewBox="0 0 2048 2048"><path fill="currentColor" d="m467 595l90 90l-338 339l338 339l-90 90l-430-429zm1114 0l430 429l-430 429l-90-90l338-339l-338-339zM701 1792l512-1536h134L835 1792z" strokeWidth="51" stroke="currentColor" /></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" className='size-5 text-gray-500/80 dark:text-zinc-400/90' viewBox="0 0 2048 2048"><path fill="currentColor" d="m467 595l90 90l-338 339l338 339l-90 90l-430-429zm1114 0l430 429l-430 429l-90-90l338-339l-338-339zM701 1792l512-1536h134L835 1792z" strokeWidth="51" stroke="currentColor" /></svg>
           </span>
-          Embed Button
+          Embed <span className="hidden sm:inline">Button</span>
         </button>
-        <button className="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-400 text-white px-4 py-3 rounded-xl transition-colors font-medium">
+        <EmbedModal
+          open={openEmbed}
+          onClose={() => setOpenEmbed(false)}
+          embedUrl='soundeffectpro.com'
+          soundTitle='Demo Title For Embed'
+        />
+        <button onClick={() => setOpenDownload(true)} className="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-400 text-white px-4 py-3 rounded-xl transition-colors font-medium">
           <Download size={18} />
-          Download Sound
+          Download <span className="hidden sm:inline">Sound</span>
         </button>
+        <DownloadModal 
+        open={openDownload}
+        onClose={() => setOpenDownload(false)}
+        soundId='sfx_123'
+        />
       </div>
     </div>
   );
@@ -283,17 +153,18 @@ const SoundDetails: React.FC<{ sound: Sound }> = ({ sound }) => {
 
   const currentUrl = 'http://localhost:3000/sound';
   const [openShare, setOpenShare] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false)
 
   return (
     <div className="space-y-6 py-1">
       {/* Title and Uploader */}
       <div>
-        <h1 className="text-2xl font-bold text-zinc-100 mb-2 leading-tight">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-zinc-100 mb-2 leading-tight">
           {sound.title}
         </h1>
-        <div className="flex items-center gap-2 text-zinc-400">
+        <div className="flex items-center gap-2 text-gray-500 dark:text-zinc-400">
           <span>by</span>
-          <button className="text-blue-400 hover:text-blue-300 hover:underline font-medium">
+          <button className="text-blue-500 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300 hover:underline font-medium">
             {sound.uploader}
           </button>
         </div>
@@ -301,20 +172,20 @@ const SoundDetails: React.FC<{ sound: Sound }> = ({ sound }) => {
 
       {/* Stats */}
       <div className="flex items-center gap-5">
-        <div className="flex items-center gap-2 text-zinc-300">
-          <Clock size={18} className="text-zinc-500" />
+        <div className="flex items-center gap-2 text-gray-500 dark:text-zinc-300">
+          <Clock size={18} className="text-gray-400 dark:text-zinc-500" />
           <span>{sound.duration}</span>
         </div>
-        <div className="flex items-center gap-2 text-zinc-300">
-          <Eye size={18} className="text-zinc-500 scale-110" />
+        <div className="flex items-center gap-2 text-gray-500 dark:text-zinc-300">
+          <Eye size={18} className="text-gray-400 dark:text-zinc-500 scale-110" />
           <span>{sound.plays}</span>
         </div>
-        <div className="flex items-center gap-2 text-zinc-300">
-          <Download size={18} className="text-zinc-500" />
+        <div className="flex items-center gap-2 text-gray-500 dark:text-zinc-300">
+          <Download size={18} className="text-gray-400 dark:text-zinc-500" />
           <span>{sound.downloads}</span>
         </div>
-        <div className="flex items-center gap-2 text-zinc-300">
-          <Heart size={18} className="text-zinc-500" />
+        <div className="flex items-center gap-2 text-gray-500 dark:text-zinc-300">
+          <Heart size={18} className="text-gray-400 dark:text-zinc-500" />
           <span>{likeCount.toLocaleString()}</span>
         </div>
       </div>
@@ -325,7 +196,7 @@ const SoundDetails: React.FC<{ sound: Sound }> = ({ sound }) => {
           {sound.tags.map((tag, index) => (
             <button
               key={index}
-              className="bg-gradient-to-b from-zinc-700 to-zinc-800 text-zinc-300 rounded-full px-3 py-1 text-sm hover:bg-blue-600 hover:text-white relative z-10 after:absolute after:inset-[0.1em] after:bg-zinc-800 after:rounded-[inherit] after:-z-10 hover:brightness-140 transition duration-200"
+              className="bg-gradient-to-b from-gray-200 to-white text-gray-900 dark:from-zinc-700 dark:to-zinc-800 dark:text-zinc-300 rounded-full px-3 py-1 text-sm hover:bg-blue-600 dark:hover:text-white relative z-10 dark:after:absolute dark:after:inset-[0.1em] dark:after:bg-zinc-800 dark:after:rounded-[inherit] dark:after:-z-10 hover:brightness-105 dark:hover:brightness-140 transition duration-200 shadow-md shadow-gray-300 ring-1 ring-inset ring-gray-300/60 dark:ring-0 dark:shadow-none"
             >
               {tag}
             </button>
@@ -335,17 +206,30 @@ const SoundDetails: React.FC<{ sound: Sound }> = ({ sound }) => {
 
       {/* Description */}
       <div>
-        <h3 className="text-sm font-semibold text-zinc-400 mb-1.5">Description</h3>
-        <p className="text-zinc-300 text-sm leading-relaxed">
+        <h3 className="text-sm font-semibold text-gray-500 dark:text-zinc-400 mb-1.5">Description</h3>
+        <p className="text-gray-600/90 dark:text-zinc-300 text-sm leading-relaxed">
           {sound.description}
         </p>
       </div>
 
       {/* Report Button */}
       <div className="pt-2 flex gap-4">
-        <ReportSound />
-        <button onClick={() => setOpenShare(true)} className="flex items-center gap-2 bg-zinc-900 ring-1 ring-zinc-700 text-zinc-300 rounded-xl px-4 py-2.5 text-sm transition-colors hover:bg-zinc-800  hover:ring-zinc-600">
-          <Share2 size={16} className='text-zinc-400/90' />
+        <button
+          onClick={() => setIsReportOpen(true)}
+          className="flex items-center gap-2 bg-rose-500 hover:bg-rose-400 text-white rounded-xl px-4 py-2.5 text-sm transition-colors"
+        >
+          <Flag size={16} />
+          Report Sound
+        </button>
+
+        <ReportSound
+          open={isReportOpen}
+          onClose={() => setIsReportOpen(false)}
+          soundId="sfx_345"
+          title="Testing Title"
+        />
+        <button onClick={() => setOpenShare(true)} className="flex items-center gap-2 bg-gray-50 dark:bg-zinc-900 ring-1 ring-gray-300 dark:ring-zinc-700 text-gray-600 dark:text-zinc-300 rounded-xl px-4 py-2.5 text-sm transition-colors hover:bg-white dark:hover:bg-zinc-800  dark:hover:ring-zinc-600">
+          <Share2 size={16} className='text-gray-500/80 dark:text-zinc-400/90' />
           Share Sound
         </button>
         <ShareModal url={currentUrl} open={openShare} onClose={() => setOpenShare(false)} />
@@ -357,8 +241,8 @@ const SoundDetails: React.FC<{ sound: Sound }> = ({ sound }) => {
 // Main Sound Details Page
 const SoundDetailsPage: React.FC = () => {
   return (
-    <div className="bg-zinc-950 min-h-screen text-zinc-200">
-      <div className="max-w-7xl mx-auto py-8">
+    <div className=" min-h-screen text-zinc-200">
+      <div >
         <Breadcrumbs sound={mockSound} />
 
         <div className="grid grid-cols-1 md:grid-cols-[1.5fr_2fr] gap-8 mb-12">

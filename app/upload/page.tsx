@@ -79,11 +79,11 @@ const UploadPage: React.FC = () => {
   }, [selectedFile, fileInfo, trimRegion, metadata]);
 
   return (
-    <div className="min-h-screen bg-zinc-950 py-8">
+    <div className="min-h-screen ">
       <div className="max-w-3xl mx-auto px-4">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-zinc-200 mb-2 text-center">Contribute Your Sound Effects</h1>
-          <p className="text-zinc-400 text-center max-w-2xl m-auto mt-3">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-zinc-200 mb-2 text-center">Contribute Your Sound Effects</h1>
+          <p className="text-gray-600/90 dark:text-zinc-400 text-center max-w-2xl m-auto mt-3">
             Upload any sound effect – memes, viral clips, or originals – and help grow our community library. Please follow our site guideline when sharing.
           </p>
         </div>
@@ -100,8 +100,8 @@ const UploadPage: React.FC = () => {
             <FileInfoBox fileInfo={fileInfo} />
 
             {/* Audio Waveform */}
-            <div className="bg-gradient-to-b from-zinc-800 to-zinc-900 rounded-xl shadow p-6 relative z-10 after:absolute after:inset-0.5 after:-z-10 after:bg-zinc-900 after:rounded-[inherit]">
-              <h3 className="text-xl font-semibold text-zinc-200 mb-4">Audio Preview</h3>
+            <div className="p-5 bg-white ring-[0.1em] ring-gray-200 dark:ring-0 dark:bg-gradient-to-b dark:from-zinc-800 dark:to-zinc-900 rounded-xl relative z-10 dark:after:absolute dark:after:inset-0.5 dark:after:-z-10  dark:dark:after:bg-zinc-900 dark:after:rounded-[inherit] shadow-lg shadow-gray-300/70 dark:shadow-none">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-zinc-200 mb-4">Audio Preview</h3>
               <WaveformPlayer
                 file={selectedFile}
                 onTrimChange={handleTrimChange}

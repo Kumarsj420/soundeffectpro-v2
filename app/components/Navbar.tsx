@@ -74,7 +74,7 @@ const ProfileButton: React.FC<ProfileButtonProps> = ({
       `}
             title={userName}
         >
-            <div className="p-1.5 rounded-full ring-[0.11em] ring-zinc-600 ring-offset-2 ring-offset-zinc-950 ring-inset group-hover:ring-zinc-400 aspect-square">
+            <div className="p-1.5 rounded-full ring-[0.11em] ring-gray-300 dark:ring-zinc-600 ring-offset-2 ring-offset-white dark:ring-offset-zinc-950 ring-inset group-hover:ring-blue-400  aspect-square">
                 {userImage && !imageError ? (
                     <img
                         src={userImage}
@@ -122,8 +122,8 @@ export default function Navbar() {
     });
 
     return (
-        <header className="sticky top-0 z-50 bg-zinc-950 border-b border-zinc-800">
-            <div className="flex items-center justify-between px-4 py-3 max-w-7xl m-auto">
+        <header className="sticky top-0 z-50 bg-white border-gray-300 dark:bg-zinc-950 border-b dark:border-zinc-800">
+            <div className="flex items-center justify-between py-3 px-5 sm:px-7 max-w-7xl m-auto">
                 {/* Logo */}
                 <Link href='/' className="text-xl font-bold">
                     <Logo />
@@ -136,18 +136,18 @@ export default function Navbar() {
                         value={query}
                         onChange={(e) => handleSearch(e.target.value)}
                         placeholder="Search sounds.."
-                        className="w-full rounded-l-lg bg-zinc-800 px-4 py-2 text-sm focus:outline-none ring-[0.1em] ring-inset ring-zinc-700 focus:ring-blue-400 focus:ring-[0.12em]"
+                        className="w-full rounded-l-lg bg-gray-50 dark:bg-zinc-800 px-4 py-2 text-sm focus:outline-none ring-[0.1em] ring-inset ring-gray-300 dark:ring-zinc-600/80 focus:ring-blue-400 focus:ring-[0.12em] placeholder:text-gray-500/85 dark:placeholder:text-zinc-400/90 text-gray-900 dark:text-white"
                     />
-                    <button className="px-3 py-2 bg-blue-500 hover:bg-blue-400 rounded-r-lg cursor-pointer">
+                    <button className="px-3 py-2 bg-blue-500 hover:bg-blue-400 text-white rounded-r-lg cursor-pointer">
                         <Search size={18} />
                     </button>
 
                     {results.length > 0 && (
-                        <ul className="absolute top-full mt-1 w-full bg-zinc-800 border border-zinc-700 rounded-lg shadow-lg max-h-56 overflow-y-auto z-50">
+                        <ul className="absolute top-full mt-1 w-full bg-white dark:bg-zinc-800 border border-gray-300/80 dark:border-zinc-700 rounded-lg shadow-lg dark:shadow-none shadow-gray-300/80 max-h-56 overflow-y-auto z-50">
                             {results.map((sound) => (
                                 <li
                                     key={sound.id}
-                                    className="px-4 py-2 hover:bg-zinc-700 cursor-pointer text-sm"
+                                    className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-700 cursor-pointer text-sm"
                                     onClick={() => {
                                         alert(`Play: ${sound.title}`);
                                         setQuery("");
@@ -156,7 +156,7 @@ export default function Navbar() {
                                 >
                                     <div className="flex justify-between">
                                         <span>{sound.title}</span>
-                                        <span className="text-zinc-400">{sound.duration}</span>
+                                        <span className="text-gray-400 dark:text-zinc-400">{sound.duration}</span>
                                     </div>
                                 </li>
                             ))}
@@ -164,15 +164,15 @@ export default function Navbar() {
                     )}
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="md:flex items-center gap-4 hidden">
                     <Link href='/upload'>
-                        <button className="p-2 bg-blue-500 hover:bg-blue-400 rounded-lg cursor-pointer">
+                        <button className="p-2 bg-blue-500 hover:bg-blue-400 text-white rounded-lg cursor-pointer">
                             <Upload size={18} />
                         </button>
                     </Link>
                     <Link href='/login'>
-                        <button className="p-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg cursor-pointer">
-                            <LogIn size={18} />
+                        <button className="p-2 bg-gray-100 hover:bg-white ring-1 ring-gray-300 hover:ring-gray-400/70 dark:ring-0 text-gray-500/80 dark:text-white dark:bg-zinc-700 dark:hover:bg-zinc-600 rounded-lg cursor-pointer">
+                            <LogIn size={18} strokeWidth={2.3} />
                         </button>
                     </Link>
                     <ProfileButton
@@ -181,14 +181,14 @@ export default function Navbar() {
                         href="/profile"
                     />
                     <Menu as="div" className="relative inline-block">
-                        <MenuButton className="flex items-center rounded-full text-zinc-400 hover:text-zinc-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:text-zinc-400 dark:hover:text-zinc-300 dark:focus-visible:outline-indigo-500">
+                        <MenuButton className="flex items-center rounded-full text-gray-500/75 hover:text-gray-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:text-zinc-400 dark:hover:text-zinc-300 dark:focus-visible:outline-indigo-500">
                             <span className="sr-only">Open options</span>
                             <MenuIcon size={27} />
                         </MenuButton>
 
                         <MenuItems
                             transition
-                            className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg outline-1 outline-black/5 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-zinc-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
+                            className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg outline-1 outline-gray-300 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-zinc-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
                         >
                             <div className="py-1">
                                 <MenuItem>

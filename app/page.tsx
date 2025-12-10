@@ -1,6 +1,8 @@
+"use client"
 import TagScroller from "./components/TagScroller";
 import SoundCard, { SoundCardProps } from "./components/SoundCard";
 import { ChevronRight, History } from "lucide-react";
+import { useEffect } from "react";
 
 const mockSounds: SoundCardProps[] = [
   {
@@ -77,22 +79,28 @@ const mockSounds: SoundCardProps[] = [
   },
 ];
 
+
+
+
+
+
 export default function HomePage() {
   // Mock data for different categories
   const popularSounds = mockSounds.slice(0, 5);
   const trendingSounds = mockSounds.slice(5, 10);
   const recentSounds = mockSounds;
 
+
   return (
     <main className="min-h-screen text-white">
-      <div className="p-4 space-y-8">
+      <div className="space-y-8">
         <TagScroller />
 
         {/* Popular Section */}
         <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-white">Popular <span className="text-zinc-400 font-light">| Sound Buttons</span></h2>
-            <button className="pl-4 pr-3 py-2 bg-zinc-900 ring-1 ring-zinc-800 hover:bg-zinc-800 hover:ring-zinc-700 rounded-lg text-sm font-medium transition duration-200 cursor-pointer flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Popular <span className="text-gray-600/90 dark:text-zinc-300/80 font-light">| Sound Buttons</span></h2>
+            <button className="pl-3.5 sm:pl-4 pr-2.5 sm:pr-3 py-1.5 sm:py-2 bg-white dark:bg-zinc-900 ring-1 ring-gray-300 dark:ring-zinc-700/75 hover:bg-gray-50 hover:ring-gray-400/70 dark:hover:bg-zinc-800 dark:hover:ring-zinc-700 rounded-lg text-xs sm:text-sm font-medium transition duration-200 cursor-pointer flex items-center gap-2 text-gray-500 dark:text-white">
               More
               <ChevronRight className="text-zinc-500" size={16} />
             </button>
@@ -107,8 +115,8 @@ export default function HomePage() {
 
         <section className="space-y-4 mt-10">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-white">Trending <span className="text-zinc-400 font-light">| Sound Buttons</span></h2>
-            <button className="pl-4 pr-3 py-2 bg-zinc-900 ring-1 ring-zinc-800 hover:bg-zinc-800 hover:ring-zinc-700 rounded-lg text-sm font-medium transition duration-200 cursor-pointer flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Trending <span className="text-gray-600/90 dark:text-zinc-300/80 font-light">| Sound Buttons</span></h2>
+            <button className="pl-3.5 sm:pl-4 pr-2.5 sm:pr-3 py-1.5 sm:py-2 bg-white dark:bg-zinc-900 ring-1 ring-gray-300 dark:ring-zinc-700/75 hover:bg-gray-50 hover:ring-gray-400/70 dark:hover:bg-zinc-800 dark:hover:ring-zinc-700 rounded-lg text-xs sm:text-sm font-medium transition duration-200 cursor-pointer flex items-center gap-2 text-gray-500 dark:text-white">
               More
               <ChevronRight className="text-zinc-500" size={16} />
             </button>
@@ -123,8 +131,8 @@ export default function HomePage() {
         {/* Recent Section */}
         <section className="space-y-4 mt-10">
           <div className="flex items-center gap-2">
-            <History className="text-zinc-500" size={25} />
-            <h2 className="text-2xl font-bold text-white">Recent</h2>
+            <History className="text-gray-500/80 dark:text-zinc-500" size={25} />
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Recent</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {recentSounds.map((sound) => (

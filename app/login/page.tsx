@@ -38,9 +38,9 @@ export default function LoginPage() {
                     />
                 </svg>
             ),
-            bg: 'bg-zinc-800 hover:bg-zinc-700',
-            text: 'text-white',
-            border: 'border border-zinc-700 hover:border-zinc-600'
+            bg: 'bg-gray-100 hover:bg-gray-50 dark:bg-zinc-800 dark:hover:bg-zinc-700',
+            text: 'text-gray-900 dark:text-white',
+            border: 'border border-gray-300 dark:border-zinc-700 dark:hover:border-zinc-600'
         },
         {
             name: 'Discord',
@@ -56,31 +56,31 @@ export default function LoginPage() {
             icon: (
                <svg xmlns="http://www.w3.org/2000/svg" className='size-5 scale-150' viewBox="0 0 24 24"><path fill="currentColor" d="M17.05 20.28c-.98.95-2.05.8-3.08.35c-1.09-.46-2.09-.48-3.24 0c-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8c1.18-.24 2.31-.93 3.57-.84c1.51.12 2.65.72 3.4 1.8c-3.12 1.87-2.38 5.98.48 7.13c-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25c.29 2.58-2.34 4.5-3.74 4.25" strokeWidth="0.01" stroke="currentColor"/></svg>
             ),
-            bg: 'bg-black hover:bg-zinc-900',
+            bg: 'bg-black hover:bg-neutral-800',
             text: 'text-white',
             border: 'border border-white/20'
         }
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br flex justify-center mt-8">
+        <div className="min-h-screen bg-gradient-to-br flex justify-center ">
 
-            <div className="relative w-full max-w-xl">
+            <div className="relative w-full max-w-lg">
                 {/* Logo placeholder */}
                 <div className="text-center mb-8">
 
-                    <h1 className="text-3xl font-bold text-zinc-200 mb-2 text-center">Welcome To S.E.P</h1>
-                    <p className="text-zinc-400 text-center max-w-2xl m-auto mt-3">Sign in to your account to continue</p>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-zinc-200 mb-2 text-center">Welcome To S.E.P</h1>
+                    <p className="text-gray-600/90 dark:text-zinc-400 text-center max-w-2xl m-auto mt-3">Sign in to your account to continue</p>
                 </div>
 
                 {/* Main card */}
-                <div className="bg-zinc-900 backdrop-blur-lg rounded-2xl shadow-2xl p-8 ring-1 ring-zinc-800">
+                <div className="bg-white dark:bg-zinc-900 backdrop-blur-lg rounded-3xl shadow-2xl shadow-gray-300 dark:shadow-black p-8 ring-1 ring-gray-300 dark:ring-zinc-800">
                     {/* Social login buttons */}
                     <div className="space-y-3 mb-6">
                         {socialButtons.map((social) => (
                             <button
                                 key={social.name}
-                                className={`w-full flex items-center justify-center space-x-3 py-3 px-4 rounded-xl font-medium transition-all duration-200 transform hover:scale-[1.02] ${social.bg} ${social.text} ${social.border} shadow-sm hover:shadow-md`}
+                                className={`w-full flex items-center justify-center space-x-3 py-3 px-4 rounded-xl font-medium transition-all duration-200 transform ${social.bg} ${social.text} ${social.border} shadow-sm hover:shadow-md`}
                             >
                                 {social.icon}
                                 <span>Continue with {social.name}</span>
@@ -91,17 +91,17 @@ export default function LoginPage() {
                     {/* Divider */}
                     <div className="relative my-6">
                         <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-zinc-800"></div>
+                            <div className="w-full border-t border-gray-200 dark:border-zinc-800"></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
-                            <span className="px-4 bg-zinc-800 text-zinc-300 py-0.5 font-medium">Or continue with email</span>
+                            <span className="px-4 bg-gray-200/70 dark:bg-zinc-800 text-gray-600/90 dark:text-zinc-300 py-0.5 font-medium">Or continue with email</span>
                         </div>
                     </div>
 
                     {/* Email form */}
                     <div className="space-y-4">
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-zinc-400 mb-2">
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-2">
                                 Email address *
                             </label>
                             <input
@@ -111,7 +111,7 @@ export default function LoginPage() {
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full px-3.5 py-2.5 border border-zinc-600 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all duration-200 text-white placeholder-zinc-400/80"
+                                className="w-full px-3.5 py-2.5 border border-gray-400/80 dark:border-zinc-600 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all duration-200 text-gray-900 dark:text-white bg-gray-50 dark:bg-zinc-800 placeholder:text-gray-500/85 dark:placeholder:text-zinc-400/90"
                                 placeholder="Enter your email address"
                             />
                         </div>
@@ -119,8 +119,8 @@ export default function LoginPage() {
                         <button
                             onClick={handleSubmit}
                             disabled={isLoading || !email}
-                            className={`w-full py-2.5 px-3.5 rounded-xl font-semibold text-white transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${isLoading || !email
-                                    ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
+                            className={`w-full py-2.5 px-3.5 rounded-xl font-semibold transition-all duration-200 transform focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${isLoading || !email
+                                    ? 'bg-gray-200 dark:bg-zinc-800 text-gray-500/70 dark:text-zinc-500 cursor-not-allowed'
                                     : ' text-white bg-blue-500 hover:bg-blue-400 shadow-lg hover:shadow-xl'
                                 }`}
                         >
@@ -138,11 +138,11 @@ export default function LoginPage() {
                         </button>
                     </div>
 
-                    <p className="mt-6 text-xs text-zinc-400 text-center leading-relaxed">
+                    <p className="mt-6 text-xs text-gray-600/90 dark:text-zinc-400 text-center leading-relaxed">
                         We'll email you a magic link for a password-free sign-in. By continuing, you agree to our{' '}
-                        <a href="#" className="text-blue-400 hover:text-blue-300 underline">Terms of Service</a>{' '}
+                        <a href="#" className="text-blue-500 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300 underline">Terms of Service</a>{' '}
                         and{' '}
-                        <a href="#" className="text-blue-400 hover:text-blue-300 underline">Privacy Policy</a>.
+                        <a href="#" className="text-blue-500 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300 underline">Privacy Policy</a>.
                     </p>
                 </div>
             </div>

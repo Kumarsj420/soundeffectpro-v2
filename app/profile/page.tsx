@@ -2,10 +2,9 @@
 import React, { useState } from 'react';
 import ProfileHeader from '../components/ProfileHeader';
 import Tabs from '../components/Tabs';
-import SoundGrid from '../components/SoundGrid';
 import SettingsForm from '../components/SettingsForm';
-import SubscriptionCard from '../components/SubscriptionCard';
 import { User, Upload, Heart, Settings, Gem } from 'lucide-react';
+import { div } from 'motion/react-client';
 
 // Mock data
 const mockUser = {
@@ -72,46 +71,27 @@ export default function ProfilePage() {
     switch (activeTab) {
       case 'Profile':
         return (
-          <div className="bg-zinc-900 rounded-xl shadow p-6">
-            <h3 className="text-lg font-semibold text-zinc-100 mb-4">Basic Info</h3>
-            <div className="space-y-3">
-              <div>
-                <span className="text-zinc-400 text-sm">Username:</span>
-                <p className="text-zinc-200">{mockUser.name}</p>
-              </div>
-              <div>
-                <span className="text-zinc-400 text-sm">Email:</span>
-                <p className="text-zinc-200">{mockUser.email}</p>
-              </div>
-              <div>
-                <span className="text-zinc-400 text-sm">Joined:</span>
-                <p className="text-zinc-200">{new Date(mockUser.joinedAt).toLocaleDateString()}</p>
-              </div>
-            </div>
-          </div>
+          <div>Profile</div>
         );
       
       case 'Uploads':
         return (
-          <div>
-            <h3 className="text-lg font-semibold text-zinc-100 mb-4">Your Uploads</h3>
-            <SoundGrid sounds={mockUploads} />
-          </div>
+          <div>Uploads</div>
         );
       
       case 'Likes':
         return (
-          <div>
-            <h3 className="text-lg font-semibold text-zinc-100 mb-4">Liked Sounds</h3>
-            <SoundGrid sounds={mockLikes} />
-          </div>
+          <div>Likes</div>
         );
       
       case 'Settings':
-        return <SettingsForm user={mockUser} />;
+        return (
+          <div>Settings</div>
+        // <SettingsForm user={mockUser} />
+      );
       
       case 'Subscription':
-        return <SubscriptionCard />;
+        return <div>subscription</div>;
       
       default:
         return null;
@@ -119,8 +99,8 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950">
-      <div className="max-w-7xl mx-auto p-6">
+    <div className="min-h-screen">
+      <div className="max-w-7xl mx-auto">
         <ProfileHeader user={mockUser} />
         
         <Tabs 

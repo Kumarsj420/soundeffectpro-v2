@@ -86,10 +86,9 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, selectedFile 
                 height="calc(100% - 4px)" 
                 rx="24" 
                 fill="none" 
-                stroke="rgb(113 113 122)" 
                 strokeWidth="2" 
                 opacity="0.2"
-                className="border-outer"
+                className="border-outer stroke-gray-500 dark:stroke-zinc-500"
               />
             </svg>
             
@@ -102,10 +101,9 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, selectedFile 
                 height="calc(100% - 4px)" 
                 rx="24" 
                 fill="none" 
-                stroke="rgb(113 113 122)" 
                 strokeWidth="2" 
                 opacity="0.5"
-                className="border-middle"
+                className="border-middle stroke-gray-500 dark:stroke-zinc-500"
               />
             </svg>
             
@@ -118,10 +116,9 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, selectedFile 
                 height="calc(100% - 4px)" 
                 rx="24" 
                 fill="none" 
-                stroke="rgb(113 113 122)" 
                 strokeWidth="2" 
                 opacity="1"
-                className="border-inner"
+                className="border-inner stroke-gray-500 dark:stroke-zinc-500"
               />
             </svg>
           </>
@@ -131,16 +128,16 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, selectedFile 
             className={`px-8 py-20 text-center  cursor-pointer relative z-10 rounded-3xl transition duration-200
               ${isDragOver 
                 ? 'border-blue-500 bg-blue-500/10' 
-                : 'border-transparent hover:bg-zinc-800/40'
+                : 'border-transparent hover:bg-gray-300/40 dark:hover:bg-zinc-800/40'
               }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             onClick={() => document.getElementById('file-input')?.click()}
           >
-            <FileMusic strokeWidth={1} className="size-16 text-zinc-500 mx-auto mb-4" />
-            <p className="text-lg text-zinc-300 mb-2">Click or drag to upload audio</p>
-            <p className="text-sm text-zinc-500">
+            <FileMusic strokeWidth={1} className="size-16 text-gray-400 dark:text-zinc-500 mx-auto mb-4" />
+            <p className="text-lg text-gray-900 dark:text-zinc-300 mb-2">Click or drag to upload audio</p>
+            <p className="text-sm text-gray-500 dark:text-zinc-500">
               Supports MP3, WAV, and OGG files
             </p>
             <input
@@ -152,19 +149,19 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, selectedFile 
             />
           </div>
         ) : (
-          <div className="flex items-center justify-between p-4 bg-gradient-to-b from-zinc-800 to-zinc-900 rounded-lg relative z-10 after:absolute after:inset-0.5 after:-z-10 after:bg-zinc-900 after:rounded-[inherit]">
+          <div className="flex items-center justify-between p-5 bg-white ring-[0.1em] ring-gray-200 dark:ring-0 dark:bg-gradient-to-b dark:from-zinc-800 dark:to-zinc-900 rounded-xl relative z-10 dark:after:absolute dark:after:inset-0.5 dark:after:-z-10  dark:dark:after:bg-zinc-900 dark:after:rounded-[inherit] shadow-lg shadow-gray-300/70 dark:shadow-none">
             <div className="flex items-center space-x-3">
               <File className="w-8 h-8 text-blue-400" />
               <div>
-                <p className="text-zinc-200 font-medium">{selectedFile.name}</p>
-                <p className="text-sm text-zinc-400">
+                <p className="text-gray-900 dark:text-zinc-200 font-medium">{selectedFile.name}</p>
+                <p className="text-sm text-gray-500 dark:text-zinc-400">
                   {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                 </p>
               </div>
             </div>
             <button
               onClick={clearFile}
-              className="p-2 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700 rounded-lg transition-colors"
+              className="p-2 text-gray-400 dark:text-zinc-400 hover:text-gray-600/90 dark:hover:text-zinc-200 hover:bg-gray-100 dark:hover:bg-zinc-700 rounded-lg transition-colors"
             >
               <X className="w-5 h-5" />
             </button>

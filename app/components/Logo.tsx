@@ -17,7 +17,7 @@ export default function Logo() {
       </div>
 
       <div className="relative">
-        <span className="text-lg font-bold text-zinc-200 tracking-tight">
+        <span className="text-lg font-bold  dark:text-zinc-200 tracking-tight">
           SOUND EFFECT
         </span>
         <span className="absolute -top-2 -right-7 text-xs font-bold text-blue-400 tracking-tight">

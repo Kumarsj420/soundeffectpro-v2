@@ -47,14 +47,14 @@ const TagScroller: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center space-x-2 bg-zinc-950 px-2 rounded-xl">
+    <div className="flex items-center space-x-2 bg-gray-50 dark:bg-zinc-900/60 px-2 rounded-xl ring-1 ring-gray-300/70 dark:ring-zinc-800">
       <button
         onClick={scrollLeft}
         disabled={!canScrollLeft}
-        className={`p-2 rounded-full bg-zinc-800 hover:bg-blue-500 text-white disabled:bg-zinc-800/55 disabled:text-zinc-600 transition-colors duration-200 cursor-pointer`}
+        className={`p-1.5 sm:p-2 rounded-full bg-white ring-1 ring-gray-300 disabled:ring-gray-200/70 shadow-md shadow-gray-300 dark:shadow-none  dark:ring-0 dark:bg-zinc-800 hover:bg-blue-500 hover:text-white hover:ring-blue-100 text-gray-500 dark:text-white disabled:bg-gray-50 disabled:text-zinc-300 dark:disabled:bg-zinc-800/55 dark:disabled:text-zinc-600 transition-colors duration-200 cursor-pointer`}
         aria-label="Scroll left"
       >
-        <ChevronLeft size={16} />
+        <ChevronLeft className="size-3.5 sm:size-4" />
       </button>
 
       {/* Tag Scroller */}
@@ -70,7 +70,7 @@ const TagScroller: React.FC = () => {
         {tags.map((tag: string, index: number) => (
           <button
             key={`${tag}-${index}`}
-            className="px-4 py-1 rounded-full bg-gradient-to-b from-zinc-700 to-zinc-800  text-sm whitespace-nowrap text-white relative z-10 after:absolute after:inset-[0.1em] after:bg-zinc-800 after:-z-10 after:rounded-[inherit] hover:brightness-125 transition duration-200 cursor-pointer"
+            className="px-4 py-1 rounded-full bg-gradient-to-b from-gray-200 dark:ring-0 to-white dark:from-zinc-700 dark:to-zinc-800 text-xs  sm:text-sm whitespace-nowrap relative z-10 after:absolute after:inset-[0.1em]  dark:after:bg-zinc-800 after:-z-10 after:rounded-[inherit] hover:brightness-105  dark:hover:brightness-125 transition duration-200 cursor-pointer text-gray-900 dark:text-white shadow-sm shadow-gray-300 dark:shadow-none"
           >
             {tag}
           </button>
@@ -81,10 +81,10 @@ const TagScroller: React.FC = () => {
       <button
         onClick={scrollRight}
         disabled={!canScrollRight}
-        className={`p-2 rounded-full bg-zinc-800 hover:bg-blue-500 text-white disabled:bg-zinc-800/55 disabled:text-zinc-600 transition-colors duration-200 cursor-pointer`}
+        className={`p-1.5 sm:p-2 rounded-full bg-white ring-1 ring-gray-300 disabled:ring-gray-200/70 shadow-md shadow-gray-300 dark:shadow-none  dark:ring-0 dark:bg-zinc-800 hover:bg-blue-500 hover:text-white hover:ring-blue-100 text-gray-500 dark:text-white disabled:bg-gray-50 disabled:text-zinc-300 dark:disabled:bg-zinc-800/55 dark:disabled:text-zinc-600 transition-colors duration-200 cursor-pointer`}
         aria-label="Scroll right"
       >
-        <ChevronRight size={16} />
+        <ChevronRight className="size-3.5 sm:size-4" />
       </button>
     </div>
   );

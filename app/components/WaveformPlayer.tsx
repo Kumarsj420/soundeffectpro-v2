@@ -306,7 +306,7 @@ const WaveformPlayer: React.FC<WaveformPlayerProps> = ({
       <div className="relative">
         <div 
           ref={waveformRef}
-          className="h-32 bg-zinc-800 rounded-lg relative cursor-pointer select-none"
+          className="h-32 bg-gray-100 dark:bg-zinc-800 rounded-lg relative cursor-pointer select-none"
           onClick={handleWaveformClick}
         >
           {/* Mock waveform bars */}
@@ -361,8 +361,8 @@ const WaveformPlayer: React.FC<WaveformPlayerProps> = ({
               }}
               onMouseDown={handleMouseDown('start')}
             >
-              <div className="w-1 h-full bg-blue-700 transition-colors mx-auto" />
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-8 bg-blue-500 group-hover:bg-blue-400 rounded-sm shadow-lg transition-colors flex items-center justify-center">
+              <div className="w-1 h-full bg-blue-600 dark:bg-blue-700 transition-colors mx-auto" />
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-8 bg-blue-400 dark:bg-blue-500 group-hover:bg-blue-400 rounded-sm shadow-lg transition-colors flex items-center justify-center">
                 <ChevronRight className="w-3 h-3 text-white" />
               </div>
               {/* Handle tooltip */}
@@ -382,12 +382,12 @@ const WaveformPlayer: React.FC<WaveformPlayerProps> = ({
               }}
               onMouseDown={handleMouseDown('end')}
             >
-              <div className="w-1 h-full bg-blue-700 transition-colors mx-auto" />
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-8 bg-blue-500 group-hover:bg-blue-400 rounded-sm shadow-lg transition-colors flex items-center justify-center">
+              <div className="w-1 h-full bg-blue-600 dark:bg-blue-700 transition-colors mx-auto" />
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-8 bg-blue-400 dark:bg-blue-500 group-hover:bg-blue-400 rounded-sm shadow-lg transition-colors flex items-center justify-center">
                 <ChevronLeft className="w-3 h-3 text-white" />
               </div>
               {/* Handle tooltip */}
-              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-zinc-800 text-zinc-200 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-zinc-200 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                 End: {trimRegion.end.toFixed(1)}s
               </div>
             </div>
@@ -409,14 +409,14 @@ const WaveformPlayer: React.FC<WaveformPlayerProps> = ({
         <div className="flex items-center space-x-4">
           <button
             onClick={togglePlayback}
-            className="flex items-center justify-center w-10 h-10 bg-blue-600 hover:bg-blue-500 text-white rounded-full transition-colors"
+            className="flex items-center justify-center w-10 h-10 bg-blue-500 hover:bg-blue-400 text-white rounded-full transition-colors"
           >
             {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
           </button>
         </div>
 
         {/* Duration Display */}
-        <div className="text-sm text-zinc-400">
+        <div className="text-sm dark:text-zinc-400">
           {trimRegion ? (
             <>
               Selected: {trimRegion.start.toFixed(1)}s - {trimRegion.end.toFixed(1)}s 
@@ -431,7 +431,7 @@ const WaveformPlayer: React.FC<WaveformPlayerProps> = ({
       {/* Trim Controls */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-zinc-300 mb-2">Start Time (seconds)</label>
+          <label className="block text-sm font-medium text-gray-600/90 dark:text-zinc-300 mb-2">Start Time (seconds)</label>
           <input
             type="number"
             min="0"
@@ -439,11 +439,11 @@ const WaveformPlayer: React.FC<WaveformPlayerProps> = ({
             step="0.1"
             value={trimRegion?.start.toFixed(1) || '0'}
             onChange={handleStartTimeChange}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-200 focus:ring-2 outline-0 focus:ring-blue-400 focus:border-transparent"
+            className="w-full bg-gray-50 dark:bg-zinc-800 border border-gray-400/80 dark:border-zinc-600 rounded-xl px-3 py-2 text-gray-900 dark:text-zinc-200 focus:ring-2 outline-0 focus:ring-blue-400 focus:border-transparent"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-zinc-300 mb-2">End Time (seconds)</label>
+          <label className="block text-sm font-medium text-gray-600/90 dark:text-zinc-300 mb-2">End Time (seconds)</label>
           <input
             type="number"
             min={trimRegion?.start ? trimRegion.start + 0.1 : 0}
@@ -451,7 +451,7 @@ const WaveformPlayer: React.FC<WaveformPlayerProps> = ({
             step="0.1"
             value={trimRegion?.end.toFixed(1) || duration.toString()}
             onChange={handleEndTimeChange}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-200 focus:ring-2 outline-0 focus:ring-blue-400 focus:border-transparent"
+            className="w-full bg-gray-50 dark:bg-zinc-800 border border-gray-400/80 dark:border-zinc-600 rounded-xl px-3 py-2 text-gray-900 dark:text-zinc-200 focus:ring-2 outline-0 focus:ring-blue-400 focus:border-transparent"
           />
         </div>
       </div>
@@ -460,28 +460,28 @@ const WaveformPlayer: React.FC<WaveformPlayerProps> = ({
       <div className="flex items-center justify-center space-x-2">
         <button
           onClick={handleSelectAll}
-          className="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm rounded-lg transition-colors"
+          className="px-4 py-2 bg-gray-100 dark:bg-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-600 text-gray-900 dark:text-zinc-200 text-sm rounded-lg transition-colors"
         >
           Select All
         </button>
         <button
           onClick={handleFirst30s}
           disabled={duration < 30}
-          className="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2 bg-gray-100 dark:bg-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-600 text-gray-900 dark:text-zinc-200 text-sm rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           First 30s
         </button>
         <button
           onClick={handleLast30s}
           disabled={duration < 30}
-          className="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2 bg-gray-100 dark:bg-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-600 text-gray-900 dark:text-zinc-200 text-sm rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Last 30s
         </button>
       </div>
 
       {/* Audio Info */}
-      <div className="text-center text-sm text-zinc-500">
+      <div className="text-center text-sm text-gray-500 dark:text-zinc-500">
         Total Duration: {duration.toFixed(1)}s | Current: {currentTime.toFixed(1)}s
         {isDragging && (
           <span className="text-blue-400 ml-2">

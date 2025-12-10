@@ -9,13 +9,18 @@ import {
   MessageCircle,
   Send,
   LucideIcon,
+  Flag,
 } from 'lucide-react';
+
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
 } from '@headlessui/react';
+
+
+import SoundButton from './SoundButton';
 
 // ✅ Types
 interface ShareModalProps {
@@ -31,7 +36,7 @@ interface ShareLink {
   url: string;
 }
 
-export default function ShareModal({ url, open, onClose }: ShareModalProps) {
+ function ShareModal({ url, open, onClose }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -182,3 +187,4 @@ export default function ShareModal({ url, open, onClose }: ShareModalProps) {
     </Dialog>
   );
 }
+
