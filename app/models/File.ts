@@ -5,18 +5,23 @@ export interface IUser {
     name: string
 }
 
+export interface IStats {
+    views: number,
+    likes: number,
+    downloads: number,
+    reports: number,
+}
+
 export interface IFile extends Document {
     s_id: string;
     title: string;
     slug: string;
     duration: string;
     tags: string[];
-    views: number;
-    downloads: number;
     category: string;
-    reports: number;
     createdAt: Date;
     user: IUser;
+    stats: IStats;
 }
 
 const UserSchema = new Schema<IUser>({
@@ -29,6 +34,29 @@ const UserSchema = new Schema<IUser>({
         type: String,
         required: true,
         trim: true
+    }
+}, { _id: false })
+
+const StatsSchema = new Schema<IStats>({
+    views: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
+    likes: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
+    downloads: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
+    reports: {
+        type: Number,
+        default: 0,
+        min: 0
     }
 }, { _id: false })
 
@@ -59,20 +87,12 @@ const FileSchema = new Schema<IFile>({
         type: [String],
         default: []
     },
-    views: {
-        type: Number,
-        default: 0,
-        min: 0
-    },
+
     category: {
         type: String,
         default: 'Random'
     },
-    reports: {
-        type: Number,
-        default: 0,
-        min: 0
-    },
+
     createdAt: {
         type: Date,
         default: Date.now
@@ -80,19 +100,22 @@ const FileSchema = new Schema<IFile>({
     user: {
         type: UserSchema,
         required: true
+    },
+    stats: {
+        type: StatsSchema
     }
 }, {
     timestamps: false,
     collection: 'files'
 })
 
-FileSchema.index({ title: 'text' }); 
-FileSchema.index({ createdAt: -1 }); 
-FileSchema.index({ views: -1 }); 
+FileSchema.index({ title: 'text' });
+FileSchema.index({ createdAt: -1 });
+FileSchema.index({ views: -1 });
 FileSchema.index({ downloads: -1 });
-FileSchema.index({ 'user.uid': 1 }); 
-FileSchema.index({ tags: 1 }); 
+FileSchema.index({ 'user.uid': 1 });
+FileSchema.index({ tags: 1 });
 
-const File : Model<IFile> = mongoose.models.File || mongoose.model<IFile>('File', FileSchema) ;
+const File: Model<IFile> = mongoose.models.File || mongoose.model<IFile>('File', FileSchema);
 
 export default File
