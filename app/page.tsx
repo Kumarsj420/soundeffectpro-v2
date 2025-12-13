@@ -6,26 +6,89 @@ import { ChevronRight, History } from "lucide-react";
 import { fileService } from "./services/fileService";
 import { IFile } from "./models/File";
 import SoundCardSkelton from "./components/SoundCardSkelton";
-
+import { useInfiniteLoader } from "./hooks/useInfiniteLoader"
 
 export default function HomePage() {
+  const [popularSounds, setPopularSounds] = useState<IFile[]>([]);
+  const [trendingSounds, setTrendingSounds] = useState<IFile[]>([]);
   const [recentSounds, setRecentSounds] = useState<IFile[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [recentPage, setRecentPage] = useState(1);
+  const [loading, setLoading] = useState({ popular: true, trending: true, recent: false });
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingCount, setLoadingCount] = useState({ main: 20, preview: 5 });
 
   const fetchFiles = async () => {
+    if (loading.recent || !hasMore) return;
+
+    setLoading(prev => ({ ...prev, recent: true }));
+
     try {
-      const fileData = await fileService.getFiles();
-      console.log(fileData);
-      setRecentSounds(fileData.data)
-      setLoading(false);
+      const pageToFetch = recentPage;
+
+      const fileData = await fileService.getFiles({
+        page: pageToFetch,
+        limit: loadingCount.main,
+      });
+
+      setRecentSounds(prev => [...prev, ...fileData.data]);
+      setRecentPage(prev => prev + 1);
+
+      setHasMore(fileData.data.length === loadingCount.main);
+
+      const pagination = fileData.pagination;
+
+      if (pagination && pageToFetch === pagination.pages) {
+        const remainingFiles = Math.max(
+          pagination.total - loadingCount.main * (pageToFetch - 1),
+          0
+        );
+
+        setLoadingCount(prev => ({
+          ...prev,
+          main: remainingFiles || prev.main,
+        }));
+      }
     } catch (error) {
-      console.log('files data not recieved', error);
+      console.error("recent sound files data not received", error);
+    } finally {
+      setLoading(prev => ({ ...prev, recent: false }));
+    }
+  };
+
+
+
+  const fetchPopular = async () => {
+    try {
+      const fileData = await fileService.getFiles({ sortBy: 'stats.downloads', order: 'desc', limit: 5 });
+      setPopularSounds(fileData.data);
+      setLoading(prev => ({ ...prev, popular: false }));
+    } catch (error) {
+      console.log('popular sound files data not recieved', error);
+    }
+  }
+
+  const fetchTrending = async () => {
+    try {
+      const fileData = await fileService.getFiles({ sortBy: 'stats.likes', order: 'desc', limit: 5 });
+      setTrendingSounds(fileData.data);
+      setLoading(prev => ({ ...prev, trending: false }));
+    } catch (error) {
+      console.log('trending sound files data not recieved', error);
     }
   }
 
   useEffect(() => {
+    fetchPopular();
+    fetchTrending();
     fetchFiles();
   }, [])
+
+  const loadMoreRef = useInfiniteLoader({
+    loading: loading.recent,
+    hasMore,
+    onLoadMore: fetchFiles,
+  });
+
 
   return (
     <main className="min-h-screen text-white">
@@ -42,9 +105,15 @@ export default function HomePage() {
             </button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {/* {popularSounds.map((sound) => (
-              <SoundCard key={`popular-${sound.id}`} {...sound} />
-            ))} */}
+            {!loading.popular && popularSounds.map((obj: any) => (
+              <SoundCard key={obj._id} obj={obj} />
+            ))}
+            {
+              loading.popular &&
+              Array.from({ length: loadingCount.preview }).map((_, i) => (
+                <SoundCardSkelton key={i} />
+              ))
+            }
           </div>
         </section>
 
@@ -58,9 +127,15 @@ export default function HomePage() {
             </button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {/* {trendingSounds.map((sound) => (
-              <SoundCard key={`trending-${sound.id}`} {...sound} />
-            ))} */}
+            {!loading.trending && trendingSounds.map((obj: any) => (
+              <SoundCard key={obj._id} obj={obj} />
+            ))}
+            {
+              loading.trending &&
+              Array.from({ length: loadingCount.preview }).map((_, i) => (
+                <SoundCardSkelton key={i} />
+              ))
+            }
           </div>
         </section>
 
@@ -70,24 +145,25 @@ export default function HomePage() {
             <History className="text-gray-500/80 dark:text-zinc-500" size={25} />
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Recent</h2>
           </div>
-          {
-            loading && (
-              <div className="flex justify-center py-5">
-                <div className="size-10 rounded-full border-t-2 border-b-2 border-r-2 border-zinc-500 animate-spin"></div>
-              </div>
-            )
-          }
-          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {/* {recentSounds.map((sound) => (
-              <SoundCard key={`recent-${sound.id}`} {...sound} />
-            ))} */}
-            
-            <SoundCardSkelton />
 
-            {!loading && recentSounds.map((obj: any) => (
+          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+
+            {recentSounds.length > 0 && recentSounds.map((obj: any) => (
               <SoundCard key={obj._id} obj={obj} />
             ))}
+            {
+              (loading.recent || recentPage === 1) &&
+              Array.from({ length: loadingCount.main }).map((_, i) => (
+                <SoundCardSkelton key={i} />
+              ))
+            }
           </div>
+
+          <div ref={loadMoreRef} className="h-10" />
+
+          {!hasMore && recentSounds.length > 0 && (
+            <p className="text-center mt-4 text-gray-500">No more sounds to load</p>
+          )}
         </section>
       </div>
     </main>

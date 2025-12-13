@@ -1,10 +1,9 @@
 import React from 'react'
+import { cn } from '../services/cn';
 
-import Image from 'next/image'
-
-export default function SoundButton() {
+export default function SoundButton({className = '', ...props}) {
     return (
-        <button className="sound-btn brightness-110 hover:brightness-115 dark:brightness-105 ">
+        <button className={cn('sound-btn brightness-110 hover:brightness-115 dark:brightness-105', className)} {...props}>
         </button>
     )
 }

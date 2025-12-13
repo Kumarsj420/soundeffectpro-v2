@@ -5,6 +5,8 @@ import Link from "next/link";
 import SoundButton from "./SoundButton";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Icon } from '@iconify/react';
+import {useLazyAudio} from './../hooks/useAudio';
+import {useNumberAbbreviation} from './../hooks/useNumberAbbreviation'
 
 export interface SoundCardProps {
   obj: any
@@ -13,16 +15,22 @@ export interface SoundCardProps {
 const SoundCard: React.FC<SoundCardProps> = ({
   obj
 }) => {
+
+   const { play, pause, loading, playing, buffering } =
+    useLazyAudio(`/store/${obj.s_id}.mp3`);
+
+    const abbriviatedNum = useNumberAbbreviation();
+
   return (
-    <div className="bg-gradient-to-br from-white  to-gray-100/70 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl shadow-lg shadow-gray-300/60 dark:shadow-none p-4 relative group ring-1 ring-gray-300/80 dark:ring-0 ">
+    <div className="bg-gradient-to-br from-white  to-gray-100/70 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl shadow-lg shadow-gray-300/60 dark:shadow-none p-4 relative group ring-1 ring-gray-300/80 dark:ring-0">
       <div className="flex justify-center mb-4">
-        <SoundButton />
+        <SoundButton onClick={playing ? pause : play} className={`hue-rotate-${obj.btnColor} ${loading ? 'saturate-0 animate-pulse pointer-events-none' : ''} ${playing ? 'btn-animation ' : ''}`} />
       </div>
       <Link href="/sound" className=" hover:text-blue-400 text-gray-900 dark:text-white">
-        <h2 className="text-sm font-bold truncate ">{obj.title}</h2>
+        <h2 className="text-sm font-bold truncate capitalize">{obj.title}</h2>
       </Link>
       <div className="mt-1.5 flex justify-between gap-3 overflow-hidden">
-        <p className="text-xs text-gray-600/90 dark:text-zinc-400">{obj.duration}s</p>
+        <p className="text-xs text-gray-600/90 dark:text-zinc-400">{obj.duration}</p>
         <a href="##" className="text-xs text-gray-600/90 dark:text-zinc-400 group/anker truncate">by <span className="text-gray-900 dark:text-white group-hover/anker:text-blue-400">{obj.user.name} </span></a>
       </div>
 
@@ -31,12 +39,12 @@ const SoundCard: React.FC<SoundCardProps> = ({
         <div className="flex gap-3 items-stretch">
           <button className="py-1 px-1.5 ring-1 ring-gray-300/80 dark:ring-zinc-600/75 bg-gray-50 dark:bg-zinc-700/60 hover:bg-white hover:ring-gray-300 dark:hover:bg-zinc-700 dark:hover:ring-zinc-600 rounded-md cursor-pointer transition duration-200">
             <span className="flex items-center gap-1">
-              <Heart size={14} /> {obj.stats.likes}
+              <Heart size={14} /> {abbriviatedNum(obj.stats.likes)}
             </span>
           </button>
           <button className="py-1 px-1.5  bg-blue-500 hover:bg-blue-400 rounded-md cursor-pointer transition duration-200">
             <span className="flex items-center gap-1 text-white">
-              <Download size={14} /> {obj.stats.downloads}
+              <Download size={14} /> {abbriviatedNum(obj.stats.downloads)}
             </span>
           </button>
         </div>

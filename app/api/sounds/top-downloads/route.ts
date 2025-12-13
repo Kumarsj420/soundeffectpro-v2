@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     await connectDB();
     
     const searchParams = request.nextUrl.searchParams;
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const limit = parseInt(searchParams.get('limit') || '5');
     
     const topDownloads = await File.find()
       .sort({ downloads: -1 })
