@@ -26,7 +26,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
       <div className="flex justify-center mb-4">
         <SoundButton onClick={playing ? pause : play} className={`hue-rotate-${obj.btnColor} ${loading ? 'saturate-0 animate-pulse pointer-events-none' : ''} ${playing ? 'btn-animation ' : ''}`} />
       </div>
-      <Link href="/sound" className=" hover:text-blue-400 text-gray-900 dark:text-white">
+      <Link href={`/${obj.slug}-${obj.s_id}`} className=" hover:text-blue-400 text-gray-900 dark:text-white">
         <h2 className="text-sm font-bold truncate capitalize">{obj.title}</h2>
       </Link>
       <div className="mt-1.5 flex justify-between gap-3 overflow-hidden">

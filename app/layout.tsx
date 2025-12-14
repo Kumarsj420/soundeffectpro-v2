@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import Providers from "./providers";
 import "./globals.css";
 
 import Navbar from "./components/Navbar";
@@ -15,16 +15,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
+
   return (
     <html lang="en" className="dark">
       <body
         className={` antialiased bg-gray-100 text-gray-900 dark:bg-zinc-950 dark:text-white`}
       >
-        <Navbar />
-        <div className="max-w-7xl m-auto px-5 sm:px-7 py-5 sm:py-7">
-          {children}
-        </div>
+        <Providers>
+          <Navbar />
+          <div className="max-w-7xl m-auto px-5 sm:px-7 py-5 sm:py-7">
+            {children}
+          </div>
+        </Providers>
       </body>
     </html>
   );

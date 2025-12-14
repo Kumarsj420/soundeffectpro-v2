@@ -1,9 +1,12 @@
-import SoundDetailsPage from "./sound"
+import SoundDetailsPage from "./sound";
 
-export default function page() {
+export default function Page({
+  params,
+}: {
+  params: { slug: string };
+}) {
   return (
-    <>
-    <SoundDetailsPage />
-    </>
+      <SoundDetailsPage slug={params.slug} />
+
   )
 }

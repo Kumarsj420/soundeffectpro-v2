@@ -6,55 +6,40 @@ import { ChevronRight, History } from "lucide-react";
 import { fileService } from "./services/fileService";
 import { IFile } from "./models/File";
 import SoundCardSkelton from "./components/SoundCardSkelton";
-import { useInfiniteLoader } from "./hooks/useInfiniteLoader"
+import { useInfiniteLoader } from "./hooks/useInfiniteLoader";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 export default function HomePage() {
+  const PAGE_SIZE = 20;
   const [popularSounds, setPopularSounds] = useState<IFile[]>([]);
   const [trendingSounds, setTrendingSounds] = useState<IFile[]>([]);
-  const [recentSounds, setRecentSounds] = useState<IFile[]>([]);
   const [recentPage, setRecentPage] = useState(1);
-  const [loading, setLoading] = useState({ popular: true, trending: true, recent: false });
-  const [hasMore, setHasMore] = useState(true);
-  const [loadingCount, setLoadingCount] = useState({ main: 20, preview: 5 });
+  const [loading, setLoading] = useState({ popular: true, trending: true });
 
-  const fetchFiles = async () => {
-    if (loading.recent || !hasMore) return;
 
-    setLoading(prev => ({ ...prev, recent: true }));
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useInfiniteQuery({
+    queryKey: ["recent-sounds"],
+    initialPageParam: 1,
+    queryFn: ({ pageParam }) =>
+      fileService.getFiles({
+        page: pageParam,
+        limit: PAGE_SIZE,
+      }),
+    getNextPageParam: (lastPage) => {
+      const { page, pages } = lastPage.pagination;
+      return page < pages ? page + 1 : undefined;
+    },
+    staleTime: 1000 * 60 * 5,
+  });
 
-    try {
-      const pageToFetch = recentPage;
-
-      const fileData = await fileService.getFiles({
-        page: pageToFetch,
-        limit: loadingCount.main,
-      });
-
-      setRecentSounds(prev => [...prev, ...fileData.data]);
-      setRecentPage(prev => prev + 1);
-
-      setHasMore(fileData.data.length === loadingCount.main);
-
-      const pagination = fileData.pagination;
-
-      if (pagination && pageToFetch === pagination.pages) {
-        const remainingFiles = Math.max(
-          pagination.total - loadingCount.main * (pageToFetch - 1),
-          0
-        );
-
-        setLoadingCount(prev => ({
-          ...prev,
-          main: remainingFiles || prev.main,
-        }));
-      }
-    } catch (error) {
-      console.error("recent sound files data not received", error);
-    } finally {
-      setLoading(prev => ({ ...prev, recent: false }));
-    }
-  };
-
+  const recentSounds =
+    data?.pages.flatMap(page => page.data) ?? [];
 
 
   const fetchPopular = async () => {
@@ -80,13 +65,12 @@ export default function HomePage() {
   useEffect(() => {
     fetchPopular();
     fetchTrending();
-    fetchFiles();
   }, [])
 
   const loadMoreRef = useInfiniteLoader({
-    loading: loading.recent,
-    hasMore,
-    onLoadMore: fetchFiles,
+    loading: isFetchingNextPage,
+    hasMore: !!hasNextPage,
+    onLoadMore: fetchNextPage,
   });
 
 
@@ -110,7 +94,7 @@ export default function HomePage() {
             ))}
             {
               loading.popular &&
-              Array.from({ length: loadingCount.preview }).map((_, i) => (
+              Array.from({ length: 5 }).map((_, i) => (
                 <SoundCardSkelton key={i} />
               ))
             }
@@ -132,7 +116,7 @@ export default function HomePage() {
             ))}
             {
               loading.trending &&
-              Array.from({ length: loadingCount.preview }).map((_, i) => (
+              Array.from({ length: 5 }).map((_, i) => (
                 <SoundCardSkelton key={i} />
               ))
             }
@@ -148,22 +132,21 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
 
-            {recentSounds.length > 0 && recentSounds.map((obj: any) => (
+            {recentSounds.map((obj: any) => (
               <SoundCard key={obj._id} obj={obj} />
             ))}
             {
-              (loading.recent || recentPage === 1) &&
-              Array.from({ length: loadingCount.main }).map((_, i) => (
+              (isLoading || isFetchingNextPage) &&
+              Array.from({ length: PAGE_SIZE }).map((_, i) => (
                 <SoundCardSkelton key={i} />
               ))
             }
           </div>
 
-          <div ref={loadMoreRef} className="h-10" />
-
-          {!hasMore && recentSounds.length > 0 && (
+          {!hasNextPage && recentSounds.length > 0 && (
             <p className="text-center mt-4 text-gray-500">No more sounds to load</p>
           )}
+          <div ref={loadMoreRef} className="h-10" />
         </section>
       </div>
     </main>

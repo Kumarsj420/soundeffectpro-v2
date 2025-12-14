@@ -25,10 +25,14 @@ export interface IGetFilesParams {
 
 
 export const fileService = {
-    getFiles: async (params?: IGetFilesParams): Promise<IFilesResponse> => {
-        const response = await axiosInstance.get<IFilesResponse>('/api/sounds', {
-          params,
-        })
-        return response.data;
-    }
+  getFiles: async (params?: IGetFilesParams): Promise<IFilesResponse> => {
+    const response = await axiosInstance.get<IFilesResponse>('/api/sounds', {
+      params,
+    })
+    return response.data;
+  },
+  getFilesById: async (id: string) => {
+    const response = await axiosInstance.get(`/api/sounds/${id}`)
+    return response.data;
+  }
 }

@@ -20,6 +20,8 @@ export interface IFile extends Document {
     tags: string[];
     category: string;
     createdAt: Date;
+    description: string,
+    btnColor: string,
     user: IUser;
     stats: IStats;
 }
@@ -96,6 +98,14 @@ const FileSchema = new Schema<IFile>({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+
+    description: {
+        type: String
+    },
+
+    btnColor: {
+        type: String
     },
     user: {
         type: UserSchema,

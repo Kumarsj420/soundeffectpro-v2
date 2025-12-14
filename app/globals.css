@@ -65,17 +65,14 @@ button {
 @keyframes btn-anime {
   0% {
     filter: hue-rotate(0deg) brightness(125%);
-    transform: scale(1);
   }
 
   50% {
     filter: hue-rotate(180deg) brightness(165%);
-     transform: scale(1.12);
   }
 
   100% {
     filter: hue-rotate(360deg) brightness(125%);
-     transform: scale(1);
   }
 }
 
