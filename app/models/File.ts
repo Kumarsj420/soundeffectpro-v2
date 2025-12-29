@@ -1,4 +1,5 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Schema, Model } from "mongoose";
+import { Types } from "mongoose";
 
 export interface IUser {
     uid: string,
@@ -12,7 +13,8 @@ export interface IStats {
     reports: number,
 }
 
-export interface IFile extends Document {
+export interface IFile {
+    _id: Types.ObjectId;
     s_id: string;
     title: string;
     slug: string;
@@ -77,7 +79,6 @@ const FileSchema = new Schema<IFile>({
     slug: {
         type: String,
         required: true,
-        unique: true,
         lowercase: true,
         trim: true
     },
@@ -119,10 +120,14 @@ const FileSchema = new Schema<IFile>({
     collection: 'files'
 })
 
-FileSchema.index({ title: 'text' });
+FileSchema.index({
+    title: "text",
+    description: "text",
+    tags: "text",
+});
 FileSchema.index({ createdAt: -1 });
-FileSchema.index({ views: -1 });
-FileSchema.index({ downloads: -1 });
+FileSchema.index({ 'stats.views': -1 });
+FileSchema.index({ 'stats.downloads': -1 });
 FileSchema.index({ 'user.uid': 1 });
 FileSchema.index({ tags: 1 });
 

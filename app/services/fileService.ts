@@ -34,5 +34,50 @@ export const fileService = {
   getFilesById: async (id: string) => {
     const response = await axiosInstance.get(`/api/sounds/${id}`)
     return response.data;
-  }
+  },
+  getRelatedFiles: async (
+    s_id: string,
+    page = 1,
+    limit = 20,
+    context?: {
+      category?: string;
+      tags?: string[];
+      title?: string;
+    }
+  ) => {
+    const res = await axiosInstance.get(
+      `/api/sounds/related`,
+      {
+        params: {
+          s_id,
+          page,
+          limit,
+          category: context?.category,
+          tags: context?.tags?.join(","),
+          title: context?.title,
+        },
+      }
+    );
+
+    return res.data;
+  },
+  getFilesBySbID: async ({
+    id,
+    page,
+    limit,
+  }: {
+    id: string;
+    page: number;
+    limit: number;
+  }) => {
+    const response = await axiosInstance.get(
+      `/api/sounds/sb/${id}`,
+      {
+        params: { page, limit },
+      }
+    );
+
+    return response.data;
+  },
+
 }

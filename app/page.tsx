@@ -1,21 +1,35 @@
 "use client"
 import { useEffect, useState } from "react";
 import TagScroller from "./components/TagScroller";
-import SoundCard, { SoundCardProps } from "./components/SoundCard";
+import SoundCard from "./components/SoundCard";
 import { ChevronRight, History } from "lucide-react";
 import { fileService } from "./services/fileService";
 import { IFile } from "./models/File";
 import SoundCardSkelton from "./components/SoundCardSkelton";
 import { useInfiniteLoader } from "./hooks/useInfiniteLoader";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { SoundGrid, Head2 } from "./components/Ui";
+import Link from "next/link";
+import { PAGE_SIZE } from './global';
+import Soundboard, { SoundboardSkelton } from "./components/Soundboard";
+import { categoryService } from "./services/categoryService";
+
 
 export default function HomePage() {
-  const PAGE_SIZE = 20;
   const [popularSounds, setPopularSounds] = useState<IFile[]>([]);
   const [trendingSounds, setTrendingSounds] = useState<IFile[]>([]);
-  const [recentPage, setRecentPage] = useState(1);
   const [loading, setLoading] = useState({ popular: true, trending: true });
 
+  const {
+    data: boardData,
+    isLoading: isBoardLoading,
+    isError: isBoardError,
+  } = useQuery({
+    queryKey: ['soundboard'],
+    queryFn: () => categoryService.getCategory({ limit: 5, thumb: true })
+  })
+
+  const soundboards = boardData?.data ?? null;
 
   const {
     data,
@@ -24,7 +38,7 @@ export default function HomePage() {
     isFetchingNextPage,
     isLoading,
   } = useInfiniteQuery({
-    queryKey: ["recent-sounds"],
+    queryKey: ["sounds", "recent-sounds"],
     initialPageParam: 1,
     queryFn: ({ pageParam }) =>
       fileService.getFiles({
@@ -79,16 +93,44 @@ export default function HomePage() {
       <div className="space-y-8">
         <TagScroller />
 
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <Head2>Soundboards</Head2>
+            <Link href='/soundboard'>
+              <button className="pl-3.5 sm:pl-4 pr-2.5 sm:pr-3 py-1.5 sm:py-2 bg-white dark:bg-zinc-900 ring-1 ring-gray-300 dark:ring-zinc-700/75 hover:bg-gray-50 hover:ring-gray-400/70 dark:hover:bg-zinc-800 dark:hover:ring-zinc-700 rounded-lg text-xs sm:text-sm font-medium transition duration-200 cursor-pointer flex items-center gap-2 text-gray-500 dark:text-white">
+                More
+                <ChevronRight className="text-zinc-500" size={16} />
+              </button>
+            </Link>
+          </div>
+          <SoundGrid>
+            {
+              soundboards?.map((item) => (
+                <Soundboard key={item.sb_id} obj={item} />
+              ))
+            }
+            {
+              isBoardLoading && (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <SoundboardSkelton key={i} />
+                ))
+              )
+            }
+          </SoundGrid>
+        </section>
+
         {/* Popular Section */}
         <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Popular <span className="text-gray-600/90 dark:text-zinc-300/80 font-light">| Sound Buttons</span></h2>
-            <button className="pl-3.5 sm:pl-4 pr-2.5 sm:pr-3 py-1.5 sm:py-2 bg-white dark:bg-zinc-900 ring-1 ring-gray-300 dark:ring-zinc-700/75 hover:bg-gray-50 hover:ring-gray-400/70 dark:hover:bg-zinc-800 dark:hover:ring-zinc-700 rounded-lg text-xs sm:text-sm font-medium transition duration-200 cursor-pointer flex items-center gap-2 text-gray-500 dark:text-white">
-              More
-              <ChevronRight className="text-zinc-500" size={16} />
-            </button>
+            <Head2>Popular <span className="text-gray-600/90 dark:text-zinc-300/80 font-light">| Sound Buttons</span></Head2>
+            <Link href='/popular'>
+              <button className="pl-3.5 sm:pl-4 pr-2.5 sm:pr-3 py-1.5 sm:py-2 bg-white dark:bg-zinc-900 ring-1 ring-gray-300 dark:ring-zinc-700/75 hover:bg-gray-50 hover:ring-gray-400/70 dark:hover:bg-zinc-800 dark:hover:ring-zinc-700 rounded-lg text-xs sm:text-sm font-medium transition duration-200 cursor-pointer flex items-center gap-2 text-gray-500 dark:text-white">
+                More
+                <ChevronRight className="text-zinc-500" size={16} />
+              </button>
+            </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+          <SoundGrid>
             {!loading.popular && popularSounds.map((obj: any) => (
               <SoundCard key={obj._id} obj={obj} />
             ))}
@@ -98,19 +140,21 @@ export default function HomePage() {
                 <SoundCardSkelton key={i} />
               ))
             }
-          </div>
+          </SoundGrid>
         </section>
 
 
         <section className="space-y-4 mt-10">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Trending <span className="text-gray-600/90 dark:text-zinc-300/80 font-light">| Sound Buttons</span></h2>
-            <button className="pl-3.5 sm:pl-4 pr-2.5 sm:pr-3 py-1.5 sm:py-2 bg-white dark:bg-zinc-900 ring-1 ring-gray-300 dark:ring-zinc-700/75 hover:bg-gray-50 hover:ring-gray-400/70 dark:hover:bg-zinc-800 dark:hover:ring-zinc-700 rounded-lg text-xs sm:text-sm font-medium transition duration-200 cursor-pointer flex items-center gap-2 text-gray-500 dark:text-white">
-              More
-              <ChevronRight className="text-zinc-500" size={16} />
-            </button>
+            <Head2>Trending <span className="text-gray-600/90 dark:text-zinc-300/80 font-light">| Sound Buttons</span></Head2>
+            <Link href='/trending'>
+              <button className="pl-3.5 sm:pl-4 pr-2.5 sm:pr-3 py-1.5 sm:py-2 bg-white dark:bg-zinc-900 ring-1 ring-gray-300 dark:ring-zinc-700/75 hover:bg-gray-50 hover:ring-gray-400/70 dark:hover:bg-zinc-800 dark:hover:ring-zinc-700 rounded-lg text-xs sm:text-sm font-medium transition duration-200 cursor-pointer flex items-center gap-2 text-gray-500 dark:text-white">
+                More
+                <ChevronRight className="text-zinc-500" size={16} />
+              </button>
+            </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+          <SoundGrid>
             {!loading.trending && trendingSounds.map((obj: any) => (
               <SoundCard key={obj._id} obj={obj} />
             ))}
@@ -120,7 +164,7 @@ export default function HomePage() {
                 <SoundCardSkelton key={i} />
               ))
             }
-          </div>
+          </SoundGrid>
         </section>
 
         {/* Recent Section */}
@@ -130,8 +174,7 @@ export default function HomePage() {
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Recent</h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-
+          <SoundGrid>
             {recentSounds.map((obj: any) => (
               <SoundCard key={obj._id} obj={obj} />
             ))}
@@ -141,7 +184,7 @@ export default function HomePage() {
                 <SoundCardSkelton key={i} />
               ))
             }
-          </div>
+          </SoundGrid>
 
           {!hasNextPage && recentSounds.length > 0 && (
             <p className="text-center mt-4 text-gray-500">No more sounds to load</p>

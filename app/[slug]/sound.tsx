@@ -1,13 +1,17 @@
 "use client"
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import SoundButton from '../components/SoundButton';
 import { fileService } from '../services/fileService';
-import { IFile } from '../models/File';
 import { HomeIcon } from '@heroicons/react/20/solid';
 import Loading from '@/app/loading';
 import { useLazyAudio } from '../hooks/useAudio';
-
-
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useInfiniteLoader } from '../hooks/useInfiniteLoader';
+import { SoundGrid, Head2 } from '../components/Ui';
+import SoundCard from '../components/SoundCard';
+import SoundCardSkelton from '../components/SoundCardSkelton';
+import { PAGE_SIZE } from '../global';
+import { notFound } from 'next/navigation';
 import {
   Download,
   Heart,
@@ -25,32 +29,65 @@ interface SoundDetailsPageProps {
 }
 
 const SoundDetailsPage = ({ slug }: SoundDetailsPageProps) => {
-  const id = slug.split("-").pop();
-
-  const [sfxInfo, setSfxInfo] = useState<IFile | null>(null);
-  const [loadingPage, setLoadingPage] = useState(true);
+  const id = useMemo(() => slug?.split("-").pop(), [slug]);
+  if (!id) return notFound();
 
   const { play, pause, loading, playing, buffering } =
     useLazyAudio(`/store/${id}.mp3`);
 
-  const fetchSound = async () => {
-    if (!id) return;
-    try {
-      const resData = await fileService.getFilesById(id);
-      setSfxInfo(resData.data)
-    } catch (error) {
-      console.log('something went wrong while fetching sound data', error);
-    } finally {
-      setLoadingPage(false)
-    }
-  }
+  const {
+    data: soundRes,
+    isLoading: isSoundLoading,
+    isError: isSoundError,
+  } = useQuery({
+    queryKey: ["sound", id],
+    queryFn: () => fileService.getFilesById(id!),
+    enabled: !!id,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  useEffect(() => {
-    fetchSound()
-  }, [])
+  const sfxInfo = soundRes?.data ?? null;
+
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading: isRelatedLoading,
+  } = useInfiniteQuery({
+    queryKey: ["related-sounds", id],
+    initialPageParam: 1,
+    enabled: !!sfxInfo, // 🔥 wait until sound is loaded
+    queryFn: ({ pageParam }) =>
+      fileService.getRelatedFiles(
+        id!, 
+        pageParam, 
+        PAGE_SIZE,
+        {
+          title: sfxInfo?.title,
+          tags: sfxInfo?.tags,
+          category: sfxInfo?.category,
+        }
+      ),
+    getNextPageParam: (lastPage) =>
+      lastPage.pagination.page < lastPage.pagination.pages
+        ? lastPage.pagination.page + 1
+        : undefined,
+    staleTime: 1000 * 60 * 5,
+  });
 
 
-  if (loadingPage) {
+  const relatedSounds =
+    data?.pages.flatMap(page => page.data) ?? [];
+
+  const loadMoreRef = useInfiniteLoader({
+    loading: isFetchingNextPage,
+    hasMore: !!hasNextPage,
+    onLoadMore: fetchNextPage,
+  });
+
+
+  if (isSoundLoading) {
     return (
       <Loading />
     )
@@ -58,7 +95,7 @@ const SoundDetailsPage = ({ slug }: SoundDetailsPageProps) => {
 
   return (
     <div className=" min-h-screen text-zinc-200">
-      <div >
+      <section >
         {/* breadcrumps */}
         <nav className="flex items-center gap-1 text-sm mb-6">
           <button className="text-gray-500 dark:text-zinc-400 hover:text-blue-400 transition-colors flex items-center gap-1">
@@ -146,7 +183,7 @@ const SoundDetailsPage = ({ slug }: SoundDetailsPageProps) => {
             <div>
               <div className="flex flex-wrap gap-2">
                 {
-                  sfxInfo?.tags.map((tag, index) => (
+                  sfxInfo?.tags.map((tag : any, index : any) => (
                     <button key={index}
                       className="bg-gradient-to-b from-gray-200 to-white text-gray-900 dark:from-zinc-700 dark:to-zinc-800 dark:text-zinc-300 rounded-full px-3 py-1 text-sm hover:bg-blue-600 dark:hover:text-white relative z-10 dark:after:absolute dark:after:inset-[0.1em] dark:after:bg-zinc-800 dark:after:rounded-[inherit] dark:after:-z-10 hover:brightness-105 dark:hover:brightness-140 transition duration-200 shadow-md shadow-gray-300 ring-1 ring-inset ring-gray-300/60 dark:ring-0 dark:shadow-none"
                     >
@@ -183,7 +220,29 @@ const SoundDetailsPage = ({ slug }: SoundDetailsPageProps) => {
             </div>
           </div>
         </div>
-      </div>
+      </section>
+      <section>
+        <Head2>Related Sounds</Head2>
+
+        <SoundGrid className='mt-5'>
+          {relatedSounds.map((obj: any) => (
+            <SoundCard key={obj._id} obj={obj} />
+          ))}
+          {
+            (isRelatedLoading || isFetchingNextPage) &&
+            Array.from({ length: PAGE_SIZE }).map((_, i) => (
+              <SoundCardSkelton key={i} />
+            ))
+          }
+        </SoundGrid>
+
+        {!hasNextPage && relatedSounds.length > 0 && (
+          <p className="text-center mt-4 text-gray-500">No more sounds to load</p>
+        )}
+        <div ref={loadMoreRef} className="h-10" />
+
+      </section>
+
     </div>
 
 

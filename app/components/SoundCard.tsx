@@ -5,8 +5,9 @@ import Link from "next/link";
 import SoundButton from "./SoundButton";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Icon } from '@iconify/react';
-import {useLazyAudio} from './../hooks/useAudio';
-import {useNumberAbbreviation} from './../hooks/useNumberAbbreviation'
+import { useLazyAudio } from './../hooks/useAudio';
+import { useNumberAbbreviation } from './../hooks/useNumberAbbreviation'
+import { Head3, CardSpan } from "./Ui";
 
 export interface SoundCardProps {
   obj: any
@@ -16,22 +17,24 @@ const SoundCard: React.FC<SoundCardProps> = ({
   obj
 }) => {
 
-   const { play, pause, loading, playing, buffering } =
+  const { play, pause, loading, playing, buffering } =
     useLazyAudio(`/store/${obj.s_id}.mp3`);
 
-    const abbriviatedNum = useNumberAbbreviation();
+  const abbriviatedNum = useNumberAbbreviation();
 
   return (
     <div className="bg-gradient-to-br from-white  to-gray-100/70 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl shadow-lg shadow-gray-300/60 dark:shadow-none p-4 relative group ring-1 ring-gray-300/80 dark:ring-0">
       <div className="flex justify-center mb-4">
         <SoundButton onClick={playing ? pause : play} className={`hue-rotate-${obj.btnColor} ${loading ? 'saturate-0 animate-pulse pointer-events-none' : ''} ${playing ? 'btn-animation ' : ''}`} />
       </div>
-      <Link href={`/${obj.slug}-${obj.s_id}`} className=" hover:text-blue-400 text-gray-900 dark:text-white">
-        <h2 className="text-sm font-bold truncate capitalize">{obj.title}</h2>
+      <Link href={`/${obj.slug}-${obj.s_id}`} className="  text-gray-900 dark:text-white">
+        <Head3 className="truncate capitalize hover:text-blue-400">{obj.title}</Head3>
       </Link>
       <div className="mt-1.5 flex justify-between gap-3 overflow-hidden">
-        <p className="text-xs text-gray-600/90 dark:text-zinc-400">{obj.duration}</p>
-        <a href="##" className="text-xs text-gray-600/90 dark:text-zinc-400 group/anker truncate">by <span className="text-gray-900 dark:text-white group-hover/anker:text-blue-400">{obj.user.name} </span></a>
+        <CardSpan>{obj.duration}</CardSpan>
+        <CardSpan className="block  truncate">
+          <a href="##" className="group/anker ">by <span className="text-gray-900 dark:text-white group-hover/anker:text-blue-400">{obj.user.name}</span></a>
+        </CardSpan>
       </div>
 
       {/* Actions */}

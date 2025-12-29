@@ -1,0 +1,61 @@
+import React from 'react';
+import Image from 'next/image';
+import { CategoryInterface } from '../models/Category';
+import { Head3, CardSpan } from './Ui';
+import Link from 'next/link';
+
+function Soundboard({ obj }: { obj: any }) {
+  return (
+    <div className='group w-56 h-42 rounded-2xl overflow-hidden relative isolate flex flex-col justify-end bg-gray-900 px-2.5 py-2'>
+      <Image
+        src={`/thumb/${obj.thumb}`}
+        alt={obj.name}
+        width={224}
+        height={168}
+        className='absolute inset-0 w-full h-full rounded-[inherit] group-hover:scale-120 group-hover:brightness-85 transition duration-200 ease-in-out -z-10'
+      />
+
+      <div className="absolute inset-0 -z-10 bg-linear-to-t from-gray-900 via-gray-900/40" />
+      <div className="absolute inset-0 -z-10 rounded-2xl inset-ring inset-ring-gray-900/10" />
+      <div className="flex justify-between gap-1 overflow-hidden">
+        <CardSpan>
+          <time dateTime='june 25' className="mr-8 whitespace-nowrap">
+            {new Date(
+              obj.createdOn
+            ).toLocaleDateString()}
+          </time>
+        </CardSpan>
+        <CardSpan className="block  truncate">
+          <span className="group/anker ">by <span className="text-gray-900 dark:text-white group-hover/anker:text-blue-400">Michael Foster Alamudin</span></span>
+        </CardSpan>
+      </div>
+      <Head3 className='line-clamp-2 mt-1 leading-tight'>
+        <Link href={`/soundboard/${obj.slug}-${obj.sb_id}`} className='group-hover:underline'>
+          <span className="absolute inset-0" />
+          {obj.name}
+        </Link>
+      </Head3>
+
+    </div>
+  )
+}
+
+export function SoundboardSkelton() {
+  return (
+    <div className='group w-56 h-42 rounded-2xl overflow-hidden relative isolate flex flex-col justify-end bg-gray-900 dark:bg-zinc-900 px-2.5 py-2'>
+      <div
+        className='absolute inset-0 w-full h-full rounded-[inherit] -z-10 bg-zinc-800 animate-pulse'
+      />
+
+      <div className="absolute inset-0 -z-10 bg-linear-to-t from-gray-900 via-gray-900/40 dark:from-zinc=900 dark:via-zinc-900/60 dark:to-zinc-800" />
+      <div className="absolute inset-0 -z-10 rounded-2xl inset-ring inset-ring-gray-900/10 dark:inset-ring-zinc-900/10" />
+
+      <div className="w-full h-5 bg-zinc-700 rounded-lg animate-pulse">
+      </div>
+      <div className='mt-1 w-full h-6 bg-zinc-700 rounded-lg animate-pulse'>
+      </div>
+    </div>
+  )
+}
+
+export default Soundboard
