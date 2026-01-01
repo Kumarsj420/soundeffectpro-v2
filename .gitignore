@@ -12,6 +12,7 @@
 
 #public 
 /public/store/
+/public/thumb/
 
 # testing
 /coverage

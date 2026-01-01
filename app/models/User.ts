@@ -1,28 +1,28 @@
 import mongoose, { Schema, Model } from "mongoose";
-
-export interface IOAuth {
-    provider: string,
-    uid: string
-}
+import { v4 as uuidv4 } from "uuid";
 
 export interface IUser extends Document {
     uid: string,
-    name: string,
+    name?: string,
     email: string,
-    picture?: string,
-    oauth?: IOAuth,
+    image?: string,
+    provider?: string,
     favCount: number,
+    isProfileCompleted: boolean,
+    emailVerified: Date,
 }
 
 const UserSchema = new Schema<IUser>({
     uid: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        default: uuidv4,
     },
     name: {
         type: String,
-        trim: true
+        trim: true,
+        default: null
     },
     email: {
         type: String,
@@ -31,17 +31,25 @@ const UserSchema = new Schema<IUser>({
         trim: true,
         lowercase: true
     },
-    picture: {
-        type: String
+    image: {
+        type: String,
+        default: null
     },
-    oauth: {
-        provider: { type: String },
-        uid: { type: String }
+    provider: {
+        type: String
     },
     favCount: {
         type: Number,
         default: 0,
         min: 0
+    },
+    isProfileCompleted: {
+        type: Boolean,
+        default: false,
+    },
+    emailVerified: {
+        type: Date,
+        default: null
     }
 }, {
     timestamps: true,

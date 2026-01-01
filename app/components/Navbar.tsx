@@ -4,6 +4,22 @@ import { Search, LogIn, Upload, Menu as MenuIcon, User } from "lucide-react";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import Link from "next/link";
 import Logo from "./Logo";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import { signOut } from "next-auth/react";
+import Button from "./Button";
+import { ArrowDownOnSquareStackIcon, UserIcon, ArrowUpOnSquareStackIcon, HeartIcon, CloudArrowUpIcon, CogIcon, CursorArrowRippleIcon } from "@heroicons/react/24/solid";
+import Loading from "../loading";
+import {
+    useFloating,
+    offset,
+    flip,
+    shift,
+    autoUpdate,
+    useDismiss,
+    useInteractions,
+    useTransitionStyles
+} from "@floating-ui/react";
 
 interface Sound {
     id: number;
@@ -22,83 +38,15 @@ const mockSounds: Sound[] = [
     { id: 5, title: "Laugh Track", duration: "0:15", likes: 180, downloads: 250, tag: "Comedy" },
 ];
 
-// user profile button
 
-interface ProfileButtonProps {
-    userName?: string;
-    userImage?: string;
-    href?: string;
-    size?: 'sm' | 'md' | 'lg';
-    onClick?: () => void;
-    className?: string;
-}
-
-const ProfileButton: React.FC<ProfileButtonProps> = ({
-    userName = 'User',
-    userImage,
-    href = '/profile',
-    size = 'md',
-    onClick,
-    className = ''
-}) => {
-    const [imageError, setImageError] = useState(false);
-
-    const getInitials = (name: string): string => {
-        return name
-            .split(' ')
-            .slice(0, 1)
-            .map(word => word.charAt(0).toUpperCase())
-            .join('');
-    };
-
-    // Size configurations
-    const sizeClasses = {
-        sm: 'w-8 h-8 text-xs',
-        md: 'w-10 h-10 text-sm',
-        lg: 'w-12 h-12 text-base'
-    };
-
-    const buttonContent = (
-        <button
-            onClick={onClick}
-            className={`
-        ${sizeClasses[size]}
-        rounded-full 
-        flex 
-        items-center 
-        justify-center
-        active:scale-95
-        cursor-pointer
-        group
-        ${className}
-      `}
-            title={userName}
-        >
-            <div className="p-1.5 rounded-full ring-[0.11em] ring-gray-300 dark:ring-zinc-600 ring-offset-2 ring-offset-white dark:ring-offset-zinc-950 ring-inset group-hover:ring-blue-400  aspect-square">
-                {userImage && !imageError ? (
-                    <img
-                        src={userImage}
-                        alt={userName}
-                        className="w-full h-full object-cover rounded-full group-hover:brightness-110 transition duration-200"
-                        onError={() => setImageError(true)}
-                    />
-                ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-blue-400 to-blue-500 flex items-center justify-center text-white font-semibold rounded-full text-sm p-2.5">
-                        {getInitials(userName)}
-                    </div>
-                )}
-            </div>
-        </button>
-    );
-
-    // If href is provided, wrap in Link
-    if (href && !onClick) {
-        return <Link href={href}>{buttonContent}</Link>;
-    }
-
-    // Otherwise return just the button
-    return buttonContent;
+const getInitials = (name: string): string => {
+    return name
+        .split(' ')
+        .slice(0, 1)
+        .map(word => word.charAt(0).toUpperCase())
+        .join('');
 };
+
 
 export default function Navbar() {
     const [query, setQuery] = useState("");
@@ -116,10 +64,27 @@ export default function Navbar() {
         }
     };
 
-    const [user, setUser] = useState({
-        name: 'John Doe',
-        image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
-    });
+    const { data: session, status } = useSession();
+    const [openMenu, setOpenMenu] = useState(false);
+
+    const { refs, floatingStyles, context } = useFloating({
+        open: openMenu,
+        onOpenChange: setOpenMenu,
+        middleware: [offset(14), flip(), shift()],
+        whileElementsMounted: autoUpdate,
+        placement: "bottom-end",
+    })
+
+    const dismiss = useDismiss(context);
+
+    const { getReferenceProps, getFloatingProps } =
+        useInteractions([dismiss]);
+
+        
+
+    if (status === 'loading') {
+        return <Loading />;
+    }
 
     return (
         <header className="sticky top-0 z-50 bg-white border-gray-300 dark:bg-zinc-950 border-b dark:border-zinc-800">
@@ -164,22 +129,124 @@ export default function Navbar() {
                     )}
                 </div>
 
-                <div className="md:flex items-center gap-4 hidden">
+                <div className="md:flex items-stretch gap-4 hidden">
                     <Link href='/upload'>
                         <button className="p-2 bg-blue-500 hover:bg-blue-400 text-white rounded-lg cursor-pointer">
                             <Upload size={18} />
                         </button>
                     </Link>
-                    <Link href='/login'>
-                        <button className="p-2 bg-gray-100 hover:bg-white ring-1 ring-gray-300 hover:ring-gray-400/70 dark:ring-0 text-gray-500/80 dark:text-white dark:bg-zinc-700 dark:hover:bg-zinc-600 rounded-lg cursor-pointer">
-                            <LogIn size={18} strokeWidth={2.3} />
-                        </button>
-                    </Link>
-                    <ProfileButton
-                        userName={user.name}
-                        userImage={user.image}
-                        href="/profile"
-                    />
+
+
+                    {
+                        status === 'authenticated' ? (
+                            <>
+                                
+
+                                <button className="group" ref={refs.setReference} onClick={() => setOpenMenu(!openMenu)} {...getReferenceProps()}>
+                                    {
+                                        session?.user.image ? (
+                                            <Image
+                                                src={session.user.image}
+                                                alt={session.user.name ?? 'user'}
+                                                width={28}
+                                                height={28}
+                                                className="size-7 rounded-full ring-1 ring-offset-2 dark:ring-offset-zinc-900 ring-gray-500/95 group-hover:ring-gray-200/70"
+                                            ></Image>
+                                        ) : session?.user.name ? (
+                                            <div className="size-7 bg-linear-to-b from-blue-50 to-blue-300 ring-1 ring-offset-2 rounded-full ring-blue-300/75 group-hover:from-white group-hover:to-blue-200 flex items-center justify-center dark:ring-offset-zinc-900 group-hover:ring-blue-200 transition-colors duration-200">
+                                                <span className="text-blue-500">{getInitials(session.user.name)}</span>
+                                            </div>
+                                        ) : (
+                                            <div className="size-7 bg-linear-to-b from-blue-50 to-blue-300 ring-1 ring-offset-2 rounded-full ring-blue-300/75 group-hover:from-white group-hover:to-blue-200 flex items-center justify-center dark:ring-offset-zinc-900 group-hover:ring-blue-200 transition-colors duration-200">
+                                                <UserIcon className="size-5 text-blue-500" />
+                                            </div>
+                                        )
+                                    }
+                                </button>
+
+                                {
+                                    openMenu && (
+                                        <div
+                                            ref={refs.setFloating}
+                                            style={floatingStyles}
+                                            {...getFloatingProps()}
+                                            className={`w-screen max-w-61 origin-top-right rounded-2xl bg-white shadow-lg shadow-gray-200 outline-1 outline-gray-300/70  dark:divide-white/10 dark:bg-zinc-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10 overflow-hidden `}
+                                        >
+                                            <div className="py-2 px-3">
+                                                <div className="bg-white dark:bg-zinc-900 ring-[0.1em] ring-gray-200 dark:ring-0 dark:bg-gradient-to-b dark:from-zinc-600/80 dark:to-zinc-800 rounded-xl relative z-10 dark:after:absolute dark:after:inset-0.5 dark:after:-z-10  dark:dark:after:bg-zinc-900 dark:after:rounded-[inherit] shadow-lg shadow-gray-300/70 dark:shadow-none px-4 py-3 flex gap-3 items-stretch">
+                                                    <div>
+                                                        {
+                                                            session?.user.image ? (
+                                                                <Image
+                                                                    src={session.user.image}
+                                                                    alt={session.user.name ?? 'user'}
+                                                                    width={28}
+                                                                    height={28}
+                                                                    className="size-7 rounded-full ring-1 ring-offset-2 dark:ring-offset-zinc-900 ring-gray-500/95 "
+                                                                ></Image>
+                                                            ) : session?.user.name ? (
+                                                                <div className="size-7 bg-linear-to-b from-blue-50 to-blue-300 ring-1 ring-offset-2 rounded-full ring-blue-300/75  flex items-center justify-center dark:ring-offset-zinc-900 transition-colors duration-200">
+                                                                    <span className="text-blue-500">{getInitials(session.user.name)}</span>
+                                                                </div>
+                                                            ) : (
+                                                                <div className="size-7 bg-linear-to-b from-blue-50 to-blue-300 ring-1 ring-offset-2 rounded-full ring-blue-300/75  flex items-center justify-center dark:ring-offset-zinc-900 transition-colors duration-200">
+                                                                    <UserIcon className="size-5 text-blue-500" />
+                                                                </div>
+                                                            )
+                                                        }
+
+                                                    </div>
+                                                    <div className="flex-1 overflow-hidden">
+                                                        <span className="truncate block text-sm font-bold">{session?.user.name ?? 'Anonymous'}
+                                                        </span>
+                                                        <span className="text-xs text-gray-500 dark:text-zinc-400 block -translate-y-[1px]">Id: <span className="font-semibold">{session?.user.uid}</span></span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="mt-2 px-1 space-y-0.5">
+                                                    <Link href='/profile' className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/90 rounded-lg gap-3">
+                                                        <UserIcon className="size-5 text-zinc-400" />
+                                                        Your Profile
+                                                    </Link>
+                                                    <Link href='/profile' className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/90 rounded-lg gap-3">
+                                                        <ArrowUpOnSquareStackIcon className="size-5 text-zinc-400" />
+                                                        Your Uploads
+                                                    </Link>
+                                                    <Link href='/profile' className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/90 rounded-lg gap-3">
+                                                        <HeartIcon className="size-5 text-zinc-400" />
+                                                        Your Likes
+                                                    </Link>
+                                                    <Link href='/profile' className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/90 rounded-lg gap-3">
+                                                        <CloudArrowUpIcon className="size-5 text-zinc-400" />
+                                                        Your Soundboards
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                            <div className="mt-1 border-t outline-gray-300/70 dark:border-white/10 grid grid-cols-2 divide-x divide-white/10">
+                                                <Link href='/profile' className="px-3 py-2.5 flex justify-center items-center gap-2 dark:bg-zinc-900/75 hover:bg-zinc-900 text-sm font-semibold">
+                                                    <CogIcon className="size-5 text-zinc-400" />
+                                                    Settings
+                                                </Link>
+                                                <button onClick={() => signOut()} className="px-3 py-2.5 flex justify-center items-center gap-2 dark:bg-zinc-900/75 hover:bg-zinc-900 text-sm font-semibold">
+                                                    <CursorArrowRippleIcon className="size-5 text-zinc-400 scale-90" />
+                                                    Sign Out
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )
+                                }
+
+                            </>
+                        ) : (
+                            <Link href='/login' className="flex">
+                                <Button variant="outline" size="auto" className="px-2">
+                                    <UserIcon className="size-5" />
+                                </Button>
+                            </Link>
+                        )
+                    }
+
+
                     <Menu as="div" className="relative inline-block">
                         <MenuButton className="flex items-center rounded-full text-gray-500/75 hover:text-gray-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:text-zinc-400 dark:hover:text-zinc-300 dark:focus-visible:outline-indigo-500">
                             <span className="sr-only">Open options</span>
