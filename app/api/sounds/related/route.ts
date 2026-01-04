@@ -34,42 +34,42 @@ export async function GET(req: NextRequest) {
         : null;
 
     const pipeline: any[] = [
-      { $match: { s_id: { $ne: s_id } } },
+      {
+        $match: {
+          s_id: { $ne: s_id },
+          visibility: true,
+        }
+      },
 
       {
         $addFields: {
           score: {
             $add: [
-              // 1️⃣ Same category
+
               category
                 ? { $cond: [{ $eq: ["$category", category] }, 50, 0] }
                 : 0,
 
-              // 2️⃣ Title similarity
               titleRegex
                 ? { $cond: [{ $regexMatch: { input: "$title", regex: titleRegex } }, 40, 0] }
                 : 0,
 
-              // 3️⃣ Tag overlap
               tags.length
                 ? {
-                    $size: {
-                      $setIntersection: ["$tags", tags],
-                    },
-                  }
+                  $size: {
+                    $setIntersection: ["$tags", tags],
+                  },
+                }
                 : 0,
             ],
           },
         },
       },
 
-      // Only keep meaningful matches
       { $match: { score: { $gt: 0 } } },
 
-      // Highest relevance first
       { $sort: { score: -1, createdAt: -1 } },
 
-      // Pagination
       {
         $facet: {
           data: [

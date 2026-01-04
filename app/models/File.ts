@@ -1,5 +1,6 @@
 import mongoose, { Schema, Model } from "mongoose";
 import { Types } from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 
 export interface IUser {
     uid: string,
@@ -21,11 +22,11 @@ export interface IFile {
     duration: string;
     tags: string[];
     category: string;
-    createdAt: Date;
     description: string,
     btnColor: string,
     user: IUser;
     stats: IStats;
+    visibility: boolean
 }
 
 const UserSchema = new Schema<IUser>({
@@ -69,7 +70,8 @@ const FileSchema = new Schema<IFile>({
         type: String,
         required: true,
         unique: true,
-        index: true
+        index: true,
+        default: () => uuidv4().replace(/-/g, ''),
     },
     title: {
         type: String,
@@ -96,10 +98,6 @@ const FileSchema = new Schema<IFile>({
         default: 'Random'
     },
 
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
 
     description: {
         type: String
@@ -114,7 +112,8 @@ const FileSchema = new Schema<IFile>({
     },
     stats: {
         type: StatsSchema
-    }
+    },
+    visibility: { type: Boolean, default: true },
 }, {
     timestamps: false,
     collection: 'files'

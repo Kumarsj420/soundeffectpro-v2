@@ -58,8 +58,8 @@ const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onTabChange }) => {
                   aria-current={isActive ? 'page' : undefined}
                   className={classNames(
                     isActive
-                      ? 'border-blue-400 text-blue-500'
-                      : 'border-transparent text-gray-600/90 hover:border-gray-300 hover:text-gray-700 dark:text-zinc-400 dark:hover:border-white/20 dark:hover:text-gray-300',
+                      ? 'border-blue-400 text-blue-500 dark:text-blue-400'
+                      : 'border-transparent text-gray-600/90 hover:border-gray-300 hover:text-gray-700 dark:text-zinc-300/90 dark:hover:border-white/20 dark:hover:text-zinc-200',
                     'group inline-flex items-center border-b-2 px-1 py-4 text-sm font-medium transition-colors',
                   )}
                 >
@@ -68,13 +68,13 @@ const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onTabChange }) => {
                       aria-hidden="true"
                       className={classNames(
                         isActive
-                          ? 'text-blue-500 dark:text-blue-400'
+                          ? 'text-blue-500 '
                           : 'text-gray-400 group-hover:text-gray-500 dark:text-zinc-500 dark:group-hover:text-zinc-400',
                         'mr-2 -ml-0.5 size-5',
                       )}
                     />
                   )}
-                  <span>{tab.label}</span>
+                  <span >{tab.label}</span>
                 </button>
               );
             })}

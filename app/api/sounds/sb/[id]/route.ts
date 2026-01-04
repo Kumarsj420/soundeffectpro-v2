@@ -3,6 +3,7 @@ import Board from "@/app/models/Sb";
 import File from "@/app/models/File";
 import { NextRequest, NextResponse } from "next/server";
 
+
 export async function GET(
     request: NextRequest,
     { params }: { params: { id: string } }
@@ -35,6 +36,7 @@ export async function GET(
 
         const files = await File.find({
             s_id: { $in: soundIds },
+            visibility: true,
         })
             .sort({ 'stats.views': -1 })
             .skip(skip)

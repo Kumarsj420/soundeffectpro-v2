@@ -146,7 +146,7 @@ export const authOptions: NextAuthOptions = {
     },
 
 
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       try {
         if (user) {
           await connectDB();
@@ -154,19 +154,42 @@ export const authOptions: NextAuthOptions = {
 
           if (dbUser) {
             token.uid = dbUser.uid;
+            token.email = dbUser.email;
             token.name = dbUser.name;
             token.image = dbUser.image;
             token.isProfileCompleted = dbUser.isProfileCompleted;
-            token.email = dbUser.email;
             token.emailVerified = dbUser.emailVerified;
+            token.favCount = dbUser.favCount;
+            token.filesCount = dbUser.filesCount;
+            token.categoriesCount =  
+            token.lastSyncedAt = Date.now();
           }
         }
-      } catch (error) {
-        console.error('jwt callback error:', error);
+
+        const Refresh_Time = 5 * 60 * 1000;
+
+        if (
+          token.uid &&
+          (!token.lastSyncedAt || Date.now() - token.lastSyncedAt > Refresh_Time)
+        ) {
+          await connectDB();
+          const dbUser = await User.findOne({ uid: token.uid });
+
+          if (dbUser) {
+            token.name = dbUser.name;
+            token.image = dbUser.image;
+            token.isProfileCompleted = dbUser.isProfileCompleted;
+            token.emailVerified = dbUser.emailVerified;
+            token.lastSyncedAt = Date.now();
+          }
+        }
+      } catch (err) {
+        console.error("JWT refresh error:", err);
       }
 
       return token;
     },
+
 
     async session({ session, token }) {
       if (session.user) {

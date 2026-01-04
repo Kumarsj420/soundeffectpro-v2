@@ -8,8 +8,7 @@ import { useLazyAudio } from '../hooks/useAudio';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useInfiniteLoader } from '../hooks/useInfiniteLoader';
 import { SoundGrid, Head2 } from '../components/Ui';
-import SoundCard from '../components/SoundCard';
-import SoundCardSkelton from '../components/SoundCardSkelton';
+import SoundCard, {SoundCardSkelton} from '../components/SoundCard';
 import { PAGE_SIZE } from '../global';
 import { notFound } from 'next/navigation';
 import {

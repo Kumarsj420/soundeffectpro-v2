@@ -10,6 +10,8 @@ export interface IUser extends Document {
     favCount: number,
     isProfileCompleted: boolean,
     emailVerified: Date,
+    filesCount: number,
+    categoriesCount: number  
 }
 
 const UserSchema = new Schema<IUser>({
@@ -17,7 +19,7 @@ const UserSchema = new Schema<IUser>({
         type: String,
         required: true,
         unique: true,
-        default: uuidv4,
+        default: () => uuidv4().replace(/-/g, ''),
     },
     name: {
         type: String,
@@ -50,11 +52,24 @@ const UserSchema = new Schema<IUser>({
     emailVerified: {
         type: Date,
         default: null
+    },
+    filesCount: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
+    categoriesCount: {
+        type: Number,
+        default: 0,
+        min: 0
     }
 }, {
     timestamps: true,
     collection: 'users'
 })
+
+UserSchema.index({ uid: 1 }, { unique: true });
+UserSchema.index({ email: 1 }, { unique: true });
 
 const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
 export default User;

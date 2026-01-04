@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { signOut } from "next-auth/react";
 import Button from "./Button";
-import { ArrowDownOnSquareStackIcon, UserIcon, ArrowUpOnSquareStackIcon, HeartIcon, CloudArrowUpIcon, CogIcon, CursorArrowRippleIcon } from "@heroicons/react/24/solid";
+import { UserIcon, ArrowUpOnSquareStackIcon, HeartIcon, CloudArrowUpIcon, CogIcon, CursorArrowRippleIcon } from "@heroicons/react/24/solid";
 import Loading from "../loading";
 import {
     useFloating,
@@ -204,31 +204,31 @@ export default function Navbar() {
                                                 </div>
 
                                                 <div className="mt-2 px-1 space-y-0.5">
-                                                    <Link href='/profile' className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/90 rounded-lg gap-3">
-                                                        <UserIcon className="size-5 text-zinc-400" />
+                                                    <Link href='/user' className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/90 rounded-lg gap-3">
+                                                        <UserIcon className="size-5 text-zinc-400/75" />
                                                         Your Profile
                                                     </Link>
-                                                    <Link href='/profile' className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/90 rounded-lg gap-3">
-                                                        <ArrowUpOnSquareStackIcon className="size-5 text-zinc-400" />
+                                                    <Link href='/user/uploads' className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/90 rounded-lg gap-3">
+                                                        <ArrowUpOnSquareStackIcon className="size-5 text-zinc-400/75" />
                                                         Your Uploads
                                                     </Link>
-                                                    <Link href='/profile' className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/90 rounded-lg gap-3">
-                                                        <HeartIcon className="size-5 text-zinc-400" />
+                                                    <Link href='/user/likes' className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/90 rounded-lg gap-3">
+                                                        <HeartIcon className="size-5 text-zinc-400/75" />
                                                         Your Likes
                                                     </Link>
-                                                    <Link href='/profile' className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/90 rounded-lg gap-3">
-                                                        <CloudArrowUpIcon className="size-5 text-zinc-400" />
+                                                    <Link href='/user/soundboards' className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/90 rounded-lg gap-3">
+                                                        <CloudArrowUpIcon className="size-5 text-zinc-400/75" />
                                                         Your Soundboards
                                                     </Link>
                                                 </div>
                                             </div>
                                             <div className="mt-1 border-t outline-gray-300/70 dark:border-white/10 grid grid-cols-2 divide-x divide-white/10">
-                                                <Link href='/profile' className="px-3 py-2.5 flex justify-center items-center gap-2 dark:bg-zinc-900/75 hover:bg-zinc-900 text-sm font-semibold">
-                                                    <CogIcon className="size-5 text-zinc-400" />
+                                                <Link href='/user/settings' className="px-3 py-2.5 flex justify-center items-center gap-2 dark:bg-zinc-900/75 hover:bg-zinc-900 text-sm font-semibold">
+                                                    <CogIcon className="size-5 text-zinc-400/75" />
                                                     Settings
                                                 </Link>
                                                 <button onClick={() => signOut()} className="px-3 py-2.5 flex justify-center items-center gap-2 dark:bg-zinc-900/75 hover:bg-zinc-900 text-sm font-semibold">
-                                                    <CursorArrowRippleIcon className="size-5 text-zinc-400 scale-90" />
+                                                    <CursorArrowRippleIcon className="size-5 text-zinc-400/75 scale-90" />
                                                     Sign Out
                                                 </button>
                                             </div>

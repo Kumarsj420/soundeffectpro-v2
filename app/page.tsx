@@ -1,11 +1,10 @@
 "use client"
 import { useEffect, useState } from "react";
 import TagScroller from "./components/TagScroller";
-import SoundCard from "./components/SoundCard";
+import SoundCard, {SoundCardSkelton} from "./components/SoundCard";
 import { ChevronRight, History } from "lucide-react";
 import { fileService } from "./services/fileService";
 import { IFile } from "./models/File";
-import SoundCardSkelton from "./components/SoundCardSkelton";
 import { useInfiniteLoader } from "./hooks/useInfiniteLoader";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { SoundGrid, Head2 } from "./components/Ui";
@@ -13,9 +12,10 @@ import Link from "next/link";
 import { PAGE_SIZE } from './global';
 import Soundboard, { SoundboardSkelton } from "./components/Soundboard";
 import { categoryService } from "./services/categoryService";
-
+import { useSession } from "next-auth/react";
 
 export default function HomePage() {
+  const {data: session, status} = useSession();
   const [popularSounds, setPopularSounds] = useState<IFile[]>([]);
   const [trendingSounds, setTrendingSounds] = useState<IFile[]>([]);
   const [loading, setLoading] = useState({ popular: true, trending: true });
@@ -106,7 +106,7 @@ export default function HomePage() {
           <SoundGrid>
             {
               soundboards?.map((item) => (
-                <Soundboard key={item.sb_id} obj={item} />
+                <Soundboard key={item.sb_id} obj={item}  />
               ))
             }
             {
@@ -132,7 +132,7 @@ export default function HomePage() {
           </div>
           <SoundGrid>
             {!loading.popular && popularSounds.map((obj: any) => (
-              <SoundCard key={obj._id} obj={obj} />
+              <SoundCard key={obj._id} obj={obj} sessionUser={session?.user.uid === obj.user.uid ? true : false} />
             ))}
             {
               loading.popular &&
@@ -156,7 +156,7 @@ export default function HomePage() {
           </div>
           <SoundGrid>
             {!loading.trending && trendingSounds.map((obj: any) => (
-              <SoundCard key={obj._id} obj={obj} />
+              <SoundCard key={obj._id} obj={obj} sessionUser={session?.user.uid === obj.user.uid ? true : false} />
             ))}
             {
               loading.trending &&
@@ -176,7 +176,7 @@ export default function HomePage() {
 
           <SoundGrid>
             {recentSounds.map((obj: any) => (
-              <SoundCard key={obj._id} obj={obj} />
+              <SoundCard key={obj._id} obj={obj} sessionUser={session?.user.uid === obj.user.uid ? true : false} />
             ))}
             {
               (isLoading || isFetchingNextPage) &&

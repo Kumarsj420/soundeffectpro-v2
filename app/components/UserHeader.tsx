@@ -5,9 +5,14 @@ import Image from 'next/image';
 import { UserIcon, EnvelopeIcon, IdentificationIcon, CalendarDaysIcon, PlusIcon, ShareIcon } from '@heroicons/react/24/solid';
 import { Head1 } from './Ui';
 import Button from './Button';
+import Loading from '../loading';
 
 function UserHeader() {
     const { data: session, status } = useSession();
+
+    if(status === 'loading'){
+        return <Loading />
+    }
 
     const getInitials = (name: string): string => {
         return name
@@ -58,9 +63,9 @@ function UserHeader() {
                     }
 
                 </div>
-                <div className="w-36 space-y-4">
+                <div className="w-32 space-y-4">
                     <Button size='sm' className='w-full'>
-                        <PlusIcon className='size-4 scale-150' />
+                        <PlusIcon className='size-4 scale-120' />
                         Soundboard
                     </Button>
                     <Button size='sm' className='w-full' variant='outline'>

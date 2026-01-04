@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { Heart, Download, EllipsisVertical, Plus, Share2, Flag } from "lucide-react";
 import React from "react";
 import Link from "next/link";
@@ -8,13 +9,27 @@ import { Icon } from '@iconify/react';
 import { useLazyAudio } from './../hooks/useAudio';
 import { useNumberAbbreviation } from './../hooks/useNumberAbbreviation'
 import { Head3, CardSpan } from "./Ui";
+import { IFile } from "../models/File";
+import {
+  useFloating,
+  offset,
+  flip,
+  shift,
+  autoUpdate,
+  useDismiss,
+  useInteractions,
+  useClick
+} from "@floating-ui/react";
+import { PlusIcon, CodeBracketIcon, EyeSlashIcon, EyeIcon, PencilSquareIcon, ShareIcon, FlagIcon, TrashIcon } from "@heroicons/react/24/solid";
 
 export interface SoundCardProps {
-  obj: any
+  obj: IFile,
+  sessionUser?: boolean
 }
 
 const SoundCard: React.FC<SoundCardProps> = ({
-  obj
+  obj,
+  sessionUser = false
 }) => {
 
   const { play, pause, loading, playing, buffering } =
@@ -22,8 +37,26 @@ const SoundCard: React.FC<SoundCardProps> = ({
 
   const abbriviatedNum = useNumberAbbreviation();
 
+  const [openMenu, setOpenMenu] = useState(false);
+
+  const { refs, floatingStyles, context } = useFloating({
+    open: openMenu,
+    onOpenChange: setOpenMenu,
+    middleware: [offset(14), flip(), shift()],
+    whileElementsMounted: autoUpdate,
+    placement: "bottom-end",
+  });
+
+  const click = useClick(context);
+  const dismiss = useDismiss(context);
+
+  const { getReferenceProps, getFloatingProps } =
+    useInteractions([click, dismiss]);
+
+
+
   return (
-    <div className="bg-gradient-to-br from-white  to-gray-100/70 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl shadow-lg shadow-gray-300/60 dark:shadow-none p-4 relative group ring-1 ring-gray-300/80 dark:ring-0">
+    <div className="bg-gradient-to-br from-white  to-gray-100/70 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl shadow-lg shadow-gray-300/60 dark:shadow-none p-4 relative group/card ring-1 ring-gray-300/80 dark:ring-0">
       <div className="flex justify-center mb-4">
         <SoundButton onClick={playing ? pause : play} className={`hue-rotate-${obj.btnColor} ${loading ? 'saturate-0 animate-pulse pointer-events-none' : ''} ${playing ? 'btn-animation ' : ''}`} />
       </div>
@@ -33,7 +66,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
       <div className="mt-1.5 flex justify-between gap-3 overflow-hidden">
         <CardSpan>{obj.duration}</CardSpan>
         <CardSpan className="block  truncate">
-          <a href="##" className="group/anker ">by <span className="text-gray-900 dark:text-white group-hover/anker:text-blue-400">{obj.user.name}</span></a>
+          <Link href={`/user/${obj.user.uid}`} className="group/anker ">by <span className="text-gray-900 dark:text-white group-hover/anker:text-blue-400">{obj.user.name}</span></Link>
         </CardSpan>
       </div>
 
@@ -51,75 +84,165 @@ const SoundCard: React.FC<SoundCardProps> = ({
             </span>
           </button>
         </div>
-        <Menu as="div" className="relative inline-block">
-          <MenuButton className='cursor-pointer hover:text-gray-700 dark:hover:text-white'>
+        <div className="relative inline-block">
+          <button
+            ref={refs.setReference}
+            {...getReferenceProps()}
+            className='cursor-pointer hover:text-gray-700 dark:hover:text-white outline-none' >
             <EllipsisVertical size={16} />
-          </MenuButton>
-          <MenuItems
-            transition
-            className="absolute right-0 z-10 mt-2 w-48 origin-top-right divide-y divide-gray-200/80 rounded-2xl bg-white shadow-lg shadow-gray-200 outline-1 outline-gray-300/70 transition  data-closed:transform data-closed:opacity-0 data-closed:scale-50 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:divide-white/10 dark:bg-zinc-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10 overflow-hidden "
-          >
-            <div className="py-1">
-              <MenuItem>
-                <button
-                  className="group flex items-center px-4 py-2 text-sm text-gray-600/90 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full"
-                >
-                  <Plus
-                    aria-hidden="true"
-                    strokeWidth={2.3}
-                    className="mr-3 size-5 scale-105 text-gray-400 group-data-focus:text-gray-500 dark:text-zinc-500 dark:group-data-focus:text-white"
-                  />
-                  Add To Soundboard
-                </button>
-              </MenuItem>
-              <MenuItem>
-                <button
-                  className="group flex items-center px-4 py-2 text-sm text-gray-600/90 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full"
-                >
-                  <Icon
-                    icon='icomoon-free:embed2'
-                    aria-hidden="true"
-                    className="mr-3 size-5  text-gray-400 group-data-focus:text-gray-500 dark:text-zinc-500 dark:group-data-focus:text-white"
-                  />
-                  Embed Button
-                </button>
-              </MenuItem>
-            </div>
-            <div className="py-1">
-              <MenuItem>
-                <button
-                  className="group flex items-center px-4 py-2 text-sm text-blue-500 data-focus:bg-gray-100 data-focus:text-blue-600 data-focus:outline-hidden dark:text-blue-400 dark:data-focus:bg-white/5 dark:data-focus:text-blue-300 w-full"
-                >
-                  <div className="p-1 ring-1 ring-blue-500/70 bg-blue-300/15 dark:bg-blue-500/15 size-6 rounded-md mr-3 ">
-                    <Share2
-                      strokeWidth={2.3}
-                      aria-hidden="true"
-                      className="scale-85 size-4 text-blue-500 dark:text-blue-400 group-data-focus:text-blue-600 dark:group-data-focus:text-blue-300 "
-                    />
-                  </div>
-                  Share
-                </button>
-              </MenuItem>
-              <MenuItem>
-                <button
-                  className="group flex items-center px-4 py-2 text-sm text-rose-500 data-focus:bg-gray-100 data-focus:text-rose-600 data-focus:outline-hidden dark:text-rose-400 dark:data-focus:bg-white/5 dark:data-focus:text-rose-300 w-full"
-                >
-                  <div className="p-1 ring-1 ring-rose-500/70 bg-rose-300/15 dark:bg-rose-500/15 size-6 rounded-md mr-3 ">
-                    <Flag
-                      strokeWidth={2.3}
-                      aria-hidden="true"
-                      className="scale-85 size-4 text-rose-500 dark:text-rose-400 group-data-focus:text-rose-600 dark:group-data-focus:text-rose-300 "
-                    />
-                  </div>
-                  Report
-                </button>
-              </MenuItem>
-            </div>
-          </MenuItems>
-        </Menu>
+          </button>
+          {
+            openMenu && (
+              <div
+                ref={refs.setFloating}
+                style={floatingStyles}
+                {...getFloatingProps()}
+                className=" z-10 mt-2 w-48 origin-top-right divide-y divide-gray-200/80 rounded-2xl bg-white shadow-lg shadow-gray-200 outline-1 outline-gray-300/70 dark:divide-white/10 dark:bg-zinc-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10 overflow-hidden"
+              >
+                <ul className="py-1">
+                  <li>
+                    <button
+                      className="group flex items-center px-4 py-2 text-sm text-gray-600/90 hover:bg-gray-100 hover:text-gray-900 hover:outline-hidden dark:text-zinc-300 dark:hover:bg-white/5 dark:hover:text-white w-full"
+                    >
+                      <PlusIcon
+                        aria-hidden="true"
+                        className="mr-3 size-5  text-gray-400 group-hover:text-gray-500 dark:text-zinc-500 dark:group-hover:text-white"
+                      />
+                      Add To Soundboard
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="group flex items-center px-4 py-2 text-sm text-gray-600/90 hover:bg-gray-100 hover:text-gray-900 hover:outline-hidden dark:text-zinc-300 dark:hover:bg-white/5 dark:hover:text-white w-full"
+                    >
+                      <CodeBracketIcon
+                        aria-hidden="true"
+                        className="mr-3 size-5  text-gray-400 group-hover:text-gray-500 dark:text-zinc-500 dark:group-hover:text-white"
+                      />
+                      Embed Button
+                    </button>
+                  </li>
+                  {
+                    sessionUser && (
+                      <>
+                        {
+                          obj.visibility ? (
+                            <li>
+                              <button
+                                className="group flex items-center px-4 py-2 text-sm text-gray-600/90 hover:bg-gray-100 hover:text-gray-900 hover:outline-hidden dark:text-zinc-300 dark:hover:bg-white/5 dark:hover:text-white w-full"
+                              >
+                                <EyeSlashIcon
+                                  aria-hidden="true"
+                                  className="mr-3 size-5 text-gray-400 group-hover:text-gray-500 dark:text-zinc-500 dark:group-hover:text-white"
+                                />
+                                Make Private
+                              </button>
+                            </li>
+                          ) : (
+                            <li>
+                              <button
+                                className="group flex items-center px-4 py-2 text-sm text-gray-600/90 hover:bg-gray-100 hover:text-gray-900 hover:outline-hidden dark:text-zinc-300 dark:hover:bg-white/5 dark:hover:text-white w-full"
+                              >
+                                <EyeIcon
+                                  aria-hidden="true"
+                                  className="mr-3 size-5 text-gray-400 group-hover:text-gray-500 dark:text-zinc-500 dark:group-hover:text-white"
+                                />
+                                Make Public
+                              </button>
+                            </li>
+                          )
+                        }
+
+                        <li>
+                          <button
+                            className="group flex items-center px-4 py-2 text-sm text-gray-600/90 hover:bg-gray-100 hover:text-gray-900 hover:outline-hidden dark:text-zinc-300 dark:hover:bg-white/5 dark:hover:text-white w-full"
+                          >
+                            <PencilSquareIcon
+                              aria-hidden="true"
+                              className="mr-3 size-5 scale-90  text-gray-400 group-hover:text-gray-500 dark:text-zinc-500 dark:group-hover:text-white"
+                            />
+                            Edit
+                          </button>
+                        </li>
+                      </>
+                    )
+                  }
+                </ul>
+                <ul className="py-1">
+                  <li>
+                    <button
+                      className="group flex items-center px-4 py-2 text-sm text-blue-500 hover:bg-gray-100 hover:text-blue-600 hover:outline-hidden dark:text-blue-400 dark:hover:bg-white/5 dark:hover:text-blue-300 w-full"
+                    >
+                      <div className="p-1 ring-1 ring-blue-500/40 group-hover:ring-blue-500/70 bg-blue-300/15 dark:bg-blue-500/15 size-6 rounded-md mr-3 ">
+                        <ShareIcon
+                          aria-hidden="true"
+                          className="scale-85 size-4 text-blue-500 dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300 "
+                        />
+                      </div>
+                      Share
+                    </button>
+                  </li>
+
+                  {
+                    sessionUser ? (
+                      <li>
+                        <button
+                          className="group flex items-center px-4 py-2 text-sm text-rose-500 hover:bg-gray-100 hover:text-rose-600 hover:outline-hidden dark:text-rose-400 dark:hover:bg-white/5 dark:hover:text-rose-300 w-full"
+                        >
+                          <div className="p-1 ring-1 ring-rose-500/40 group-hover:ring-rose-500/70 bg-rose-300/15 dark:bg-rose-500/15 size-6 rounded-md mr-3 ">
+                            <TrashIcon
+                              aria-hidden="true"
+                              className="scale-85 size-4 text-rose-500 dark:text-rose-400 group-hover:text-rose-600 dark:group-hover:text-rose-300 "
+                            />
+                          </div>
+                          Delete
+                        </button>
+                      </li>
+                    ) : (
+                      <li>
+                        <button
+                          className="group flex items-center px-4 py-2 text-sm text-rose-500 hover:bg-gray-100 hover:text-rose-600 hover:outline-hidden dark:text-rose-400 dark:hover:bg-white/5 dark:hover:text-rose-300 w-full"
+                        >
+                          <div className="p-1 ring-1 ring-rose-500/40 group-hover:ring-rose-500/70 bg-rose-300/15 dark:bg-rose-500/15 size-6 rounded-md mr-3 ">
+                            <FlagIcon
+                              aria-hidden="true"
+                              className="scale-85 size-4 text-rose-500 dark:text-rose-400 group-hover:text-rose-600 dark:group-hover:text-rose-300 "
+                            />
+                          </div>
+                          Report
+                        </button>
+                      </li>
+                    )
+                  }
+                </ul>
+              </div>
+            )
+          }
+
+        </div>
       </div>
     </div>
   );
 };
+
+
+
+export function SoundCardSkelton() {
+  return (
+    <div className="bg-gradient-to-br from-white  to-gray-100/70 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl shadow-lg shadow-gray-300/60 dark:shadow-none p-4 relative group ring-1 ring-gray-300/80 dark:ring-0 ">
+      <div className="flex justify-center mb-4">
+        <div className="size-21 bg-zinc-700 rounded-full animate-pulse"></div>
+      </div>
+      <div className="bg-zinc-700 h-5 w-full rounded-lg animate-pulse">
+      </div>
+      <div className="mt-1.5 bg-zinc-700 h-4 w-full rounded-lg animate-pulse">
+      </div>
+
+      <div className="mt-3.5 bg-zinc-700 h-6 w-full rounded-lg animate-pulse">
+      </div>
+    </div>
+  );
+}
+
 
 export default SoundCard;

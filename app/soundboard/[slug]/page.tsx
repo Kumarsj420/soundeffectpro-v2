@@ -1,8 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 import { Share2, Music } from 'lucide-react';
-import SoundCard from '@/app/components/SoundCard';
-import SoundCardSkelton from '@/app/components/SoundCardSkelton';
+import SoundCard, {SoundCardSkelton} from '@/app/components/SoundCard';
 import { notFound } from 'next/navigation';
 import { Head1, Head2, SoundGrid } from '@/app/components/Ui';
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
