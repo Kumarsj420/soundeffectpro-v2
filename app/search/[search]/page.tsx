@@ -1,8 +1,7 @@
 "use client"
 import React from 'react'
-import SoundCard from '../../components/SoundCard';
+import SoundCard, {SoundCardSkelton} from '../../components/SoundCard';
 import { fileService } from '../../services/fileService';
-import SoundCardSkelton from '../../components/SoundCardSkelton';
 import { useInfiniteLoader } from '../../hooks/useInfiniteLoader';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Head1, SoundGrid } from '../../components/Ui';

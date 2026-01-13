@@ -14,7 +14,7 @@ export const userService = {
         return res.data;
     },
 
-    updateUser: async (payload: Partial<IUser> & { uid: string }) => {
+    updateUser: async (payload: Partial<IUser> ) => {
         const res = await axiosInstance.patch("/api/user", payload);
         return res.data;
     },
@@ -25,4 +25,11 @@ export const userService = {
         });
         return res.data;
     },
+
+    checkUID: async (uid: string) => {
+        const res = await axiosInstance.get("/api/user/check-uid", {
+            params: { uid },
+        });
+        return res.data;
+    }
 };

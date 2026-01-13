@@ -9,7 +9,7 @@ import {
   RectangleGroupIcon
 } from '@heroicons/react/24/solid';
 
-import Tabs from '../components/Tabs';
+import Tabs from '../../components/Tabs';
 
 export default function Tab() {
   const router = useRouter();

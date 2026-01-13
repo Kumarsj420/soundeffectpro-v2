@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import UserHeader from "../components/UserHeader";
+import UserHeader from "../../components/UserHeader";
 import { redirect } from 'next/navigation';
 import Tab from "./tab";
-import { requireAuth } from "../lib/getSession";
+import { requireAuth } from "../../lib/getSession";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -24,9 +24,9 @@ export default async function RootLayout({
 
     return (
         <div>
-            <UserHeader />
+            <UserHeader variant="private" />
             <Tab />
-            <div className="mt-6">
+            <div className="mt-7 ">
                 {children}
             </div>
         </div>

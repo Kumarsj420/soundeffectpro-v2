@@ -17,14 +17,17 @@ export async function GET(request: NextRequest) {
         const sbID = searchParams.get('sbID');
         const visibility = searchParams.get('visibility');
         const thumb = searchParams.get('thumb');
+        const userID = searchParams.get('userID');
 
         const query: any = {};
         if (search) query.$text = { $search: search };
         if (sbID) query.sb_id = sbID;
-        if (visibility) query.visibility = visibility;
         if (thumb === 'true') {
             query.thumb = { $ne: null };
         }
+        if (userID) query['user.uid'] = userID;
+
+        query.visibility = (visibility) ? visibility : true;
 
         const sort: any = {
             [sortBy]: order === 'asc' ? 1 : -1,

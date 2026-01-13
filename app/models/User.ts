@@ -5,13 +5,19 @@ export interface IUser extends Document {
     uid: string,
     name?: string,
     email: string,
-    image?: string,
+    image?: string | null,
     provider?: string,
     favCount: number,
     isProfileCompleted: boolean,
     emailVerified: Date,
     filesCount: number,
-    categoriesCount: number  
+    categoriesCount: number,
+    preference: {
+        theme: string,
+        nsfw: boolean,
+        cookies: boolean,
+        language: "en" | "hi" | "ar" | "ur" | "fr" | "de" | "es" | "pt" | "zh";
+    }
 }
 
 const UserSchema = new Schema<IUser>({
@@ -62,6 +68,24 @@ const UserSchema = new Schema<IUser>({
         type: Number,
         default: 0,
         min: 0
+    },
+    preference: {
+        theme: {
+            type: String,
+            default: null
+        },
+        nsfw: {
+            type: Boolean,
+            default: true
+        },
+        cookies: {
+            type: Boolean,
+            default: true
+        },
+        language: {
+            type: String,
+            default: null
+        }
     }
 }, {
     timestamps: true,

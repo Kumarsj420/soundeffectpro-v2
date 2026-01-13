@@ -11,7 +11,10 @@ declare module "next-auth" {
       image?: string | null;
       isProfileCompleted: boolean;
       emailVerified: Date;
-       lastSyncedAt?: number;
+      favCount?: number;
+      filesCount?: number;
+      categoriesCount?: number;
+      lastSyncedAt?: number;
     } & DefaultSession["user"];
   }
 
@@ -30,6 +33,9 @@ declare module "next-auth/jwt" {
     image?: string | null;
     isProfileCompleted: boolean;
     emailVerified: Date;
-     lastSyncedAt?: number;
+    favCount?: number;
+    filesCount?: number;
+    categoriesCount?: number;
+    lastSyncedAt?: number;
   }
 }

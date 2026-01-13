@@ -161,7 +161,7 @@ export const authOptions: NextAuthOptions = {
             token.emailVerified = dbUser.emailVerified;
             token.favCount = dbUser.favCount;
             token.filesCount = dbUser.filesCount;
-            token.categoriesCount =  
+            token.categoriesCount = dbUser.categoriesCount;
             token.lastSyncedAt = Date.now();
           }
         }
@@ -180,6 +180,9 @@ export const authOptions: NextAuthOptions = {
             token.image = dbUser.image;
             token.isProfileCompleted = dbUser.isProfileCompleted;
             token.emailVerified = dbUser.emailVerified;
+            token.favCount = dbUser.favCount;
+            token.filesCount = dbUser.filesCount;
+            token.categoriesCount = dbUser.categoriesCount;
             token.lastSyncedAt = Date.now();
           }
         }
@@ -199,6 +202,9 @@ export const authOptions: NextAuthOptions = {
         session.user.isProfileCompleted = token.isProfileCompleted as boolean;
         session.user.email = token.email as string;
         session.user.emailVerified = token.emailVerified as Date;
+        session.user.favCount = token.favCount as number;
+        session.user.filesCount = token.filesCount as number;
+        session.user.categoriesCount = token.categoriesCount as number;
       }
 
       return session;

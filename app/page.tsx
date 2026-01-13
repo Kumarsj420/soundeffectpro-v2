@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 import TagScroller from "./components/TagScroller";
-import SoundCard, {SoundCardSkelton} from "./components/SoundCard";
+import SoundCard, { SoundCardSkelton } from "./components/SoundCard";
 import { ChevronRight, History } from "lucide-react";
 import { fileService } from "./services/fileService";
 import { IFile } from "./models/File";
@@ -13,9 +13,11 @@ import { PAGE_SIZE } from './global';
 import Soundboard, { SoundboardSkelton } from "./components/Soundboard";
 import { categoryService } from "./services/categoryService";
 import { useSession } from "next-auth/react";
+import Button from "./components/form/Button";
+import { ChevronRightIcon } from "@heroicons/react/24/solid";
 
 export default function HomePage() {
-  const {data: session, status} = useSession();
+  const { data: session, status } = useSession();
   const [popularSounds, setPopularSounds] = useState<IFile[]>([]);
   const [trendingSounds, setTrendingSounds] = useState<IFile[]>([]);
   const [loading, setLoading] = useState({ popular: true, trending: true });
@@ -97,16 +99,16 @@ export default function HomePage() {
           <div className="flex items-center justify-between">
             <Head2>Soundboards</Head2>
             <Link href='/soundboard'>
-              <button className="pl-3.5 sm:pl-4 pr-2.5 sm:pr-3 py-1.5 sm:py-2 bg-white dark:bg-zinc-900 ring-1 ring-gray-300 dark:ring-zinc-700/75 hover:bg-gray-50 hover:ring-gray-400/70 dark:hover:bg-zinc-800 dark:hover:ring-zinc-700 rounded-lg text-xs sm:text-sm font-medium transition duration-200 cursor-pointer flex items-center gap-2 text-gray-500 dark:text-white">
+              <Button variant="outline" size="sm">
                 More
-                <ChevronRight className="text-zinc-500" size={16} />
-              </button>
+                <ChevronRightIcon className="text-zinc-500 size-4" />
+              </Button>
             </Link>
           </div>
           <SoundGrid>
             {
               soundboards?.map((item) => (
-                <Soundboard key={item.sb_id} obj={item}  />
+                <Soundboard key={item.sb_id} obj={item} />
               ))
             }
             {
@@ -124,10 +126,10 @@ export default function HomePage() {
           <div className="flex items-center justify-between">
             <Head2>Popular <span className="text-gray-600/90 dark:text-zinc-300/80 font-light">| Sound Buttons</span></Head2>
             <Link href='/popular'>
-              <button className="pl-3.5 sm:pl-4 pr-2.5 sm:pr-3 py-1.5 sm:py-2 bg-white dark:bg-zinc-900 ring-1 ring-gray-300 dark:ring-zinc-700/75 hover:bg-gray-50 hover:ring-gray-400/70 dark:hover:bg-zinc-800 dark:hover:ring-zinc-700 rounded-lg text-xs sm:text-sm font-medium transition duration-200 cursor-pointer flex items-center gap-2 text-gray-500 dark:text-white">
+              <Button variant="outline" size="sm">
                 More
-                <ChevronRight className="text-zinc-500" size={16} />
-              </button>
+                <ChevronRightIcon className="text-zinc-500 size-4" />
+              </Button>
             </Link>
           </div>
           <SoundGrid>
@@ -148,10 +150,10 @@ export default function HomePage() {
           <div className="flex items-center justify-between">
             <Head2>Trending <span className="text-gray-600/90 dark:text-zinc-300/80 font-light">| Sound Buttons</span></Head2>
             <Link href='/trending'>
-              <button className="pl-3.5 sm:pl-4 pr-2.5 sm:pr-3 py-1.5 sm:py-2 bg-white dark:bg-zinc-900 ring-1 ring-gray-300 dark:ring-zinc-700/75 hover:bg-gray-50 hover:ring-gray-400/70 dark:hover:bg-zinc-800 dark:hover:ring-zinc-700 rounded-lg text-xs sm:text-sm font-medium transition duration-200 cursor-pointer flex items-center gap-2 text-gray-500 dark:text-white">
+              <Button variant="outline" size="sm">
                 More
-                <ChevronRight className="text-zinc-500" size={16} />
-              </button>
+                <ChevronRightIcon className="text-zinc-500 size-4"  />
+              </Button>
             </Link>
           </div>
           <SoundGrid>

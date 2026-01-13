@@ -4,8 +4,6 @@ import { Heart, Download, EllipsisVertical, Plus, Share2, Flag } from "lucide-re
 import React from "react";
 import Link from "next/link";
 import SoundButton from "./SoundButton";
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { Icon } from '@iconify/react';
 import { useLazyAudio } from './../hooks/useAudio';
 import { useNumberAbbreviation } from './../hooks/useNumberAbbreviation'
 import { Head3, CardSpan } from "./Ui";
@@ -21,6 +19,9 @@ import {
   useClick
 } from "@floating-ui/react";
 import { PlusIcon, CodeBracketIcon, EyeSlashIcon, EyeIcon, PencilSquareIcon, ShareIcon, FlagIcon, TrashIcon } from "@heroicons/react/24/solid";
+import Button from "./form/Button";
+import { getR2Url } from "../lib/r2Url";
+
 
 export interface SoundCardProps {
   obj: IFile,
@@ -33,8 +34,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
 }) => {
 
   const { play, pause, loading, playing, buffering } =
-    useLazyAudio(`/store/${obj.s_id}.mp3`);
-
+    useLazyAudio(getR2Url(`store/${obj.s_id}.mp3`));
   const abbriviatedNum = useNumberAbbreviation();
 
   const [openMenu, setOpenMenu] = useState(false);
@@ -73,16 +73,13 @@ const SoundCard: React.FC<SoundCardProps> = ({
       {/* Actions */}
       <div className="flex items-center justify-between mt-3.5 text-xs text-gray-500 dark:text-zinc-300/85">
         <div className="flex gap-3 items-stretch">
-          <button className="py-1 px-1.5 ring-1 ring-gray-300/80 dark:ring-zinc-600/75 bg-gray-50 dark:bg-zinc-700/60 hover:bg-white hover:ring-gray-300 dark:hover:bg-zinc-700 dark:hover:ring-zinc-600 rounded-md cursor-pointer transition duration-200">
-            <span className="flex items-center gap-1">
-              <Heart size={14} /> {abbriviatedNum(obj.stats.likes)}
-            </span>
-          </button>
-          <button className="py-1 px-1.5  bg-blue-500 hover:bg-blue-400 rounded-md cursor-pointer transition duration-200">
-            <span className="flex items-center gap-1 text-white">
-              <Download size={14} /> {abbriviatedNum(obj.stats.downloads)}
-            </span>
-          </button>
+          <Button variant="outline" size="auto" className="py-1 px-1.5 rounded-md gap-1">
+            <Heart size={14} /> {abbriviatedNum(obj.stats.likes)}
+          </Button>
+
+          <Button size="auto" className="py-1 px-1.5 rounded-md gap-1">
+            <Download size={14} /> {abbriviatedNum(obj.stats.downloads)}
+          </Button>
         </div>
         <div className="relative inline-block">
           <button

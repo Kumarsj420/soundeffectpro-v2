@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 import { signIn } from 'next-auth/react'
-import Button from '../components/Button';
+import Button from '../components/form/Button';
 import { Head1, Para } from '../components/Ui';
 
 

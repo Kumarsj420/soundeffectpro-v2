@@ -5,11 +5,13 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import Link from "next/link";
 import Logo from "./Logo";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import { signOut } from "next-auth/react";
-import Button from "./Button";
+import Button from "./form/Button";
 import { UserIcon, ArrowUpOnSquareStackIcon, HeartIcon, CloudArrowUpIcon, CogIcon, CursorArrowRippleIcon } from "@heroicons/react/24/solid";
 import Loading from "../loading";
+import getInitials from "../hooks/getInitials";
+import CustomImg from "./CustomImg";
+import { useT } from "../hooks/useT";
 import {
     useFloating,
     offset,
@@ -20,6 +22,8 @@ import {
     useInteractions,
     useTransitionStyles
 } from "@floating-ui/react";
+
+
 
 interface Sound {
     id: number;
@@ -39,16 +43,8 @@ const mockSounds: Sound[] = [
 ];
 
 
-const getInitials = (name: string): string => {
-    return name
-        .split(' ')
-        .slice(0, 1)
-        .map(word => word.charAt(0).toUpperCase())
-        .join('');
-};
-
-
 export default function Navbar() {
+    const t = useT();
     const [query, setQuery] = useState("");
     const [results, setResults] = useState<Sound[]>([]);
 
@@ -80,7 +76,7 @@ export default function Navbar() {
     const { getReferenceProps, getFloatingProps } =
         useInteractions([dismiss]);
 
-        
+
 
     if (status === 'loading') {
         return <Loading />;
@@ -131,27 +127,27 @@ export default function Navbar() {
 
                 <div className="md:flex items-stretch gap-4 hidden">
                     <Link href='/upload'>
-                        <button className="p-2 bg-blue-500 hover:bg-blue-400 text-white rounded-lg cursor-pointer">
+                        <Button size="auto" className="p-2">
                             <Upload size={18} />
-                        </button>
+                        </Button>
                     </Link>
 
 
                     {
                         status === 'authenticated' ? (
                             <>
-                                
+
 
                                 <button className="group" ref={refs.setReference} onClick={() => setOpenMenu(!openMenu)} {...getReferenceProps()}>
                                     {
                                         session?.user.image ? (
-                                            <Image
+                                            <CustomImg
                                                 src={session.user.image}
                                                 alt={session.user.name ?? 'user'}
                                                 width={28}
                                                 height={28}
-                                                className="size-7 rounded-full ring-1 ring-offset-2 dark:ring-offset-zinc-900 ring-gray-500/95 group-hover:ring-gray-200/70"
-                                            ></Image>
+                                                wrapperClassName="size-7 rounded-full ring-1 ring-offset-2 dark:ring-offset-zinc-900 ring-gray-500/95"
+                                            ></CustomImg>
                                         ) : session?.user.name ? (
                                             <div className="size-7 bg-linear-to-b from-blue-50 to-blue-300 ring-1 ring-offset-2 rounded-full ring-blue-300/75 group-hover:from-white group-hover:to-blue-200 flex items-center justify-center dark:ring-offset-zinc-900 group-hover:ring-blue-200 transition-colors duration-200">
                                                 <span className="text-blue-500">{getInitials(session.user.name)}</span>
@@ -177,13 +173,13 @@ export default function Navbar() {
                                                     <div>
                                                         {
                                                             session?.user.image ? (
-                                                                <Image
+                                                                <CustomImg
                                                                     src={session.user.image}
                                                                     alt={session.user.name ?? 'user'}
                                                                     width={28}
                                                                     height={28}
-                                                                    className="size-7 rounded-full ring-1 ring-offset-2 dark:ring-offset-zinc-900 ring-gray-500/95 "
-                                                                ></Image>
+                                                                    wrapperClassName="size-7 rounded-full ring-1 ring-offset-2 dark:ring-offset-zinc-900 ring-gray-500/95"
+                                                                ></CustomImg>
                                                             ) : session?.user.name ? (
                                                                 <div className="size-7 bg-linear-to-b from-blue-50 to-blue-300 ring-1 ring-offset-2 rounded-full ring-blue-300/75  flex items-center justify-center dark:ring-offset-zinc-900 transition-colors duration-200">
                                                                     <span className="text-blue-500">{getInitials(session.user.name)}</span>
@@ -229,7 +225,7 @@ export default function Navbar() {
                                                 </Link>
                                                 <button onClick={() => signOut()} className="px-3 py-2.5 flex justify-center items-center gap-2 dark:bg-zinc-900/75 hover:bg-zinc-900 text-sm font-semibold">
                                                     <CursorArrowRippleIcon className="size-5 text-zinc-400/75 scale-90" />
-                                                    Sign Out
+                                                    {t('signout')}
                                                 </button>
                                             </div>
                                         </div>

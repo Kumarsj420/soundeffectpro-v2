@@ -79,9 +79,11 @@ export const fileService = {
 
     return response.data;
   },
-  getLikedFiles: async () => {
-    const response = await axiosInstance.get('/api/sounds/fav');
+  getLikedFiles: async ({ page, limit }: { page: number; limit: number }) => {
+    const response = await axiosInstance.get('/api/sounds/fav', {
+      params: { page, limit },
+    });
     return response.data;
-  }
+  },
 
 }

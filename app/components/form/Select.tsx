@@ -1,0 +1,195 @@
+'use client';
+
+import React, {
+    createContext,
+    useContext,
+    useState,
+    ReactNode,
+} from 'react';
+import { cn } from '@/app/services/cn';
+import {
+    useFloating,
+    offset,
+    flip,
+    shift,
+    autoUpdate,
+    useClick,
+    useDismiss,
+    useRole,
+    useInteractions,
+} from '@floating-ui/react';
+
+import { ChevronDownIcon } from '@heroicons/react/24/solid';
+
+interface SelectContextType {
+    value: string | undefined;
+    setValue: (value: string) => void;
+}
+
+const SelectContext = createContext<SelectContextType | null>(null);
+
+
+interface SelectProps {
+    children: ReactNode;
+    value?: string;
+    defaultValue?: string;
+    onChange?: (value: string) => void;
+    name?: string;
+    placeholder?: string;
+    disabled?: boolean;
+    error?: string;
+    success?: boolean;
+    className?: string;
+    wrapperClassName?: string;
+}
+
+export function Select({
+    children,
+    value,
+    defaultValue,
+    onChange,
+    name,
+    placeholder = 'Select an option',
+    disabled = false,
+    error,
+    success,
+    className,
+    wrapperClassName,
+}: SelectProps) {
+    const [open, setOpen] = useState(false);
+    const [internalValue, setInternalValue] = useState(defaultValue);
+
+    const isControlled = value !== undefined;
+    const selectedValue = isControlled ? value : internalValue;
+
+
+
+    const { refs, floatingStyles, context } = useFloating({
+        open,
+        onOpenChange: setOpen,
+        placement: 'bottom-start',
+        middleware: [offset(6), flip(), shift({ padding: 8 })],
+        whileElementsMounted: autoUpdate,
+    });
+
+    const click = useClick(context);
+    const dismiss = useDismiss(context);
+    const role = useRole(context, { role: 'listbox' });
+
+    const { getReferenceProps, getFloatingProps } = useInteractions([
+        click,
+        dismiss,
+        role,
+    ]);
+
+
+    const setValue = (val: string) => {
+        if (!isControlled) setInternalValue(val);
+        onChange?.(val);
+        setOpen(false);
+    };
+
+    const selectedLabel = React.Children.toArray(children).find(
+        (child: any) => child.props?.value === selectedValue
+    ) as any;
+
+
+    let triggerClasses =
+        'w-full h-10 rounded-xl px-3 text-sm font-medium flex items-center justify-between cursor-pointer ring-[0.09em] ring-inset transition outline-none';
+
+    if (disabled) {
+        triggerClasses +=
+            ' bg-gray-100 text-gray-500 ring-gray-300 cursor-not-allowed';
+    } else if (error) {
+        triggerClasses +=
+            ' bg-red-50 text-red-800 ring-red-300 focus:ring-red-400';
+    } else if (success) {
+        triggerClasses +=
+            ' bg-white text-green-800 ring-emerald-400 focus:ring-emerald-400';
+    } else {
+        triggerClasses +=
+            ' bg-white dark:bg-zinc-800 text-gray-900 dark:text-white ring-gray-400/60 hover:ring-gray-400 focus:ring-blue-400';
+    }
+
+    return (
+        <div className={cn('relative', wrapperClassName)}>
+            {name && (
+                <input type="hidden" name={name} value={selectedValue ?? ''} />
+            )}
+
+
+            <div
+                ref={refs.setReference}
+                tabIndex={disabled ? -1 : 0}
+                className={cn(triggerClasses, className)}
+                {...getReferenceProps()}
+            >
+                <span className="truncate">
+                    {selectedLabel?.props?.children ?? placeholder}
+                </span>
+
+
+                <span
+                    className={cn(
+                        'text-xs transition-transform duration-200',
+                        open && 'rotate-180'
+                    )}
+                >
+                    <ChevronDownIcon className='size-4.5 text-gray-500 dark:text-zinc-400' />
+                </span>
+            </div>
+
+            {/* Dropdown */}
+            {open && !disabled && (
+                <SelectContext.Provider value={{ value: selectedValue, setValue }}>
+                    <div
+                        ref={refs.setFloating}
+                        style={floatingStyles}
+                        {...getFloatingProps()}
+                        className="z-50 mt-1 w-full rounded-xl bg-white dark:bg-zinc-800 shadow-lg ring-1 ring-black/10 overflow-hidden"
+                    >
+                        <div className="overflow-y-auto max-h-70 scrollbar-mini">
+                            {children}
+                        </div>
+                    </div>
+                </SelectContext.Provider>
+            )}
+
+            {error && (
+                <p className="text-red-500 mt-1.5 text-xs font-medium">{error}</p>
+            )}
+        </div>
+    );
+}
+
+
+
+interface OptionProps {
+    value: string;
+    children: ReactNode;
+    disabled?: boolean;
+}
+
+export function Option({ value, children, disabled }: OptionProps) {
+    const ctx = useContext(SelectContext);
+    if (!ctx) return null;
+
+    const isSelected = ctx.value === value;
+
+    return (
+        <div
+            role="option"
+            aria-selected={isSelected}
+            onClick={() => !disabled && ctx.setValue(value)}
+            className={cn(
+                'px-3 py-2 text-sm cursor-pointer transition select-none',
+                disabled && 'opacity-50 cursor-not-allowed',
+                isSelected
+                    ? 'bg-blue-500 text-white'
+                    : 'hover:bg-gray-100 dark:hover:bg-zinc-700'
+            )}
+        >
+            {children}
+        </div>
+    );
+}

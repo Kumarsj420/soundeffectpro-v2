@@ -3,6 +3,10 @@ import Providers from "./providers";
 import "./globals.css";
 import { Nunito } from 'next/font/google'
 import Navbar from "./components/Navbar";
+import Modal_Root from "./components/modals/Modal_Root";
+import FetchLoading from "./components/fetchLoading";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -12,7 +16,7 @@ export const metadata: Metadata = {
 const nunito = Nunito({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700', '800', '900'],
-  variable: '--font-nunito', 
+  variable: '--font-nunito',
   display: 'swap',
 })
 
@@ -29,6 +33,20 @@ export default function RootLayout({
       >
         <Providers>
           <Navbar />
+          <Modal_Root />
+          <FetchLoading />
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            theme="colored"
+            draggable
+            pauseOnHover
+          />
           <div className="max-w-7xl m-auto px-5 sm:px-7 py-5 sm:py-7">
             {children}
           </div>

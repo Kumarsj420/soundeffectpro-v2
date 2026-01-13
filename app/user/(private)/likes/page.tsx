@@ -1,15 +1,15 @@
-'use client'
+'use client';
+
 import React from 'react';
 import { useSession } from 'next-auth/react';
 import SoundCard, { SoundCardSkelton } from '@/app/components/SoundCard';
-import { SoundGrid } from '@/app/components/Ui';
+import { SoundGrid, Para } from '@/app/components/Ui';
 import { fileService } from '@/app/services/fileService';
 import { useInfiniteLoader } from '@/app/hooks/useInfiniteLoader';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { PAGE_SIZE } from '@/app/global';
 
-function Uploads() {
-
+export default function Likes() {
   const { data: session } = useSession();
   const uid = session?.user.uid;
 
@@ -20,16 +20,13 @@ function Uploads() {
     isFetchingNextPage,
     isLoading,
   } = useInfiniteQuery({
-    queryKey: ["user sounds", uid],
+    queryKey: ['liked-sounds', uid],
     enabled: !!uid,
     initialPageParam: 1,
     queryFn: ({ pageParam }) =>
-      fileService.getFiles({
+      fileService.getLikedFiles({
         page: pageParam,
         limit: PAGE_SIZE,
-        sortBy: 'stats.views',
-        order: 'desc',
-        userId: uid
       }),
     getNextPageParam: (lastPage) => {
       const { page, pages } = lastPage.pagination;
@@ -38,8 +35,8 @@ function Uploads() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const userSounds =
-    data?.pages.flatMap(page => page.data) ?? [];
+  const likedSounds = data?.pages.flatMap(p => p.data) ?? [];
+  const totalLikes = data?.pages?.[0]?.pagination?.total ?? 0;
 
   const loadMoreRef = useInfiniteLoader({
     loading: isFetchingNextPage,
@@ -47,25 +44,44 @@ function Uploads() {
     onLoadMore: fetchNextPage,
   });
 
+  if (isLoading) {
+    return (
+      <SoundGrid>
+        {Array.from({ length: PAGE_SIZE }).map((_, i) => (
+          <SoundCardSkelton key={i} />
+        ))}
+      </SoundGrid>
+    );
+  }
+
+  if (totalLikes === 0) {
+    return <Para>You do not liked any sound yet.</Para>;
+  }
+
   return (
     <>
       <SoundGrid>
-        {userSounds.map((obj: any) => (
-          <SoundCard key={obj._id} obj={obj} sessionUser={uid === obj.user.uid ? true : false} />
+        {likedSounds.map(obj => (
+          <SoundCard
+            key={obj._id}
+            obj={obj}
+            sessionUser={true}
+          />
         ))}
-        {
-          (isLoading || isFetchingNextPage) &&
+
+        {isFetchingNextPage &&
           Array.from({ length: PAGE_SIZE }).map((_, i) => (
             <SoundCardSkelton key={i} />
-          ))
-        }
+          ))}
       </SoundGrid>
-      {!hasNextPage && userSounds.length > 0 && (
-        <p className="text-center mt-4 text-gray-500">No more sounds to load</p>
+
+      {!hasNextPage && likedSounds.length > 0 && (
+        <Para>
+          No more sounds to load
+        </Para>
       )}
+
       <div ref={loadMoreRef} className="h-10" />
     </>
-  )
+  );
 }
-
-export default Uploads

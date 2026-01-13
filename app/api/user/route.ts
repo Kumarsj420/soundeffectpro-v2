@@ -1,13 +1,24 @@
 import { connectDB } from "@/app/lib/dbConnection";
 import User from "@/app/models/User";
 import { NextRequest, NextResponse } from "next/server";
+import { requireAuth } from "@/app/lib/getSession";
 
 export async function PATCH(request: NextRequest) {
     try {
         await connectDB();
 
+        const session = await requireAuth();
+
+        if (!session) {
+            return NextResponse.json(
+                { success: false, message: "please login to update your info" },
+                { status: 403 }
+            );
+        }
+
+        const uid = session?.user.uid;
         const body = await request.json();
-        const { uid, ...updates } = body;
+        const { ...updates } = body;
 
         if (!uid) {
             return NextResponse.json(

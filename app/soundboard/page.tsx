@@ -48,7 +48,7 @@ export default function SoundboardPage() {
         <div>
             <Head1>Popular Soundboards</Head1>
             <SoundGrid className="mt-5">
-                  {topSoundboards.map((obj: any) => (
+                {topSoundboards.map((obj: any) => (
                     <Soundboard key={obj._id} obj={obj} />
                 ))}
                 {

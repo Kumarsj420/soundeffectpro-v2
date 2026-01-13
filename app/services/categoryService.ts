@@ -20,7 +20,8 @@ export interface ICategoryFiles {
     order?: string,
     sbID?: string,
     visibility?: string,
-    thumb?: boolean
+    thumb?: boolean,
+    userID?: string
 }
 
 export const categoryService = {

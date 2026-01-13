@@ -8,7 +8,7 @@ import { useLazyAudio } from '../hooks/useAudio';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useInfiniteLoader } from '../hooks/useInfiniteLoader';
 import { SoundGrid, Head2 } from '../components/Ui';
-import SoundCard, {SoundCardSkelton} from '../components/SoundCard';
+import SoundCard, { SoundCardSkelton } from '../components/SoundCard';
 import { PAGE_SIZE } from '../global';
 import { notFound } from 'next/navigation';
 import {
@@ -21,6 +21,10 @@ import {
   ChevronRight,
   Flag
 } from 'lucide-react';
+import { HeartIcon, PlusIcon, CodeBracketIcon, ArrowDownOnSquareStackIcon } from '@heroicons/react/24/solid';
+import { HeartIcon as HeartOutlineIcon } from '@heroicons/react/24/outline';
+import Button from '../components/form/Button';
+import { useModal } from '../hooks/useModal';
 
 
 interface SoundDetailsPageProps {
@@ -28,6 +32,7 @@ interface SoundDetailsPageProps {
 }
 
 const SoundDetailsPage = ({ slug }: SoundDetailsPageProps) => {
+  const openModal = useModal((s) => s.openModal);
   const id = useMemo(() => slug?.split("-").pop(), [slug]);
   if (!id) return notFound();
 
@@ -59,8 +64,8 @@ const SoundDetailsPage = ({ slug }: SoundDetailsPageProps) => {
     enabled: !!sfxInfo, // 🔥 wait until sound is loaded
     queryFn: ({ pageParam }) =>
       fileService.getRelatedFiles(
-        id!, 
-        pageParam, 
+        id!,
+        pageParam,
         PAGE_SIZE,
         {
           title: sfxInfo?.title,
@@ -119,26 +124,26 @@ const SoundDetailsPage = ({ slug }: SoundDetailsPageProps) => {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3 ">
-              <button className="flex items-center justify-center gap-2 bg-gray-100 dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-600/90 dark:text-zinc-300 px-4 py-3 rounded-xl transition-colors ring-gray-300 dark:ring-zinc-700 ring-1 ring-inset hover:ring-gray-300 dark:hover:ring-zinc-600">
-                <Heart size={18} className='text-gray-500/80 dark:text-zinc-400/90' />
+              <Button variant='outline'>
+                <HeartOutlineIcon className='text-gray-500/80 dark:text-zinc-500 size-5' />
                 Like <span className="hidden sm:inline">Sound</span>
-              </button>
-              <button className="flex items-center justify-center gap-2 bg-gray-100 dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-600/90 dark:text-zinc-300 px-4 py-3 rounded-xl transition-colors ring-gray-300 dark:ring-zinc-700 ring-1 ring-inset hover:ring-gray-300 dark:hover:ring-zinc-600">
-                <Plus size={18} className='text-gray-500/80 dark:text-zinc-400/90' />
+              </Button>
+              <Button variant='outline' onClick={() => openModal('ats-modal', { id: 44 })}>
+                <PlusIcon className='text-gray-500/80 dark:text-zinc-500 size-5' />
                 Soundboard
-              </button>
+              </Button>
 
-              <button className="flex items-center justify-center gap-2 bg-gray-100 dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-600/90 dark:text-zinc-300 px-4 py-3 rounded-xl transition-colors ring-gray-300 dark:ring-zinc-700 ring-1 ring-inset hover:ring-gray-300 dark:hover:ring-zinc-600">
+              <Button variant='outline'>
                 <span>
-                  <svg xmlns="http://www.w3.org/2000/svg" className='size-5 text-gray-500/80 dark:text-zinc-400/90' viewBox="0 0 2048 2048"><path fill="currentColor" d="m467 595l90 90l-338 339l338 339l-90 90l-430-429zm1114 0l430 429l-430 429l-90-90l338-339l-338-339zM701 1792l512-1536h134L835 1792z" strokeWidth="51" stroke="currentColor" /></svg>
+                  <CodeBracketIcon className='text-gray-500/80 dark:text-zinc-500 size-5' />
                 </span>
                 Embed <span className="hidden sm:inline">Button</span>
-              </button>
+              </Button>
 
-              <button className="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-400 text-white px-4 py-3 rounded-xl transition-colors font-medium">
-                <Download size={18} />
+              <Button>
+                <ArrowDownOnSquareStackIcon className='size-5' />
                 Download <span className="hidden sm:inline">Sound</span>
-              </button>
+              </Button>
 
             </div>
           </div>
@@ -182,7 +187,7 @@ const SoundDetailsPage = ({ slug }: SoundDetailsPageProps) => {
             <div>
               <div className="flex flex-wrap gap-2">
                 {
-                  sfxInfo?.tags.map((tag : any, index : any) => (
+                  sfxInfo?.tags.map((tag: any, index: any) => (
                     <button key={index}
                       className="bg-gradient-to-b from-gray-200 to-white text-gray-900 dark:from-zinc-700 dark:to-zinc-800 dark:text-zinc-300 rounded-full px-3 py-1 text-sm hover:bg-blue-600 dark:hover:text-white relative z-10 dark:after:absolute dark:after:inset-[0.1em] dark:after:bg-zinc-800 dark:after:rounded-[inherit] dark:after:-z-10 hover:brightness-105 dark:hover:brightness-140 transition duration-200 shadow-md shadow-gray-300 ring-1 ring-inset ring-gray-300/60 dark:ring-0 dark:shadow-none"
                     >
