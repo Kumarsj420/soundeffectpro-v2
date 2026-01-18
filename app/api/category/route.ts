@@ -1,7 +1,10 @@
 import { connectDB } from "@/app/lib/dbConnection";
 import { NextRequest, NextResponse } from "next/server";
 import Category from "@/app/models/Category";
-import { data } from "motion/react-client";
+import { CategoryInterface } from "@/app/models/Category";
+import { FilterQuery } from "mongoose";
+
+type SortOrder = 1 | -1;
 
 export async function GET(request: NextRequest) {
     try {
@@ -19,7 +22,7 @@ export async function GET(request: NextRequest) {
         const thumb = searchParams.get('thumb');
         const userID = searchParams.get('userID');
 
-        const query: any = {};
+        const query: FilterQuery<CategoryInterface> = {};
         if (search) query.$text = { $search: search };
         if (sbID) query.sb_id = sbID;
         if (thumb === 'true') {
@@ -29,7 +32,9 @@ export async function GET(request: NextRequest) {
 
         query.visibility = (visibility) ? visibility : true;
 
-        const sort: any = {
+
+
+        const sort: Record<string, SortOrder> = {
             [sortBy]: order === 'asc' ? 1 : -1,
             _id: order === 'asc' ? 1 : -1,
         }

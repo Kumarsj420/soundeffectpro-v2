@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/app/lib/dbConnection";
 import File from "@/app/models/File";
+import { PipelineStage } from "mongoose";
 
 export async function GET(req: NextRequest) {
   try {
@@ -33,7 +34,7 @@ export async function GET(req: NextRequest) {
         ? new RegExp(titleWords.join("|"), "i")
         : null;
 
-    const pipeline: any[] = [
+    const pipeline: PipelineStage[] = [
       {
         $match: {
           s_id: { $ne: s_id },

@@ -5,7 +5,7 @@ import { Para, CardSpan } from '../Ui';
 import Card from '../Card';
 
 interface FileDropzoneProps {
-  onFileSelect: (file: File) => void;
+  onFileSelect: (file: File | null) => void;
   selectedFile: File | null;
 }
 
@@ -44,7 +44,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, selectedFile 
   }, [onFileSelect]);
 
   const clearFile = useCallback(() => {
-    onFileSelect(null as any);
+    onFileSelect(null);
   }, [onFileSelect]);
 
   return (

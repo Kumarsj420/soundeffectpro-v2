@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Heart, Download, EllipsisVertical, Plus, Share2, Flag } from "lucide-react";
+import { Heart, Download, EllipsisVertical } from "lucide-react";
 import React from "react";
 import Link from "next/link";
 import SoundButton from "./SoundButton";
@@ -33,7 +33,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
   sessionUser = false
 }) => {
 
-  const { play, pause, loading, playing, buffering } =
+  const { play, pause, loading, playing} =
     useLazyAudio(getR2Url(`store/${obj.s_id}.mp3`));
   const abbriviatedNum = useNumberAbbreviation();
 

@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import SoundButton from '../components/SoundButton';
 import { fileService } from '../services/fileService';
 import { HomeIcon } from '@heroicons/react/20/solid';
@@ -17,14 +17,14 @@ import {
   Clock,
   Eye,
   Share2,
-  Plus,
   ChevronRight,
   Flag
 } from 'lucide-react';
-import { HeartIcon, PlusIcon, CodeBracketIcon, ArrowDownOnSquareStackIcon } from '@heroicons/react/24/solid';
+import { PlusIcon, CodeBracketIcon, ArrowDownOnSquareStackIcon } from '@heroicons/react/24/solid';
 import { HeartIcon as HeartOutlineIcon } from '@heroicons/react/24/outline';
 import Button from '../components/form/Button';
 import { useModal } from '../hooks/useModal';
+import { getR2Url } from '../lib/r2Url';
 
 
 interface SoundDetailsPageProps {
@@ -33,16 +33,16 @@ interface SoundDetailsPageProps {
 
 const SoundDetailsPage = ({ slug }: SoundDetailsPageProps) => {
   const openModal = useModal((s) => s.openModal);
-  const id = useMemo(() => slug?.split("-").pop(), [slug]);
-  if (!id) return notFound();
 
-  const { play, pause, loading, playing, buffering } =
-    useLazyAudio(`/store/${id}.mp3`);
+  const id = useMemo(() => slug?.split("-").pop(), [slug]);
+
+  const audioUrl = id ? getR2Url(`store/${id}.mp3`) : null;
+
+  const { play, pause, loading, playing } = useLazyAudio(audioUrl ?? "");
 
   const {
     data: soundRes,
     isLoading: isSoundLoading,
-    isError: isSoundError,
   } = useQuery({
     queryKey: ["sound", id],
     queryFn: () => fileService.getFilesById(id!),
@@ -61,7 +61,7 @@ const SoundDetailsPage = ({ slug }: SoundDetailsPageProps) => {
   } = useInfiniteQuery({
     queryKey: ["related-sounds", id],
     initialPageParam: 1,
-    enabled: !!sfxInfo, // 🔥 wait until sound is loaded
+    enabled: !!id && !!sfxInfo,
     queryFn: ({ pageParam }) =>
       fileService.getRelatedFiles(
         id!,
@@ -80,9 +80,8 @@ const SoundDetailsPage = ({ slug }: SoundDetailsPageProps) => {
     staleTime: 1000 * 60 * 5,
   });
 
-
   const relatedSounds =
-    data?.pages.flatMap(page => page.data) ?? [];
+    data?.pages.flatMap((page) => page.data) ?? [];
 
   const loadMoreRef = useInfiniteLoader({
     loading: isFetchingNextPage,
@@ -90,6 +89,8 @@ const SoundDetailsPage = ({ slug }: SoundDetailsPageProps) => {
     onLoadMore: fetchNextPage,
   });
 
+  
+  if (!id) return notFound();
 
   if (isSoundLoading) {
     return (

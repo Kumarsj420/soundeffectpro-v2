@@ -1,4 +1,4 @@
-import { useState } from "react";
+'use client'
 import { Label, Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react'
 import { ChevronDown } from 'lucide-react'
 import { CheckIcon } from '@heroicons/react/20/solid'
@@ -15,7 +15,7 @@ type SelectType = {
     onChange: (value: OptionType) => void
 }
 
-export default function Dropdown({ select, label, value , onChange }: SelectType) {
+export default function Dropdown({ select, label, value, onChange }: SelectType) {
 
 
     return (

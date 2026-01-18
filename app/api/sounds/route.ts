@@ -1,7 +1,10 @@
 import { connectDB } from "@/app/lib/dbConnection";
-import File from "@/app/models/File";
+import File, { IFile } from "@/app/models/File";
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/app/lib/getSession";
+import { FilterQuery } from "mongoose";
+
+type SortOrder = 1 | -1;
 
 export async function GET(request: NextRequest) {
   try {
@@ -21,7 +24,7 @@ export async function GET(request: NextRequest) {
     const userId = searchParams.get("userId");
     const tag = searchParams.get("tag");
 
-    const query: any = {};
+    const query: FilterQuery<IFile> = {};
 
     if (category) query.category = category;
     if (userId) query["user.uid"] = userId;
@@ -37,7 +40,7 @@ export async function GET(request: NextRequest) {
       query.visibility = true;
     }
 
-    const sort: any = {
+    const sort: Record<string, SortOrder> = {
       [sortBy]: order === "asc" ? 1 : -1,
       _id: order === "asc" ? 1 : -1
     };
@@ -99,19 +102,30 @@ export async function POST(request: NextRequest) {
       data: newSound
     }, { status: 201 })
 
-  } catch (error: any) {
-    if (error.code === 11000) {
-      return NextResponse.json({
-        success: false,
-        message: 'Sound with this s_id or slug already exists'
-      }, { status: 409 });
+  } catch (error: unknown) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as { code: number }).code === 11000
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Sound with this s_id or slug already exists",
+        },
+        { status: 409 }
+      );
     }
 
-    return NextResponse.json({
-      success: false,
-      message: 'failed to create sound',
-      error: String(error)
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to create sound",
+        error: String(error),
+      },
+      { status: 500 }
+    );
   }
 }
 
@@ -130,7 +144,7 @@ export async function DELETE(request: NextRequest) {
       }, { status: 400 });
     }
 
-    const query: any = {};
+    const query: FilterQuery<IFile> = {};
 
     if (sound_id && user_id) {
       query.s_id = sound_id;

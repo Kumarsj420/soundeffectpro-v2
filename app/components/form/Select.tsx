@@ -44,6 +44,11 @@ interface SelectProps {
     id?: string;
 }
 
+type labelProps = {
+    value: string;
+    children: React.ReactNode;
+};
+
 export function Select({
     children,
     value,
@@ -91,10 +96,14 @@ export function Select({
         setOpen(false);
     };
 
-    const selectedLabel = React.Children.toArray(children).find(
-        (child: any) => child.props?.value === selectedValue
-    ) as any;
+    const selectedOption = React.Children.toArray(children).find(
+        (child): child is React.ReactElement<labelProps> =>
+            React.isValidElement<labelProps>(child) &&
+            child.props.value === selectedValue
+    );
 
+    const selectedLabel: React.ReactNode =
+        selectedOption?.props.children ?? null;
 
     let triggerClasses =
         'w-full h-10 rounded-xl px-3 text-sm font-medium flex items-center justify-between cursor-pointer ring-[0.09em] ring-inset transition outline-none';
@@ -127,7 +136,7 @@ export function Select({
                 {...getReferenceProps()}
             >
                 <span className="truncate">
-                    {selectedLabel?.props?.children ?? placeholder}
+                    {selectedLabel ?? placeholder}
                 </span>
 
 

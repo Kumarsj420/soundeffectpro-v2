@@ -4,7 +4,7 @@ import Input from '../form/Input';
 import Label from '../form/Label';
 import Button from '../form/Button';
 import { PlayIcon, PauseIcon } from '@heroicons/react/24/solid';
-import { Para, CardSpan } from '../Ui';
+import {  CardSpan } from '../Ui';
 
 interface WaveformPlayerProps {
   file: File;
@@ -38,7 +38,7 @@ const WaveformPlayer = forwardRef<WaveformPlayerRef, WaveformPlayerProps>(
 
     useEffect(() => {
       onPlayingChange?.(isPlaying);
-    }, [isPlaying])
+    }, [isPlaying, onPlayingChange])
 
     useEffect(() => {
       if (file) {
@@ -72,7 +72,7 @@ const WaveformPlayer = forwardRef<WaveformPlayerRef, WaveformPlayerProps>(
           audio.src = '';
         };
       }
-    }, [file, trimRegion?.end]);
+    }, [file, trimRegion?.end, trimRegion]);
 
     const loadAudioBuffer = async (audioFile: File) => {
       try {

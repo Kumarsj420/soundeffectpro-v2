@@ -116,8 +116,14 @@ const UploadPage: React.FC = () => {
     return classes.filter(Boolean).join(' ')
   }
 
-  const handleFileSelect = useCallback((file: File) => {
+  const handleFileSelect = useCallback((file: File | null) => {
     setSelectedFile(file);
+
+    if (!file) {
+      setFileInfo(null);
+      setTrimRegion({ start: 0, end: 0 });
+      return;
+    }
 
     const audio = new Audio();
     audio.src = URL.createObjectURL(file);
@@ -150,7 +156,7 @@ const UploadPage: React.FC = () => {
       fileInfo,
       trimRegion,
       metadata,
-      btnHue, 
+      btnHue,
     };
     console.log('Upload Data:', uploadData);
     // alert('Upload data logged to console!');
@@ -199,7 +205,7 @@ const UploadPage: React.FC = () => {
                     className={cn(
                       'scale-150',
                       `hue-rotate-${btnHue}`,
-                      {'btn-animation' : isAudioPlaying}
+                      { 'btn-animation': isAudioPlaying }
                     )} />
                 </div>
                 <div className="flex-1">

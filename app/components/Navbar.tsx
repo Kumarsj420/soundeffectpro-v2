@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Search, LogIn, Upload, Menu as MenuIcon, User } from "lucide-react";
+import { Search, Upload, Menu as MenuIcon } from "lucide-react";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import Link from "next/link";
 import Logo from "./Logo";
@@ -20,7 +20,6 @@ import {
     autoUpdate,
     useDismiss,
     useInteractions,
-    useTransitionStyles
 } from "@floating-ui/react";
 
 

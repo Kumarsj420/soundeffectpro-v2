@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 import { signOut } from 'next-auth/react';
 
 function DelAcc() {
-    const { isOpen, type, data, closeModal } = useModal();
+    const { isOpen, type,  closeModal } = useModal();
     const { data: session } = useSession();
     const openFetchLoading = useFetchLoading((s) => s.openFetchLoading);
     const closeFetchLoading = useFetchLoading((s) => s.closeFetchLoading);
@@ -38,6 +38,7 @@ function DelAcc() {
             }
         } catch (err) {
             toast.error('Server or network error');
+            console.log(err);
         } finally {
             closeFetchLoading();
         }

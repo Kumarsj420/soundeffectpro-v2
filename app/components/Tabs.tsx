@@ -19,8 +19,6 @@ function classNames(...classes: (string | boolean | undefined)[]): string {
 }
 
 const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onTabChange }) => {
-  const activeTabData = tabs.find(tab => tab.id === activeTab);
-
   return (
     <div className="mt-6">
       {/* Mobile dropdown */}

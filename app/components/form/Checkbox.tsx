@@ -21,7 +21,9 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
     },
     ref
   ) => {
-    const checkboxId = id || React.useId();
+ 
+    const generatedId = React.useId();
+    const checkboxId = id ?? generatedId;
 
     const sizes = {
       sm: {
@@ -70,7 +72,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
               sizes[size].icon
             )}
           >
-            {/* Checked */}
+
             <path
               d="M3 8L6 11L11 3.5"
               strokeWidth={2}
@@ -79,7 +81,6 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
               className="opacity-0 group-has-checked:opacity-100"
             />
 
-            {/* Indeterminate */}
             <path
               d="M3 7H11"
               strokeWidth={2}
