@@ -21,9 +21,9 @@ export interface IFile {
     slug: string;
     duration: string;
     tags: string[];
-    category: string;
+    category: 'Meme' | 'Anime' | 'Gaming' | 'Music' | 'Movies' | 'Sports' | 'Series' | 'Politics' | 'Comedy' | 'Random';
     description: string,
-    btnColor: string,
+    btnColor: '0' | '20' | '125' | '145' | '195' | '225' | '255' | '280' | '305' | '335',
     user: IUser;
     stats: IStats;
     visibility: boolean
@@ -38,7 +38,9 @@ const UserSchema = new Schema<IUser>({
     name: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        minLength: 3,
+        maxLength: 15,
     }
 }, { _id: false })
 
@@ -76,7 +78,9 @@ const FileSchema = new Schema<IFile>({
     title: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        minLength: 3,
+        maxLength: 100,
     },
     slug: {
         type: String,
@@ -86,25 +90,53 @@ const FileSchema = new Schema<IFile>({
     },
     duration: {
         type: String,
-        required: true
+        required: true,
+        match: /^(0[0-9]|1[0-9]|20):[0-5][0-9]$|^02:00$/,
     },
     tags: {
         type: [String],
-        default: []
+        required: true,
+        validate: [
+            {
+                validator: function (v: string[]) {
+                    return v.length <= 10;
+                },
+                message: 'Maximum 10 tags are allowed'
+            },
+            {
+                validator: function (v: string[]) {
+                    return v.every(tag => typeof tag === 'string' && tag.length > 0);
+                },
+                message: 'All tags must be non-empty strings'
+            },
+            {
+                validator: function (v: string[]) {
+                    return v.every(tag => tag.length <= 15);
+                },
+                message: 'Each tag must not exceed 15 characters'
+            }
+        ]
     },
 
     category: {
         type: String,
-        default: 'Random'
+        required: false,
+        enum: ['Meme', 'Anime', 'Gaming', 'Music', 'Movies', 'Sports', 'Series', 'Politics', 'Comedy', 'Random'],
+        default: 'Random',
     },
 
-
     description: {
-        type: String
+        type: String,
+        required: false,
+        minLength: 2,
+        maxLength: 600,
     },
 
     btnColor: {
-        type: String
+        type: String,
+        enum: ['0', '20', '125', '145', '195', '225', '255', '280', '305', '335'],
+        required: false,
+        default: '0'
     },
     user: {
         type: UserSchema,

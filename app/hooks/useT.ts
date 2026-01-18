@@ -1,5 +1,5 @@
 import { labels } from "../lib/labels";
-import { useLang } from "../providers";
+import { useLang } from "../context/LanguageContext";
 
 export const useT = () => {
     const { lang } = useLang();

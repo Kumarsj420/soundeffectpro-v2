@@ -8,6 +8,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   rightIcon?: React.ReactNode;
   wrapperClassName?: string;
   innerWrapperClassName?: string;
+  message?: string,
   loading?: {
     isLoading: boolean,
     message?: string,
@@ -22,6 +23,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     rightIcon,
     wrapperClassName = '',
     innerWrapperClassName = '',
+    message,
     disabled = false,
     loading,
     ...inputProps
@@ -39,7 +41,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   } else if (success) {
     inputClasses += ` ring-emerald-400 focus:ring-emerald-400 `;
   } else {
-    inputClasses += `text-gray-900 dark:text-white focus:ring-blue-400 dark:focus:ring-blue-400 bg-white dark:bg-zinc-800 hover:ring-gray-400 ring-gray-400/60 dark:ring-zinc-600/90 dark:hover:ring-zinc-600`;
+    inputClasses += `text-gray-900 dark:text-white focus:ring-blue-400 dark:focus:ring-blue-400 bg-white dark:bg-zinc-800 hover:ring-gray-400 ring-gray-400/60 dark:ring-zinc-600/90 dark:hover:ring-zinc-500`;
   }
 
   return (
@@ -59,6 +61,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
       </div>
       {error && <p className="text-error-500 mt-1.5 text-xs font-medium">{error}</p>}
       {loadingState.isLoading && !error && <p className="text-gray-500 dark:text-zinc-400 mt-1.5 text-xs font-medium flex gap-2 items-center">{loadingMessage} <span className='bg-transparent  border-t-2 border-l-2 border-r-2 border-gray-500 dark:border-zinc-500 animate-spin rounded-full size-4'></span></p>}
+      {!error && !loadingState.isLoading && message && <p className='text-gray-500 dark:text-zinc-400 mt-1.5 text-xs font-medium'>{message}</p>}
     </div>
   );
 });

@@ -21,6 +21,11 @@ import { useFetchLoading } from '@/app/hooks/useFetchLoading';
 import { r2Service } from '@/app/services/r2Service';
 import { toast } from 'react-toastify';
 import { getR2KeyFromUrl } from '@/app/lib/r2Url';
+import { uidService } from '@/app/services/uidServices';
+import { nameService } from '@/app/services/nameServie';
+import { useTheme, useCookies, useNSFW } from '@/app/context/preferences-context';
+import { useLang } from '@/app/context/LanguageContext';
+import { useT } from '@/app/hooks/useT';
 
 export default function Example() {
 
@@ -39,8 +44,16 @@ export default function Example() {
 
 
   const { data: session } = useSession();
-  const name = session?.user.name ?? '';
-  const image = session?.user.image;
+  const name = session?.user.name ?? null;
+  const image = session?.user.image ?? null;
+  const uid = session?.user.uid!;
+  const t = useT();
+
+  const [theme, setTheme] = useTheme();
+  const [nsfw, setNsfw] = useNSFW();
+  const [cookies, setCookies] = useCookies();
+  const { lang, setLang } = useLang();
+
 
   const openModal = useModal((s) => s.openModal);
 
@@ -189,28 +202,21 @@ export default function Example() {
 
   const handleSaveProfile = async () => {
     openFetchLoading();
-
-    const payload: Partial<IUser> & { uid: string } = {
-      uid: inpUID,
-      name: inpName,
-    };
-
     try {
+
+      if (uid === inpUID && name === inpName && !selectedImageFile) return
+
       let finalImageUrl: string | null | undefined = undefined;
 
-      const previousImageUrl = session?.user?.image ?? null;
-      const previousImageKey = getR2KeyFromUrl(previousImageUrl);
+      const previousImageKey = getR2KeyFromUrl(image);
 
       if (isImageDeleted) {
         finalImageUrl = null;
 
         if (previousImageKey) {
-          await r2Service.delete({ key: previousImageKey });
+          const res = await r2Service.delete({ key: previousImageKey });
         }
-      }
-
-
-      else if (selectedImageFile) {
+      } else if (selectedImageFile) {
         const uploadRes = await r2Service.upload({
           file: selectedImageFile,
           folder: "avatars",
@@ -222,6 +228,17 @@ export default function Example() {
           await r2Service.delete({ key: previousImageKey });
         }
       }
+
+      if (inpName !== name) {
+        await nameService.updateName({
+          uid,
+          name: inpName,
+        });
+      }
+
+      const payload: Partial<IUser> & { uid: string } = {
+        uid,
+      };
 
       if (finalImageUrl !== undefined) {
         payload.image = finalImageUrl;
@@ -239,27 +256,74 @@ export default function Example() {
         payload.isProfileCompleted = true;
       }
 
-      const res = await userService.updateUser(payload);
+      await userService.updateUser(payload);
 
-      if (res.success) {
-        toast.success("Profile updated successfully");
-        toast.info("Log in again to see updates immediately");
-
-        setTimeout(() => {
-          signOut();
-        }, 3000);
+      if (inpUID !== uid) {
+        await uidService.updateUid({
+          oldUid: uid,
+          newUid: inpUID,
+        });
       }
+
+      toast.success("Profile updated successfully");
+      toast.info("Log in again to see updates immediately");
+
+      setTimeout(() => {
+        signOut();
+      }, 3000);
+
     } catch (error) {
       console.error("Failed to update profile:", error);
-      toast.error("Server or network error");
+      toast.error("Server or Network error");
     } finally {
       closeFetchLoading();
     }
   };
 
+  type UserUpdatePayload = {
+    uid: string;
+  } & Partial<{
+    'preference.theme': string;
+    'preference.nsfw': boolean;
+    'preference.cookies': boolean;
+    'preference.language': IUser['preference']['language'];
+  }>;
 
 
+  const handleSavePreference = async () => {
 
+    openFetchLoading();
+
+    try {
+      const payload: UserUpdatePayload = { uid };
+
+      payload['preference.language'] = lang;
+
+      payload['preference.theme'] = theme;
+
+      payload['preference.nsfw'] = nsfw;
+
+      payload['preference.cookies'] = cookies;
+
+      const res = await userService.updateUser(payload);
+
+      if (res.success) {
+        toast.success('Preferences updated successfully');
+        toast.info('Login again to see updates');
+
+        setTimeout(() => {
+          signOut();
+        }, 3000)
+      }
+
+    } catch (err) {
+      console.log('something went wrong', err);
+      toast.error('Server or network error')
+    } finally {
+      closeFetchLoading()
+    }
+
+  }
 
   return (
     <>
@@ -420,7 +484,7 @@ export default function Example() {
 
           <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-10 sm:px-6 md:grid-cols-3 lg:px-8">
             <div>
-              <Head2>Preferences </Head2>
+              <Head2>{t('preferences')} </Head2>
               <Para className="mt-1 text-sm/6">
                 Log out from your account?
               </Para>
@@ -430,7 +494,7 @@ export default function Example() {
               <div className='sm:max-w-xl space-y-3'>
                 <div>
                   <Label>Language</Label>
-                  <Select wrapperClassName='mt-2'>
+                  <Select wrapperClassName='mt-2' value={lang} onChange={(val: any) => setLang(val)} >
                     {
                       Object.entries(LANGUAGE_LABELS).map(([key, val]) => (
                         <Option key={key} value={key}>{val}</Option>
@@ -443,23 +507,23 @@ export default function Example() {
                     <Label htmlFor='setting-theme' className='font-bold'>
                       Dark Theme
                     </Label>
-                    <Toggle id='setting-theme' />
+                    <Toggle id='setting-theme' checked={theme === 'dark' ? true : false} onChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')} />
                   </div>
-                  <div className='flex justify-between items-center'>
+                  <div className='flex justify-between items-center'  >
                     <Label htmlFor='u-nsfw' className='font-bold'>
                       Show NSFW
                     </Label>
-                    <Toggle id='u-nsfw' />
+                    <Toggle id='u-nsfw' checked={nsfw} onChange={() => setNsfw(!nsfw)} />
                   </div>
                   <div className='flex justify-between items-center'>
                     <Label htmlFor='cookies' className='font-bold'>
                       Accept Cookies
                     </Label>
-                    <Toggle id='cookies' />
+                    <Toggle id='cookies' checked={cookies} onChange={() => setCookies(!cookies)} />
                   </div>
                 </div>
 
-                <Button className='mt-5' size='sm'>Save Preferences</Button>
+                <Button className='mt-5' size='sm' onClick={() => handleSavePreference()}>Save Preferences</Button>
               </div>
             </div>
           </div>

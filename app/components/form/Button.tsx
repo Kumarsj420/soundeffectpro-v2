@@ -17,7 +17,7 @@ const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const baseClasses = 'rounded-xl flex items-center justify-center gap-2 font-medium transition duration-200 cursor-pointer active:scale-95';
+  const baseClasses = 'rounded-xl flex items-center justify-center gap-2 font-medium transition duration-200 cursor-pointer active:scale-95 disabled:pointer-events-none';
 
   const variants = {
     primary: 'bg-blue-500 hover:bg-blue-400 text-white shadow-md shadow-blue-300/40',

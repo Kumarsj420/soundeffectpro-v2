@@ -41,6 +41,7 @@ interface SelectProps {
     success?: boolean;
     className?: string;
     wrapperClassName?: string;
+    id?: string;
 }
 
 export function Select({
@@ -55,6 +56,7 @@ export function Select({
     success,
     className,
     wrapperClassName,
+    id,
 }: SelectProps) {
     const [open, setOpen] = useState(false);
     const [internalValue, setInternalValue] = useState(defaultValue);
@@ -108,13 +110,13 @@ export function Select({
             ' bg-white text-green-800 ring-emerald-400 focus:ring-emerald-400';
     } else {
         triggerClasses +=
-            ' bg-white dark:bg-zinc-800 text-gray-900 dark:text-white ring-gray-400/60 hover:ring-gray-400 focus:ring-blue-400';
+            ' bg-white dark:bg-zinc-800 text-gray-900 dark:text-white hover:ring-gray-400 ring-gray-400/60 dark:ring-zinc-600/90 dark:hover:ring-zinc-500';
     }
 
     return (
         <div className={cn('relative', wrapperClassName)}>
             {name && (
-                <input type="hidden" name={name} value={selectedValue ?? ''} />
+                <input type="hidden" id={id} name={name} value={selectedValue ?? ''} />
             )}
 
 

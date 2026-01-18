@@ -1,5 +1,8 @@
 import React, { useCallback, useState } from 'react';
-import { Upload, File, X, FileMusic } from 'lucide-react';
+import { File, X} from 'lucide-react';
+import { PlayCircleIcon, DocumentIcon } from '@heroicons/react/24/solid';
+import { Para, CardSpan } from '../Ui';
+import Card from '../Card';
 
 interface FileDropzoneProps {
   onFileSelect: (file: File) => void;
@@ -87,7 +90,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, selectedFile 
                 rx="24" 
                 fill="none" 
                 strokeWidth="2" 
-                opacity="0.2"
+                opacity="0.3"
                 className="border-outer stroke-gray-500 dark:stroke-zinc-500"
               />
             </svg>
@@ -102,7 +105,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, selectedFile 
                 rx="24" 
                 fill="none" 
                 strokeWidth="2" 
-                opacity="0.5"
+                opacity="0.55"
                 className="border-middle stroke-gray-500 dark:stroke-zinc-500"
               />
             </svg>
@@ -125,7 +128,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, selectedFile 
         )}
         {!selectedFile ? (
           <div
-            className={`px-8 py-20 text-center  cursor-pointer relative z-10 rounded-3xl transition duration-200
+            className={`group px-8 py-16 text-center  cursor-pointer relative z-10 rounded-3xl transition duration-200
               ${isDragOver 
                 ? 'border-blue-500 bg-blue-500/10' 
                 : 'border-transparent hover:bg-gray-300/40 dark:hover:bg-zinc-800/40'
@@ -135,11 +138,11 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, selectedFile 
             onDrop={handleDrop}
             onClick={() => document.getElementById('file-input')?.click()}
           >
-            <FileMusic strokeWidth={1} className="size-16 text-gray-400 dark:text-zinc-500 mx-auto mb-4" />
-            <p className="text-lg text-gray-900 dark:text-zinc-300 mb-2">Click or drag to upload audio</p>
-            <p className="text-sm text-gray-500 dark:text-zinc-500">
+            <PlayCircleIcon className={`size-22  mx-auto mb-4 text-gray-400 dark:text-zinc-600/90 dark:group-hover:text-zinc-500`} />
+            <Para className='mb-1 dark:text-zinc-200'>Click or drag to upload audio</Para>
+            <CardSpan>
               Supports MP3, WAV, and OGG files
-            </p>
+            </CardSpan>
             <input
               id="file-input"
               type="file"
@@ -149,14 +152,14 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, selectedFile 
             />
           </div>
         ) : (
-          <div className="flex items-center justify-between p-5 bg-white ring-[0.1em] ring-gray-200 dark:ring-0 dark:bg-gradient-to-b dark:from-zinc-800 dark:to-zinc-900 rounded-xl relative z-10 dark:after:absolute dark:after:inset-0.5 dark:after:-z-10  dark:dark:after:bg-zinc-900 dark:after:rounded-[inherit] shadow-lg shadow-gray-300/70 dark:shadow-none">
-            <div className="flex items-center space-x-3">
-              <File className="w-8 h-8 text-blue-400" />
-              <div>
-                <p className="text-gray-900 dark:text-zinc-200 font-medium">{selectedFile.name}</p>
-                <p className="text-sm text-gray-500 dark:text-zinc-400">
+          <Card className='flex items-center justify-between'>
+            <div className="flex items-center space-x-3 flex-1 overflow-hidden ">
+              <DocumentIcon className="size-5 text-gray-500 dark:text-zinc-500" />
+              <div className='flex-1 overflow-hidden'>
+                <Para className='truncate'>{selectedFile.name}</Para>
+                <CardSpan>
                   {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-                </p>
+                </CardSpan>
               </div>
             </div>
             <button
@@ -165,7 +168,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, selectedFile 
             >
               <X className="w-5 h-5" />
             </button>
-          </div>
+          </Card>
         )}
       </div>
     </>

@@ -1,20 +1,33 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { signIn } from 'next-auth/react'
 import Button from '../components/form/Button';
 import { Head1, Para } from '../components/Ui';
-
+import { toast } from 'react-toastify';
+import { useSearchParams } from 'next/navigation';
 
 export default function LoginClient() {
     const [email, setEmail] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+
+    const searchParams = useSearchParams();
+    const isUploadRedirection = searchParams.get('redirection') === 'upload';
+    const callbackUrl = searchParams.get('callbackUrl') || '/';
+    const toastShown = useRef(false);
+
+    useEffect(() => {
+        if (isUploadRedirection && !toastShown.current) {
+            toast.info('Sign in to continue uploading');
+            toastShown.current = true;
+        }
+    }, [isUploadRedirection])
 
     const handleSubmit = async () => {
         if (!email) return;
         setIsLoading(true);
         await signIn("email", {
             email,
-            callbackUrl: "/",
+            callbackUrl,
         })
         setTimeout(() => {
             setIsLoading(false);
@@ -37,7 +50,7 @@ export default function LoginClient() {
                 <div className="bg-white dark:bg-zinc-900 backdrop-blur-lg rounded-3xl shadow-2xl shadow-gray-300 dark:shadow-black p-8 ring-1 ring-gray-300 dark:ring-zinc-800">
                     {/* Social login buttons */}
                     <div className="space-y-3 mb-6">
-                        <Button onClick={() => signIn('google')} className='w-full  gap-3' size='lg' variant='outline'>
+                        <Button onClick={() => signIn('google', {callbackUrl})} className='w-full  gap-3' size='lg' variant='outline'>
                             <svg viewBox="0 0 24 24" className="w-5 h-5">
                                 <path
                                     d="M12.0003 4.75C13.7703 4.75 15.3553 5.36002 16.6053 6.54998L20.0303 3.125C17.9502 1.19 15.2353 0 12.0003 0C7.31028 0 3.25527 2.69 1.28027 6.60998L5.27028 9.70498C6.21525 6.86002 8.87028 4.75 12.0003 4.75Z"
@@ -58,11 +71,11 @@ export default function LoginClient() {
                             </svg>
                             Continue With Google
                         </Button>
-                        <Button onClick={() => signIn('discord')}  className='w-full bg-indigo-500 hover:bg-indigo-400 ring-1 ring-inset ring-indigo-300 gap-3.5 ' size='lg' variant='custom'>
+                        <Button onClick={() => signIn('discord', {callbackUrl})} className='w-full bg-indigo-500 hover:bg-indigo-400 ring-1 ring-inset ring-indigo-300 gap-3.5 ' size='lg' variant='custom'>
                             <svg xmlns="http://www.w3.org/2000/svg" className='size-5 scale-140 text-indigo-100' viewBox="0 0 24 24"><path fill="currentColor" d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.1.1 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.1 16.1 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02M8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12m6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12" strokeWidth={0.01} stroke="currentColor"></path></svg>
                             Continue With Discord
                         </Button>
-                        <Button onClick={() => signIn('twitch')}  className='w-full bg-violet-500 hover:bg-violet-400 ring-1 ring-inset ring-violet-300 gap-3' size='lg' variant='custom'>
+                        <Button onClick={() => signIn('twitch', {callbackUrl})} className='w-full bg-violet-500 hover:bg-violet-400 ring-1 ring-inset ring-violet-300 gap-3' size='lg' variant='custom'>
                             <svg xmlns="http://www.w3.org/2000/svg" className='size-5   scale-130 text-violet-100' viewBox="0 0 24 24"><g fill="none"><path d="m12.594 23.258l-.012.002l-.071.035l-.02.004l-.014-.004l-.071-.036q-.016-.004-.024.006l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.016-.018m.264-.113l-.014.002l-.184.093l-.01.01l-.003.011l.018.43l.005.012l.008.008l.201.092q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.003-.011l.018-.43l-.003-.012l-.01-.01z"></path><path fill="currentColor" d="M20 2a1 1 0 0 1 1 1v9a1 1 0 0 1-.2.6l-3 4q-.076.102-.175.181l-2.5 2A1 1 0 0 1 14.5 19h-3.086l-2.707 2.707A1 1 0 0 1 7 21v-2H4a1 1 0 0 1-1-1V6l.005-.099a1 1 0 0 1 .288-.608l3-3l.073-.066A1 1 0 0 1 7 2zM8 15h2a1 1 0 0 1 1 1v.364l1.36-1.133A1 1 0 0 1 13 15h3.501L19 11.667V4H8zm3-4V7.5a1 1 0 1 1 2 0V11a1 1 0 1 1-2 0m4 0V7.5a1 1 0 1 1 2 0V11a1 1 0 1 1-2 0" strokeWidth={0.01} stroke="currentColor"></path></g>
                             </svg>
                             Continue With Twitch

@@ -15,6 +15,12 @@ declare module "next-auth" {
       filesCount?: number;
       categoriesCount?: number;
       lastSyncedAt?: number;
+      preference?: {
+        theme: string,
+        nsfw: boolean,
+        cookies: boolean,
+        language: "en" | "hi" | "ar" | "ur" | "fr" | "de" | "es" | "pt" | "zh";
+      }
     } & DefaultSession["user"];
   }
 
@@ -36,6 +42,11 @@ declare module "next-auth/jwt" {
     favCount?: number;
     filesCount?: number;
     categoriesCount?: number;
-    lastSyncedAt?: number;
+     preference?: {
+        theme: string,
+        nsfw: boolean,
+        cookies: boolean,
+        language: "en" | "hi" | "ar" | "ur" | "fr" | "de" | "es" | "pt" | "zh";
+      }
   }
 }

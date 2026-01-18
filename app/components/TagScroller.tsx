@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Tag from "./Tag";
 
 const tags: string[] = [
   "Meme", "Anime", "Gaming", "Movies", "Comedy", 
@@ -68,16 +69,14 @@ const TagScroller: React.FC = () => {
         }}
       >
         {tags.map((tag: string, index: number) => (
-          <button
+          <Tag
             key={`${tag}-${index}`}
-            className="px-4 py-1 rounded-full bg-gradient-to-b from-gray-200 dark:ring-0 to-white dark:from-zinc-700 dark:to-zinc-800 text-xs  sm:text-sm whitespace-nowrap relative z-10 after:absolute after:inset-[0.1em]  dark:after:bg-zinc-800 after:-z-10 after:rounded-[inherit] hover:brightness-105  dark:hover:brightness-125 transition duration-200 cursor-pointer text-gray-900 dark:text-white shadow-sm shadow-gray-300 dark:shadow-none"
           >
             {tag}
-          </button>
+          </Tag>
         ))}
       </div>
 
-      {/* Right Navigation Button */}
       <button
         onClick={scrollRight}
         disabled={!canScrollRight}

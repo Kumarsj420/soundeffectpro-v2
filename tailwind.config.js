@@ -6,7 +6,6 @@ module.exports = {
   ],
   safelist: [
     "hue-rotate-0",
-    "hue-rotate-0",
     "hue-rotate-20",
     "hue-rotate-125",
     "hue-rotate-145",

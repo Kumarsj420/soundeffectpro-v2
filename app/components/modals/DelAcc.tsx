@@ -2,18 +2,47 @@
 import React from 'react';
 import Modal, { ModalHeader, ModalBody, ModalFooter } from './Modal_Structure';
 import { useModal } from '@/app/hooks/useModal';
-import Checkbox from '../form/Checkbox';
-import Label from '../form/Label';
 import Button from '../form/Button';
 import { Para } from '../Ui';
 import Badge from '../Badge';
-
+import { useSession } from 'next-auth/react';
+import { uidService } from '@/app/services/uidServices';
 import { TrashIcon, ShieldExclamationIcon } from '@heroicons/react/24/solid';
+import { useFetchLoading } from '@/app/hooks/useFetchLoading';
+import { toast } from 'react-toastify';
+import { signOut } from 'next-auth/react';
 
 function DelAcc() {
     const { isOpen, type, data, closeModal } = useModal();
+    const { data: session } = useSession();
+    const openFetchLoading = useFetchLoading((s) => s.openFetchLoading);
+    const closeFetchLoading = useFetchLoading((s) => s.closeFetchLoading);
 
     if (!isOpen || type !== 'del-acc-modal') return null;
+
+
+    const handleDeleteData = async () => {
+        closeModal();
+        openFetchLoading();
+        try {
+            if (session?.user.uid) {
+                const res = await uidService.deleteUserByUid(session?.user.uid);
+                if (res.success) {
+                    toast.success('Account deleted, redirecting in second');
+                    setTimeout(() => {
+                        signOut();
+                    }, 3000)
+                } else {
+                    toast.error('Something went wrong while deleting data');
+                }
+            }
+        } catch (err) {
+            toast.error('Server or network error');
+        } finally {
+            closeFetchLoading();
+        }
+    }
+
     return (
         <Modal open={isOpen} onClose={closeModal} >
             <ModalHeader onClose={closeModal} className='flex items-center gap-2'>
@@ -42,7 +71,7 @@ function DelAcc() {
                     >
                         Cancel
                     </Button>
-                    <Button size='sm' variant='error'>
+                    <Button size='sm' variant='error' type='button' onClick={() => handleDeleteData()}>
                         Delete Your Data
                     </Button>
                 </div>

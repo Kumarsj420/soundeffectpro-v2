@@ -12,7 +12,7 @@ export const uidSchema = z
 
 export const userNameSchema = z
     .string()
-    .min(2, "Name must be at least 2 characters")
+    .min(3, "Name must be at least 3 characters")
     .max(50, "Name is too long")
     .optional()
     .or(z.literal(""))
@@ -21,7 +21,7 @@ export const userNameSchema = z
 export const profileSchema = z.object({
     name: z
         .string()
-        .min(2, "Name must be at least 2 characters")
+        .min(3, "Name must be at least 3 characters")
         .max(30, "Name is too long")
         .optional()
         .or(z.literal("")),
