@@ -6,11 +6,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         await connectDB();
-        const sb_id = params.id;
+        const { id } = await params;
 
         const { searchParams } = new URL(request.url);
         const page = Number(searchParams.get('page')) || 1;
@@ -19,12 +19,12 @@ export async function GET(
         const skip = (page - 1) * limit;
 
 
-        const boards = await Board.find({ sb_id }).select("s_id");
+        const boards = await Board.find({ sb_id: id }).select("s_id");
 
         if (!boards.length) {
             return NextResponse.json({
                 success: false,
-                message: `sounds not found for this soundboard id: ${sb_id}`
+                message: `sounds not found for this soundboard id: ${id}`
             }, { status: 404 })
         }
 
