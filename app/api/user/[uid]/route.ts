@@ -4,12 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { uid: string } }
+    { params }: { params: Promise<{ uid: string }> }
 ) {
     try {
         await connectDB();
 
-        const { uid } = params;
+        const { uid } = await params;
 
         const user = await User.findOne({ uid }).select("-_id -__v");
 
