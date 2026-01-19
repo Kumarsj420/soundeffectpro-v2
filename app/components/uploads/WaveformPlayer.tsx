@@ -4,7 +4,7 @@ import Input from '../form/Input';
 import Label from '../form/Label';
 import Button from '../form/Button';
 import { PlayIcon, PauseIcon } from '@heroicons/react/24/solid';
-import {  CardSpan } from '../Ui';
+import { CardSpan } from '../Ui';
 
 interface WaveformPlayerProps {
   file: File;
@@ -76,7 +76,17 @@ const WaveformPlayer = forwardRef<WaveformPlayerRef, WaveformPlayerProps>(
 
     const loadAudioBuffer = async (audioFile: File) => {
       try {
-        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        if (typeof window === 'undefined') return;
+
+        const AudioContextClass =
+          window.AudioContext ?? window.webkitAudioContext;
+
+        if (!AudioContextClass) {
+          throw new Error('AudioContext is not supported in this browser');
+        }
+
+        const audioContext = new AudioContextClass();
+
         const arrayBuffer = await audioFile.arrayBuffer();
         const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 

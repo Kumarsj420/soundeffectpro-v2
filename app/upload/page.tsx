@@ -12,6 +12,7 @@ import Label from '../components/form/Label';
 import { cn } from '../services/cn';
 import { WaveformPlayerRef } from '../components/uploads/WaveformPlayer';
 
+
 interface AudioMetadata {
   title: string;
   tags: string[];
@@ -112,9 +113,6 @@ const UploadPage: React.FC = () => {
   const customAudioRef = useRef<WaveformPlayerRef>(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
-  function classNames(...classes: any) {
-    return classes.filter(Boolean).join(' ')
-  }
 
   const handleFileSelect = useCallback((file: File | null) => {
     setSelectedFile(file);
@@ -221,7 +219,7 @@ const UploadPage: React.FC = () => {
                             aria-label={color.name}
                             checked={btnHue === color.value}
                             onChange={(e) => setBtnHue(e.target.value)}
-                            className={classNames(
+                            className={cn(
                               color.classes,
                               'size-8 appearance-none rounded-full forced-color-adjust-none checked:outline-2 checked:outline-offset-2 focus-visible:outline-3 focus-visible:outline-offset-3',
                             )}

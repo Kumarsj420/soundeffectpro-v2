@@ -25,7 +25,7 @@ import { HeartIcon as HeartOutlineIcon } from '@heroicons/react/24/outline';
 import Button from '../components/form/Button';
 import { useModal } from '../hooks/useModal';
 import { getR2Url } from '../lib/r2Url';
-
+import { IFile } from '../models/File';
 
 interface SoundDetailsPageProps {
   slug: string;
@@ -188,7 +188,7 @@ const SoundDetailsPage = ({ slug }: SoundDetailsPageProps) => {
             <div>
               <div className="flex flex-wrap gap-2">
                 {
-                  sfxInfo?.tags.map((tag: any, index: any) => (
+                  sfxInfo?.tags.map((tag: string, index: number) => (
                     <button key={index}
                       className="bg-gradient-to-b from-gray-200 to-white text-gray-900 dark:from-zinc-700 dark:to-zinc-800 dark:text-zinc-300 rounded-full px-3 py-1 text-sm hover:bg-blue-600 dark:hover:text-white relative z-10 dark:after:absolute dark:after:inset-[0.1em] dark:after:bg-zinc-800 dark:after:rounded-[inherit] dark:after:-z-10 hover:brightness-105 dark:hover:brightness-140 transition duration-200 shadow-md shadow-gray-300 ring-1 ring-inset ring-gray-300/60 dark:ring-0 dark:shadow-none"
                     >
@@ -230,8 +230,8 @@ const SoundDetailsPage = ({ slug }: SoundDetailsPageProps) => {
         <Head2>Related Sounds</Head2>
 
         <SoundGrid className='mt-5'>
-          {relatedSounds.map((obj: any) => (
-            <SoundCard key={obj._id} obj={obj} />
+          {relatedSounds.map((obj: IFile) => (
+            <SoundCard key={obj.s_id} obj={obj} />
           ))}
           {
             (isRelatedLoading || isFetchingNextPage) &&

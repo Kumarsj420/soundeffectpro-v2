@@ -1,7 +1,5 @@
 'use client';
 import React from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import SoundCard, { SoundCardSkelton } from '@/app/components/SoundCard';
 import { SoundGrid, Para } from '@/app/components/Ui';
 import { fileService } from '@/app/services/fileService';

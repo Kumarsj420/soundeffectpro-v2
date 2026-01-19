@@ -1,7 +1,7 @@
 "use client"
-import React, { useState } from 'react';
+import React from 'react';
 import { Share2, Music } from 'lucide-react';
-import SoundCard, {SoundCardSkelton} from '@/app/components/SoundCard';
+import SoundCard, { SoundCardSkelton } from '@/app/components/SoundCard';
 import { notFound } from 'next/navigation';
 import { Head1, Head2, SoundGrid } from '@/app/components/Ui';
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
@@ -11,22 +11,19 @@ import Loading from '@/app/loading';
 import Image from 'next/image';
 import { PAGE_SIZE } from '@/app/global';
 import { fileService } from '@/app/services/fileService';
-
+import { IFile } from '@/app/models/File';
 
 export default function SoundboardPage({
     params,
 }: {
-    params: Promise<{ slug: string }>
+    params: { slug: string }
 }) {
-    const { slug } = React.use(params);
+    const slug = params.slug;
     const id = slug.split('-').pop();
-
-    if (!id) return notFound();
 
     const {
         data: boardRes,
         isLoading: isBoardLoading,
-        isError: isBoardError
     } = useQuery({
         queryKey: ["soundboard", id],
         queryFn: () => categoryService.getCategoryByID(id!),
@@ -48,7 +45,7 @@ export default function SoundboardPage({
         enabled: !!id && !!boardData,
         queryFn: ({ pageParam }) =>
             fileService.getFilesBySbID({
-                id,
+                 id: id!,
                 page: pageParam,
                 limit: PAGE_SIZE,
             }),
@@ -60,13 +57,15 @@ export default function SoundboardPage({
     });
 
 
-    const sbSounds = data?.pages.flatMap(page => page.data) ?? [];
-
     const loadMoreRef = useInfiniteLoader({
         loading: isFetchingNextPage,
         hasMore: !!hasNextPage,
         onLoadMore: fetchNextPage,
     });
+
+    const sbSounds = data?.pages.flatMap(page => page.data) ?? [];
+
+    if (!id) return notFound();
 
     if (isBoardLoading) {
         return (
@@ -118,8 +117,8 @@ export default function SoundboardPage({
                     <Head2>Sounds in this Board</Head2>
                     <SoundGrid className='mt-5'>
                         {
-                            sbSounds.map((obj: any) => (
-                                <SoundCard key={obj._id} obj={obj} />
+                            sbSounds.map((obj: IFile) => (
+                                <SoundCard key={obj.s_id} obj={obj} />
                             ))
                         }
                         {

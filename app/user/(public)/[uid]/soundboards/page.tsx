@@ -7,6 +7,7 @@ import { useInfiniteLoader } from '@/app/hooks/useInfiniteLoader';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { PAGE_SIZE } from '@/app/global';
 import { Para } from "@/app/components/Ui";
+import { CategoryInterface } from "@/app/models/Category";
 
 export default function SoundboardPage({
   params,
@@ -73,8 +74,8 @@ export default function SoundboardPage({
   return (
     <div>
       <SoundGrid className="mt-5">
-        {soundboards.map((obj: any) => (
-          <Soundboard key={obj._id} obj={obj} />
+        {soundboards.map((obj: CategoryInterface) => (
+          <Soundboard key={obj.sb_id} obj={obj} />
         ))}
 
         {isFetchingNextPage &&

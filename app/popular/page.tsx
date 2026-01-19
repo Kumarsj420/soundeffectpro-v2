@@ -1,11 +1,12 @@
 "use client"
 import React from 'react'
-import SoundCard, {SoundCardSkelton} from '../components/SoundCard';
+import SoundCard, { SoundCardSkelton } from '../components/SoundCard';
 import { fileService } from '../services/fileService';
 import { useInfiniteLoader } from '../hooks/useInfiniteLoader';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Head1, SoundGrid } from '../components/Ui';
 import { PAGE_SIZE } from '../global';
+import { IFile } from '../models/File';
 
 export default function Popular() {
 
@@ -46,8 +47,8 @@ export default function Popular() {
             <Head1>Popular Sound Effects</Head1>
 
             <SoundGrid className='mt-5'>
-                {popularSounds.map((obj: any) => (
-                    <SoundCard key={obj._id} obj={obj} />
+                {popularSounds.map((obj: IFile) => (
+                    <SoundCard key={obj.s_id} obj={obj} />
                 ))}
                 {
                     (isLoading || isFetchingNextPage) &&

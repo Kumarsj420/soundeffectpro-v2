@@ -8,6 +8,7 @@ import { categoryService } from "../services/categoryService";
 import { useInfiniteLoader } from '../hooks/useInfiniteLoader';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { PAGE_SIZE } from '../global';
+import { CategoryInterface } from "../models/Category";
 
 export default function SoundboardPage() {
 
@@ -48,8 +49,8 @@ export default function SoundboardPage() {
         <div>
             <Head1>Popular Soundboards</Head1>
             <SoundGrid className="mt-5">
-                {topSoundboards.map((obj: any) => (
-                    <Soundboard key={obj._id} obj={obj} />
+                {topSoundboards.map((obj: CategoryInterface) => (
+                    <Soundboard key={obj.sb_id} obj={obj} />
                 ))}
                 {
                     (isLoading || isFetchingNextPage) &&

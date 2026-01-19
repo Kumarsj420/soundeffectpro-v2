@@ -56,7 +56,7 @@ const UploadForm: React.FC<UploadFormProps> = ({ metadata, onMetadataChange, onS
       setTitleError(null);
     }
 
-  }, [titleInp, onMetadataChange, titleSchema])
+  }, [titleInp])
 
   useEffect(() => {
     onMetadataChange({ tags: tagInput })
@@ -69,7 +69,7 @@ const UploadForm: React.FC<UploadFormProps> = ({ metadata, onMetadataChange, onS
       setTagsError(null);
     }
 
-  }, [tagInput, onMetadataChange, tagsSchema])
+  }, [tagInput])
 
   useEffect(() => {
     onMetadataChange({ description: descriptionInp })
@@ -82,7 +82,7 @@ const UploadForm: React.FC<UploadFormProps> = ({ metadata, onMetadataChange, onS
       setDescriptionError(null)
     }
 
-  }, [descriptionInp, onMetadataChange, descriptionSchema])
+  }, [descriptionInp])
 
 
 

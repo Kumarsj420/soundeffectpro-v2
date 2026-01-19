@@ -38,7 +38,7 @@ export const authOptions: NextAuthOptions = {
 
     Email({
       from: process.env.EMAIL_FROM!,
-      async sendVerificationRequest({ identifier, url, provider }) {
+      async sendVerificationRequest({ identifier, url }) {
         try {
           const { error } = await resend.emails.send({
             from: process.env.EMAIL_FROM!,
@@ -97,7 +97,7 @@ export const authOptions: NextAuthOptions = {
       try {
         await connectDB();
 
-        let dbUser = await User.findOne({ email: user.email });
+        const dbUser = await User.findOne({ email: user.email });
 
         const name = user.name ?? null;
         const email = user.email!;
@@ -146,7 +146,7 @@ export const authOptions: NextAuthOptions = {
     },
 
 
-    async jwt({ token, user, trigger, session }) {
+    async jwt({ token, user }) {
       try {
         if (user) {
           await connectDB();

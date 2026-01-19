@@ -29,7 +29,6 @@ import { useT } from '@/app/hooks/useT';
 
 export default function Example() {
 
-
   const LANGUAGE_LABELS = {
     en: "English",
     hi: "हिंदी",
@@ -46,7 +45,7 @@ export default function Example() {
   const { data: session } = useSession();
   const name = session?.user.name ?? null;
   const image = session?.user.image ?? null;
-  const uid = session?.user.uid!;
+  const uid = session?.user.uid ?? null;
   const t = useT();
 
   const [theme, setTheme] = useTheme();
@@ -200,6 +199,8 @@ export default function Example() {
   }, [session]);
 
 
+  if (!uid) return;
+
   const handleSaveProfile = async () => {
     openFetchLoading();
     try {
@@ -215,6 +216,9 @@ export default function Example() {
 
         if (previousImageKey) {
           const res = await r2Service.delete({ key: previousImageKey });
+          if (res.success) {
+            console.log('old image deleted');
+          }
         }
       } else if (selectedImageFile) {
         const uploadRes = await r2Service.upload({

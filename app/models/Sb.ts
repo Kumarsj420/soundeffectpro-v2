@@ -1,5 +1,5 @@
 import mongoose, { Schema, Model } from "mongoose";
-import { Types } from "mongoose";
+
 
 export interface ISoundboard extends Document {
     sb_id: string,
