@@ -8,16 +8,17 @@ export default async function PublicUserLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: { uid: string };
+  params: Promise<{ uid: string }>;
 }) {
   const session = await requireAuth();
+  const { uid } = await params
 
-  if (session?.user.uid === params.uid) redirect('/user');
+  if (session?.user.uid === uid) redirect('/user');
 
   return (
     <div>
-      <UserHeader variant="public" uid={params.uid} />
-      <PublicTab uid={params.uid} />
+      <UserHeader variant="public" uid={uid} />
+      <PublicTab uid={uid} />
       <div className="mt-7">{children}</div>
     </div>
   );
