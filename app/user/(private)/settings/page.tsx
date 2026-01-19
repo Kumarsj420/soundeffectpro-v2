@@ -27,6 +27,8 @@ import { useTheme, useCookies, useNSFW } from '@/app/context/preferences-context
 import { useLang } from '@/app/context/LanguageContext';
 import { useT } from '@/app/hooks/useT';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 export default function Example() {
 
   const LANGUAGE_LABELS = {
@@ -498,7 +500,7 @@ export default function Example() {
               <div className='sm:max-w-xl space-y-3'>
                 <div>
                   <Label>Language</Label>
-                  
+
                   <Select wrapperClassName='mt-2' value={lang} onChange={(val: any) => setLang(val)} >
                     {
                       Object.entries(LANGUAGE_LABELS).map(([key, val]) => (
