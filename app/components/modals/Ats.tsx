@@ -6,7 +6,7 @@ import { useModal } from '@/app/hooks/useModal';
 import Button from '../form/Button';
 
 function AddToSbModal() {
-  const { isOpen, type, data, closeModal } = useModal();
+  const { isOpen, type,  closeModal } = useModal();
 
   if (!isOpen || type !== 'ats-modal') return null;
 
@@ -17,7 +17,7 @@ function AddToSbModal() {
       </ModalHeader>
 
       <ModalBody>
-        just for testing, id : {data?.id ?? 'not-recieved id'}
+        just for testing
       </ModalBody>
 
       <ModalFooter>
