@@ -26,8 +26,8 @@ import { nameService } from '@/app/services/nameServie';
 import { useTheme, useCookies, useNSFW } from '@/app/context/preferences-context';
 import { useLang } from '@/app/context/LanguageContext';
 import { useT } from '@/app/hooks/useT';
+import { Lang } from '@/app/context/LanguageContext';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 
 export default function Example() {
 
@@ -501,7 +501,7 @@ export default function Example() {
                 <div>
                   <Label>Language</Label>
 
-                  <Select wrapperClassName='mt-2' value={lang} onChange={(val: any) => setLang(val)} >
+                  <Select wrapperClassName='mt-2' value={lang} onChange={(val: string) => setLang(val as Lang)} >
                     {
                       Object.entries(LANGUAGE_LABELS).map(([key, val]) => (
                         <Option key={key} value={key}>{val}</Option>
