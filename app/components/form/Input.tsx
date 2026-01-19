@@ -1,3 +1,4 @@
+'use client'
 import { cn } from '@/app/services/cn';
 import React, { forwardRef } from 'react';
 

@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import CustomImg from './CustomImg';
 import { CategoryInterface } from '../models/Category';

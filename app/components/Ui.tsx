@@ -1,3 +1,4 @@
+'use client'
 import { cn } from '../services/cn'
 import React from 'react'
 
