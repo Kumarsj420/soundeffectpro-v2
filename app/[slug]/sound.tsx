@@ -1,5 +1,4 @@
 "use client"
-import React, { useMemo } from 'react';
 import SoundButton from '../components/SoundButton';
 import { fileService } from '../services/fileService';
 import { HomeIcon } from '@heroicons/react/20/solid';
@@ -10,7 +9,6 @@ import { useInfiniteLoader } from '../hooks/useInfiniteLoader';
 import { SoundGrid, Head2 } from '../components/Ui';
 import SoundCard, { SoundCardSkelton } from '../components/SoundCard';
 import { PAGE_SIZE } from '../global';
-import { notFound } from 'next/navigation';
 import {
   Download,
   Heart,
@@ -28,13 +26,11 @@ import { getR2Url } from '../lib/r2Url';
 import { IFile } from '../models/File';
 
 interface SoundDetailsPageProps {
-  slug: string;
+  id: string;
 }
 
-const SoundDetailsPage = ({ slug }: SoundDetailsPageProps) => {
+const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
   const openModal = useModal((s) => s.openModal);
-
-  const id = useMemo(() => slug?.split("-").pop(), [slug]);
 
   const audioUrl = id ? getR2Url(`store/${id}.mp3`) : null;
 
@@ -89,8 +85,6 @@ const SoundDetailsPage = ({ slug }: SoundDetailsPageProps) => {
     onLoadMore: fetchNextPage,
   });
 
-  
-  if (!id) return notFound();
 
   if (isSoundLoading) {
     return (

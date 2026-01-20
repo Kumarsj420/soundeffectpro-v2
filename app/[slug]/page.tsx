@@ -1,12 +1,21 @@
 import SoundDetailsPage from "./sound";
+import { notFound } from "next/navigation";
 
-export default function Page({
+export default async function Page({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
+
+  const { slug } = await params;
+  const id = slug?.split("-").pop();
+
+  if (!id) {
+    notFound();
+  }
+
   return (
-      <SoundDetailsPage slug={params.slug} />
+    <SoundDetailsPage id={id} />
 
   )
 }
