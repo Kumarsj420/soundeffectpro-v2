@@ -25,9 +25,10 @@ interface UploadFormProps {
   metadata: AudioMetadata;
   onMetadataChange: (metadata: Partial<AudioMetadata>) => void;
   onSubmit: () => void;
+  triggerValidation?: boolean;
 }
 
-const UploadForm: React.FC<UploadFormProps> = ({ metadata, onMetadataChange, onSubmit }) => {
+const UploadForm: React.FC<UploadFormProps> = ({ metadata, onMetadataChange, onSubmit, triggerValidation = false }) => {
 
   const categories = ['Random', 'Meme', 'Anime', 'Gaming', 'Music', 'Movies', 'Sports', 'Series', 'Politics', 'Comedy'];
 
@@ -46,6 +47,38 @@ const UploadForm: React.FC<UploadFormProps> = ({ metadata, onMetadataChange, onS
   const [titleError, setTitleError] = useState<string | null>(null);
   const [tagsError, setTagsError] = useState<string | null>(null);
   const [descriptionError, setDescriptionError] = useState<string | null>(null);
+
+
+  useEffect(() => {
+    if (triggerValidation) {
+      console.log('triggering validation');
+      setTagsTouched(true);
+      setDescriptionTouched(true);
+
+      const titleResult = titleSchema.safeParse(titleInp);
+      const tagsResult = tagsSchema.safeParse(tagInput);
+      const descResult = descriptionSchema.safeParse(descriptionInp);
+
+      if (!titleResult.success) {
+        setTitleError(titleResult.error.issues[0].message);
+      } else {
+        setTitleError(null);
+      }
+
+      if (!tagsResult.success) {
+        setTagsError(tagsResult.error.issues[0].message);
+      } else {
+        setTagsError(null);
+      }
+
+      if (!descResult.success) {
+        setDescriptionError(descResult.error.issues[0].message);
+      } else {
+        setDescriptionError(null)
+      }
+    }
+  }, [triggerValidation]);
+
 
   useEffect(() => {
     onMetadataChange({ title: titleInp });
@@ -104,7 +137,7 @@ const UploadForm: React.FC<UploadFormProps> = ({ metadata, onMetadataChange, onS
             placeholder="Enter a catchy title for your sound"
             message=' A good title helps others discover your sound more easily!'
             error={titleError ?? undefined}
-            success={!titleError && titleInp.length > 3}
+            success={!titleError && titleInp.length > 2}
           />
         </div>
 
@@ -140,7 +173,7 @@ const UploadForm: React.FC<UploadFormProps> = ({ metadata, onMetadataChange, onS
             message="Separate with commas or press enter to add multiple tags."
             maxTags={TAG_LIMIT}
             error={tagsTouched ? tagsError ?? undefined : undefined}
-            success={tagsTouched && !tagsError && tagInput.length > MIN_TAGS}
+            success={tagsTouched && !tagsError && tagInput.length >= MIN_TAGS}
           />
 
         </div>

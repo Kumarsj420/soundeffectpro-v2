@@ -11,7 +11,7 @@ import Image from 'next/image';
 import { PAGE_SIZE } from '@/app/global';
 import { fileService } from '@/app/services/fileService';
 import { IFile } from '@/app/models/File';
-import { getR2Url } from '@/app/lib/r2Url';
+import { getR2Url } from '@/app/lib/r2/r2Url';
 
 interface SoundboardPageProps {
     id: string;

@@ -33,7 +33,8 @@ const UserSchema = new Schema<IUser>({
     uid: {
         type: String,
         required: true,
-        index: true
+        index: true,
+
     },
     name: {
         type: String,
@@ -84,7 +85,6 @@ const FileSchema = new Schema<IFile>({
     },
     slug: {
         type: String,
-        required: true,
         lowercase: true,
         trim: true
     },
@@ -143,11 +143,11 @@ const FileSchema = new Schema<IFile>({
         required: true
     },
     stats: {
-        type: StatsSchema
+        type: StatsSchema,
     },
     visibility: { type: Boolean, default: true },
 }, {
-    timestamps: false,
+    timestamps: true,
     collection: 'files'
 })
 
@@ -161,6 +161,21 @@ FileSchema.index({ 'stats.views': -1 });
 FileSchema.index({ 'stats.downloads': -1 });
 FileSchema.index({ 'user.uid': 1 });
 FileSchema.index({ tags: 1 });
+
+FileSchema.pre('save', function (next) {
+    if (!this.slug || this.isModified('title')) {
+        this.slug = this.title
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, '-')
+            .replace(/[^\w\-]+/g, '')
+            .replace(/\-\-+/g, '-')
+            .replace(/^-+/, '')
+            .replace(/-+$/, '');
+    }
+    next();
+});
+
 
 const File: Model<IFile> = mongoose.models.File || mongoose.model<IFile>('File', FileSchema);
 

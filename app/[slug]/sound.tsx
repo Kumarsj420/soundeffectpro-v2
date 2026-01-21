@@ -22,7 +22,7 @@ import { PlusIcon, CodeBracketIcon, ArrowDownOnSquareStackIcon } from '@heroicon
 import { HeartIcon as HeartOutlineIcon } from '@heroicons/react/24/outline';
 import Button from '../components/form/Button';
 import { useModal } from '../hooks/useModal';
-import { getR2Url } from '../lib/r2Url';
+import { getR2Url } from '../lib/r2/r2Url';
 import { IFile } from '../models/File';
 
 interface SoundDetailsPageProps {

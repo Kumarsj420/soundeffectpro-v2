@@ -23,6 +23,26 @@ export interface IGetFilesParams {
   tag?: string;
 }
 
+export interface IUploadSoundMeta {
+  title: string;
+  slug: string;
+  duration: string;
+  tags: string[];
+  category: string;
+  description?: string;
+  btnColor?: string;
+  user: {
+    uid: string;
+    name: string;
+  };
+}
+
+export interface IUploadSoundResponse {
+  success: boolean;
+  message: string;
+  data: IFile[];
+}
+
 
 export const fileService = {
   getFiles: async (params?: IGetFilesParams): Promise<IFilesResponse> => {
@@ -79,10 +99,56 @@ export const fileService = {
 
     return response.data;
   },
+  
   getLikedFiles: async ({ page, limit }: { page: number; limit: number }) => {
     const response = await axiosInstance.get('/api/sounds/fav', {
       params: { page, limit },
     });
+    return response.data;
+  },
+
+  postAudio: async ({
+    files,
+    metadata,
+  }: {
+    files: File | File[];
+    metadata: IUploadSoundMeta | IUploadSoundMeta[];
+  }): Promise<IUploadSoundResponse> => {
+
+    const formData = new FormData();
+
+    const fileList = Array.isArray(files) ? files : [files];
+    const metaList = Array.isArray(metadata) ? metadata : [metadata];
+
+    if (fileList.length !== metaList.length) {
+      throw new Error("Files and metadata count mismatch");
+    }
+
+    fileList.forEach(file => {
+      formData.append("audio", file);
+    });
+
+    formData.append("metadata", JSON.stringify(metaList));
+
+    const response = await axiosInstance.post<IUploadSoundResponse>(
+      "/api/sounds",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress(progressEvent) {
+
+          const percent = Math.round(
+            (progressEvent.loaded * 100) /
+            (progressEvent.total || 1)
+          );
+
+          console.log("Upload progress:", percent, "%");
+        },
+      }
+    );
+
     return response.data;
   },
 

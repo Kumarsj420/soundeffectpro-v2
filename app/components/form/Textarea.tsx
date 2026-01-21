@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/app/services/cn';
+import { CheckIcon } from '@heroicons/react/24/solid';
 import React, { forwardRef } from 'react';
 
 interface TextAreaProps
@@ -47,10 +48,10 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         'dark:bg-zinc-800/60 dark:ring-zinc-700/60 cursor-not-allowed';
     } else if (error) {
       inputClasses +=
-        ' text-red-800 ring-red-300 focus:ring-red-400 bg-red-50';
+        'text-error-800 dark:text-error-100 ring-error-300 focus:ring-error-400 bg-error-500/15';
     } else if (success) {
       inputClasses +=
-        ' ring-emerald-400 focus:ring-emerald-400';
+        'ring-gray-400/60 dark:ring-zinc-600/90 focus:ring-success-400';
     } else {
       inputClasses +=
         ' text-gray-900 dark:text-white focus:ring-blue-400 ' +
@@ -67,11 +68,18 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
             className={cn(inputClasses, className)}
             {...textareaProps}
           />
-          {rightIcon && (
-            <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2 cursor-pointer">
-              {rightIcon}
+          {rightIcon && !success && (
+          <span className="absolute top-5 right-4 z-30 -translate-y-1/2 cursor-pointer">
+            {rightIcon}
+          </span>
+        )}
+        {success && (
+          <div className="absolute top-5 right-4 z-30 -translate-y-1/2">
+            <span className='flex items-center justify-center size-5 rounded-full bg-success-600'>
+              <CheckIcon className='size-3 text-white stroke-3' />
             </span>
-          )}
+          </div>
+        )}
         </div>
 
         {error && (

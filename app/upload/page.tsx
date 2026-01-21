@@ -11,7 +11,12 @@ import SoundButton from '../components/SoundButton';
 import Label from '../components/form/Label';
 import { cn } from '../services/cn';
 import { WaveformPlayerRef } from '../components/uploads/WaveformPlayer';
-
+import { FileSchema } from '../lib/validators/file.schema';
+import { convertWavBlobToMp3 } from '../lib/mp3enocder';
+import { fileService } from '../services/fileService';
+import { useSession } from 'next-auth/react';
+import { useFetchLoading } from '../hooks/useFetchLoading';
+import { toast } from 'react-toastify';
 
 interface AudioMetadata {
   title: string;
@@ -97,6 +102,7 @@ const colorOptions = [
 ];
 
 const UploadPage: React.FC = () => {
+  const [shouldValidate, setShouldValidate] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
   const [trimRegion, setTrimRegion] = useState<TrimRegion>({ start: 0, end: 0 });
@@ -107,11 +113,14 @@ const UploadPage: React.FC = () => {
     category: 'Random',
     nsfw: false,
   });
-
+  const [trimmedBlob, setTrimmedBlob] = useState<Blob | null>(null);
 
   const [btnHue, setBtnHue] = useState('0');
   const customAudioRef = useRef<WaveformPlayerRef>(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const { data: session } = useSession();
+  const openFetchLoading = useFetchLoading((s) => s.openFetchLoading);
+  const closeFetchLoading = useFetchLoading((s) => s.closeFetchLoading);
 
 
   const handleFileSelect = useCallback((file: File | null) => {
@@ -148,18 +157,89 @@ const UploadPage: React.FC = () => {
     setMetadata(prev => ({ ...prev, ...newMetadata }));
   }, []);
 
-  const handleSubmit = useCallback(() => {
-    const uploadData = {
-      file: selectedFile,
-      fileInfo,
-      trimRegion,
-      metadata,
-      btnHue,
-    };
-    console.log('Upload Data:', uploadData);
-    // alert('Upload data logged to console!');
-  }, [selectedFile, fileInfo, trimRegion, metadata]);
+  const formatDuration = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  };
 
+
+  const handleSubmit = useCallback(async () => {
+    if (!session) return;
+
+    setShouldValidate(true);
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    const payload = {
+      title: metadata.title.trim(),
+      slug: metadata.title
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-"),
+      duration: formatDuration(trimRegion.end - trimRegion.start),
+      tags: metadata.tags,
+      category: metadata.category,
+      description: metadata.description || "",
+      btnColor: btnHue,
+      visibility: true,
+      user: {
+        uid: session.user.uid,
+        name: session.user.name,
+      }
+    };
+
+    const parsed = FileSchema.safeParse(payload);
+
+    if (!parsed.success) {
+      toast.error('Please fix form errors.');
+      setShouldValidate(false);
+      return;
+    }
+
+    setShouldValidate(false);
+
+    if (!trimmedBlob) {
+      toast.error('Trimmed audio is not ready yet.');
+      return;
+    }
+
+    openFetchLoading();
+
+    try {
+      const trimmedMp3File = await convertWavBlobToMp3(
+        trimmedBlob,
+        metadata.title || "audio"
+      );
+
+      const res = await fileService.postAudio({
+        files: trimmedMp3File,
+        metadata: parsed.data
+      });
+
+      if(res.success) {
+        toast.success('Audio uploaded successfully!');
+        setSelectedFile(null);
+        setFileInfo(null);
+        setTrimmedBlob(null);
+      } else {
+        toast.error(res.message || 'Upload failed');
+        throw new Error(res.message || 'Upload failed');
+      }
+
+    } catch (error: any) {
+      console.error("Upload error:", error);
+      alert(error.message || "Upload failed");
+    } finally {
+      closeFetchLoading();
+    }
+
+  }, [
+    session,
+    trimmedBlob,
+    metadata,
+    trimRegion,
+    btnHue
+  ]);
 
 
   return (
@@ -188,6 +268,9 @@ const UploadPage: React.FC = () => {
                 onTrimChange={handleTrimChange}
                 trimRegion={trimRegion}
                 onPlayingChange={setIsAudioPlaying}
+                onTrimmedAudioReady={(blob) => {
+                  setTrimmedBlob(blob);
+                }}
               />
             </Card>
 
@@ -236,6 +319,7 @@ const UploadPage: React.FC = () => {
               metadata={metadata}
               onMetadataChange={handleMetadataChange}
               onSubmit={handleSubmit}
+              triggerValidation={shouldValidate}
             />
           </div>
         )}

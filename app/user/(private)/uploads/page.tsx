@@ -27,7 +27,7 @@ function Uploads() {
       fileService.getFiles({
         page: pageParam,
         limit: PAGE_SIZE,
-        sortBy: 'stats.views',
+        sortBy: 'createdAt',
         order: 'desc',
         userId: uid,
       }),

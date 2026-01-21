@@ -20,7 +20,7 @@ import {
 } from "@floating-ui/react";
 import { PlusIcon, CodeBracketIcon, EyeSlashIcon, EyeIcon, PencilSquareIcon, ShareIcon, FlagIcon, TrashIcon } from "@heroicons/react/24/solid";
 import Button from "./form/Button";
-import { getR2Url } from "../lib/r2Url";
+import { getR2Url } from "../lib/r2/r2Url";
 
 
 export interface SoundCardProps {

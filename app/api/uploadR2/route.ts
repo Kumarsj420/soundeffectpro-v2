@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { uploadToR2 } from "@/app/lib/r2upload";
+import { uploadToR2 } from "@/app/lib/r2/r2upload";
 import { requireAuth } from "@/app/lib/getSession";
 
 export async function POST(req: Request) {

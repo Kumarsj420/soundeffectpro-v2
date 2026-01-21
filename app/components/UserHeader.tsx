@@ -18,6 +18,7 @@ import Loading from "../loading";
 import getInitials from "../hooks/getInitials";
 import { userService } from "../services/userService";
 import { IUser } from "../models/User";
+import Card from "./Card";
 
 type Props = {
   variant: "private" | "public";

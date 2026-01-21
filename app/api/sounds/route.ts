@@ -3,8 +3,13 @@ import File, { IFile } from "@/app/models/File";
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/app/lib/getSession";
 import { FilterQuery } from "mongoose";
+import { FileSchema } from "@/app/lib/validators/file.schema";
+import { uploadAudioToR2 } from "@/app/lib/r2/r2audioUpload";
+import User from "@/app/models/User";
 
 type SortOrder = 1 | -1;
+
+export const runtime = "nodejs";
 
 export async function GET(request: NextRequest) {
   try {
@@ -78,54 +83,126 @@ export async function GET(request: NextRequest) {
   }
 }
 
+export async function POST(req: NextRequest) {
 
-export async function POST(request: NextRequest) {
   try {
+
     await connectDB();
 
-    const body = await request.json();
+    const formData = await req.formData();
 
-    const { s_id, title, slug, duration, category, user, tags } = body;
+    const files = formData.getAll("audio") as File[];
+    const metaRaw = formData.get("metadata") as string;
 
-    if (!s_id || !title || !slug || !duration || !category || !user || !tags) {
+    if (!files.length || !metaRaw) {
       return NextResponse.json({
         success: false,
-        message: 'Missing required fields'
-      }, { status: 400 })
+        message: "Audio file or metadata missing"
+      }, { status: 400 });
     }
 
-    const newSound = await File.create(body);
+    const metadataArray = JSON.parse(metaRaw);
 
-    return NextResponse.json({
-      success: true,
-      message: 'Sound uploaded successfully',
-      data: newSound
-    }, { status: 201 })
+    const metaList = Array.isArray(metadataArray)
+      ? metadataArray
+      : [metadataArray];
 
-  } catch (error: unknown) {
-    if (
-      typeof error === "object" &&
-      error !== null &&
-      "code" in error &&
-      (error as { code: number }).code === 11000
-    ) {
-      return NextResponse.json(
-        {
+    if (files.length !== metaList.length) {
+      return NextResponse.json({
+        success: false,
+        message: "Audio and metadata count mismatch"
+      }, { status: 400 });
+    }
+
+    const { validateAudio } = await import("@/app/lib/validators/audioServerValidator");
+
+    const results = [];
+    let uploadedCount = 0;
+    let uploadUserUid: string | null = null;
+
+    for (let i = 0; i < files.length; i++) {
+
+      const audioFile = files[i];
+      const meta = metaList[i];
+
+
+
+      if (audioFile.type !== "audio/mpeg") {
+        return NextResponse.json({
           success: false,
-          message: "Sound with this s_id or slug already exists",
-        },
-        { status: 409 }
+          message: "Only MP3 audio files are allowed"
+        }, { status: 400 });
+      }
+
+      if (!audioFile.name.toLowerCase().endsWith(".mp3")) {
+        return NextResponse.json({
+          success: false,
+          message: "Invalid file extension"
+        }, { status: 400 });
+      }
+
+
+      const parsed = FileSchema.safeParse(meta);
+
+      if (!parsed.success) {
+        return NextResponse.json({
+          success: false,
+          error: parsed.error.format()
+        }, { status: 422 });
+      }
+
+
+      await validateAudio(audioFile);
+
+
+      const createdFile = await File.create(parsed.data);
+
+      uploadedCount++;
+      uploadUserUid = createdFile.user.uid;
+
+      const buffer = Buffer.from(await audioFile.arrayBuffer());
+
+      const uploadResult = await uploadAudioToR2({
+        buffer,
+        s_id: createdFile.s_id
+      });
+
+      results.push({
+        ...createdFile.toObject(),
+        audio_url: uploadResult.url
+      });
+
+    }
+
+    if (uploadUserUid && uploadedCount > 0) {
+      await User.updateOne(
+        { uid: uploadUserUid },
+        { $inc: { filesCount: uploadedCount } }
       );
     }
 
-    return NextResponse.json(
-      {
+    return NextResponse.json({
+      success: true,
+      message: "Audio uploaded successfully",
+      data: results
+    }, { status: 201 });
+
+  } catch (error: any) {
+
+    console.error(error);
+
+    if (error.code === 11000) {
+      return NextResponse.json({
         success: false,
-        message: "Failed to create sound",
-        error: String(error),
-      },
-      { status: 500 }
-    );
+        message: "Duplicate slug or s_id"
+      }, { status: 409 });
+    }
+
+    return NextResponse.json({
+      success: false,
+      message: error.message || "Upload failed"
+    }, { status: 500 });
+
   }
 }
 

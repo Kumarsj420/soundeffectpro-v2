@@ -5,7 +5,7 @@ import { CategoryInterface } from '../models/Category';
 import { Head3, CardSpan } from './Ui';
 import Link from 'next/link';
 import { RectangleGroupIcon } from '@heroicons/react/24/solid';
-import { getR2Url } from '../lib/r2Url';
+import { getR2Url } from '../lib/r2/r2Url';
 
 function Soundboard({ obj }: { obj: CategoryInterface }) {
   return (

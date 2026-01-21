@@ -116,7 +116,12 @@ export const FileSchema = z.object({
 
     user: UserSchema,
 
-    stats: StatsSchema.optional(),
+    stats: StatsSchema.default({
+        views: 0,
+        likes: 0,
+        downloads: 0,
+        reports: 0,
+    }),
 
     visibility: z.boolean().default(true),
 });

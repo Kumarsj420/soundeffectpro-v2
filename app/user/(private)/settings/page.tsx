@@ -20,7 +20,7 @@ import { IUser } from '@/app/models/User';
 import { useFetchLoading } from '@/app/hooks/useFetchLoading';
 import { r2Service } from '@/app/services/r2Service';
 import { toast } from 'react-toastify';
-import { getR2KeyFromUrl } from '@/app/lib/r2Url';
+import { getR2KeyFromUrl } from '@/app/lib/r2/r2Url';
 import { uidService } from '@/app/services/uidServices';
 import { nameService } from '@/app/services/nameServie';
 import { useTheme, useCookies, useNSFW } from '@/app/context/preferences-context';

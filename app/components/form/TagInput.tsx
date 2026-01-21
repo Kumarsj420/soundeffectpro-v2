@@ -89,21 +89,20 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
         }
     };
 
-    let inputClasses =
-        'w-full rounded-xl px-3.5 py-2.5 text-sm outline-none ring-1 ring-inset transition font-medium';
+  let inputClasses = `w-full h-10 rounded-xl px-3 py-2 text-sm placeholder:text-gray-500/80   dark:placeholder:text-zinc-500 ring-[0.09em] ring-inset outline-none border-none focus:ring-2 font-medium `;
 
     if (disabled) {
         inputClasses +=
             ' bg-gray-100 text-gray-500 ring-gray-300 cursor-not-allowed dark:bg-zinc-800/60 dark:ring-zinc-700';
     } else if (error) {
         inputClasses +=
-            ' bg-red-50 text-red-800 ring-red-300 focus:ring-red-400';
+            'text-error-800 dark:text-error-100 ring-error-300 focus:ring-error-400 bg-error-500/15';
     } else if (success) {
         inputClasses +=
-            ' ring-emerald-400 focus:ring-emerald-400';
+            'ring-gray-400/60 dark:ring-zinc-600/90 focus:ring-success-400';
     } else {
         inputClasses +=
-            ' bg-gray-50 text-gray-900 ring-gray-400/80 focus:ring-blue-400 dark:bg-zinc-800 dark:text-zinc-200 hover:ring-gray-400 ring-gray-400/60 dark:ring-zinc-600/90 dark:hover:ring-zinc-500';
+            ' bg-gray-50 text-gray-900 ring-gray-400/80 focus:ring-blue-400 dark:bg-zinc-800 dark:text-zinc-200  ring-gray-400/60 dark:ring-zinc-600/90';
     }
 
     return (
