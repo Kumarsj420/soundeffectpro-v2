@@ -4,8 +4,8 @@ import User from "@/app/models/User";
 import File from "@/app/models/File";
 import Category from "@/app/models/Category";
 import Fav from "@/app/models/Fav";
-import { deleteFromR2 } from "@/app/lib/r2delete";
-import { getR2KeyFromUrl } from "@/app/lib/r2Url";
+import { deleteFromR2 } from "@/app/lib/r2/r2delete";
+import { getR2KeyFromUrl } from "@/app/lib/r2/r2Url";
 import { requireAuth } from "@/app/lib/getSession";
 
 

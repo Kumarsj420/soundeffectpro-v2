@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { deleteFromR2 } from "@/app/lib/r2delete";
+import { deleteFromR2 } from "@/app/lib/r2/r2delete";
 import { requireAuth } from "@/app/lib/getSession";
 export async function POST(req: Request) {
     try {
