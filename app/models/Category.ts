@@ -18,6 +18,7 @@ export interface CategoryInterface {
     total_sfx: number,
     stats: CatStats,
     createdAt: Date,
+    updatedAt: Date,
     user: {
         uid: string,
         name: string

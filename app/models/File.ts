@@ -26,7 +26,9 @@ export interface IFile {
     btnColor: '0' | '20' | '125' | '145' | '195' | '225' | '255' | '280' | '305' | '335',
     user: IUser;
     stats: IStats;
-    visibility: boolean
+    visibility: boolean,
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const UserSchema = new Schema<IUser>({

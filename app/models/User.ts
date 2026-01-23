@@ -17,7 +17,9 @@ export interface IUser extends Document {
         nsfw: boolean,
         cookies: boolean,
         language: "en" | "hi" | "ar" | "ur" | "fr" | "de" | "es" | "pt" | "zh";
-    }
+    },
+    createdAt: Date,
+    updatedAt: Date,
 }
 
 const UserSchema = new Schema<IUser>({

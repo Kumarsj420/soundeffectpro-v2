@@ -4,6 +4,8 @@ import { Document } from "mongoose";
 export interface IFav extends Document {
     uid: string;
     s_id: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const FavSchema = new Schema<IFav>(
