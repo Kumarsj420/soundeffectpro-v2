@@ -1,12 +1,12 @@
 "use client"
 import React from 'react'
-import SoundCard, {SoundCardSkelton} from '../components/SoundCard';
+import SoundCard, { SoundCardSkelton } from '../components/SoundCard';
 import { fileService } from '../services/fileService';
 import { useInfiniteLoader } from '../hooks/useInfiniteLoader';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Head1, SoundGrid } from '../components/Ui';
 import { PAGE_SIZE } from '../global';
-import { IFile } from '../models/File';
+import { IFileWithFav } from '../services/fileService';
 
 export default function Trending() {
 
@@ -47,7 +47,7 @@ export default function Trending() {
             <Head1>Trending Sound Effects</Head1>
 
             <SoundGrid className='mt-5'>
-                {trendingSounds.map((obj: IFile) => (
+                {trendingSounds.map((obj: IFileWithFav) => (
                     <SoundCard key={obj.s_id} obj={obj} />
                 ))}
                 {

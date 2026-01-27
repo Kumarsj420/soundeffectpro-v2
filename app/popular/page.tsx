@@ -6,7 +6,7 @@ import { useInfiniteLoader } from '../hooks/useInfiniteLoader';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Head1, SoundGrid } from '../components/Ui';
 import { PAGE_SIZE } from '../global';
-import { IFile } from '../models/File';
+import { IFileWithFav } from '../services/fileService';
 
 export default function Popular() {
 
@@ -47,7 +47,7 @@ export default function Popular() {
             <Head1>Popular Sound Effects</Head1>
 
             <SoundGrid className='mt-5'>
-                {popularSounds.map((obj: IFile) => (
+                {popularSounds.map((obj: IFileWithFav) => (
                     <SoundCard key={obj.s_id} obj={obj} />
                 ))}
                 {

@@ -7,7 +7,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { Head1, SoundGrid } from '../../components/Ui';
 import { PAGE_SIZE } from '../../global';
 import { notFound } from 'next/navigation';
-import { IFile } from '@/app/models/File';
+import { IFileWithFav } from '../../services/fileService';
 
 export default function Search({
   params,
@@ -55,7 +55,7 @@ export default function Search({
       <Head1>Search Results For {search}</Head1>
 
       <SoundGrid className='mt-5'>
-        {searchSounds.map((obj: IFile) => (
+        {searchSounds.map((obj: IFileWithFav) => (
           <SoundCard key={obj.s_id} obj={obj} />
         ))}
         {

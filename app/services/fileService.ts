@@ -1,9 +1,13 @@
 import { IFile } from "../models/File";
 import axiosInstance from "../lib/axiosInstance";
 
+export interface IFileWithFav extends IFile {
+  isFav: boolean;
+}
+
 export interface IFilesResponse {
   success: boolean;
-  data: IFile[];
+  data: IFileWithFav[];
   pagination: {
     page: number;
     limit: number;

@@ -27,10 +27,8 @@ import { userService } from "../services/userService";
 import { useFetchLoading } from "../hooks/useFetchLoading";
 import { toast } from "react-toastify";
 import { useModal } from "../hooks/useModal";
+import { IFileWithFav } from "../services/fileService";
 
-export interface IFileWithFav extends IFile {
-  isFav: boolean;
-}
 
 
 export interface SoundCardProps {

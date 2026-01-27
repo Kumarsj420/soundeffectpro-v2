@@ -1,10 +1,8 @@
 "use client"
-import { useEffect, useState } from "react";
 import TagScroller from "./components/TagScroller";
 import SoundCard, { SoundCardSkelton } from "./components/SoundCard";
 import { History } from "lucide-react";
 import { fileService } from "./services/fileService";
-import { IFile } from "./models/File";
 import { useInfiniteLoader } from "./hooks/useInfiniteLoader";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { SoundGrid, Head2 } from "./components/Ui";
@@ -15,7 +13,7 @@ import { categoryService } from "./services/categoryService";
 import { useSession } from "next-auth/react";
 import Button from "./components/form/Button";
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
-
+import { IFileWithFav } from "./services/fileService";
 
 export default function HomePage() {
   const { data: session } = useSession();
@@ -128,7 +126,7 @@ export default function HomePage() {
             </Link>
           </div>
           <SoundGrid>
-            {!isPopularSfxLoading && popularSfxFiles?.map((obj: IFile) => (
+            {!isPopularSfxLoading && popularSfxFiles?.map((obj: IFileWithFav) => (
               <SoundCard key={obj.s_id} obj={obj} sessionUser={session?.user.uid === obj.user.uid ? true : false} />
             ))}
             {
@@ -152,7 +150,7 @@ export default function HomePage() {
             </Link>
           </div>
           <SoundGrid>
-            {!isTrendingSfxLoading && trendingSfxFiles?.map((obj: IFile) => (
+            {!isTrendingSfxLoading && trendingSfxFiles?.map((obj: IFileWithFav) => (
               <SoundCard key={obj.s_id} obj={obj} sessionUser={session?.user.uid === obj.user.uid ? true : false} />
             ))}
             {
@@ -172,7 +170,7 @@ export default function HomePage() {
           </div>
 
           <SoundGrid>
-            {recentSounds.map((obj: IFile) => (
+            {recentSounds.map((obj: IFileWithFav) => (
               <SoundCard key={obj.s_id} obj={obj} sessionUser={session?.user.uid === obj.user.uid ? true : false} />
             ))}
             {

@@ -10,9 +10,9 @@ import Loading from '@/app/loading';
 import Image from 'next/image';
 import { PAGE_SIZE } from '@/app/global';
 import { fileService } from '@/app/services/fileService';
-import { IFile } from '@/app/models/File';
 import { getR2Url } from '@/app/lib/r2/r2Url';
 import { useSession } from 'next-auth/react';
+import { IFileWithFav } from '@/app/services/fileService';
 
 interface SoundboardPageProps {
     id: string;
@@ -120,7 +120,7 @@ export default function SoundboardPage({
                     <Head2>Sounds in this Board</Head2>
                     <SoundGrid className='mt-5'>
                         {
-                            sbSounds.map((obj: IFile) => (
+                            sbSounds.map((obj: IFileWithFav) => (
                                 <SoundCard key={obj.s_id} obj={obj} userBoard={userID === boardData.user.uid ? boardData.sb_id : null} />
                             ))
                         }

@@ -21,8 +21,9 @@ import InfoRow from '@/app/components/InfoRow';
 import { Head2, Head3, SoundGrid } from './Ui';
 import SoundCard, { SoundCardSkelton } from './SoundCard';
 import Soundboard, { SoundboardSkelton } from "./Soundboard";
-import { IFile } from '../models/File';
+import { IFileWithFav } from '../services/fileService';
 import { useSession } from 'next-auth/react';
+import { IFilesResponse } from '../services/fileService';
 
 type profilePropsType = {
   userType: 'public' | 'private';
@@ -45,21 +46,23 @@ function Profile({ userType, uid }: profilePropsType) {
   const userInfo = userData?.data ?? null;
 
   const {
-    data: sfxData,
+    data: viewedSfx,
     isLoading: isSfxLoading,
-  } = useQuery({
+  } = useQuery<IFilesResponse, Error, IFileWithFav[]>({
     queryKey: ["viewed-sfx", uid],
-    queryFn: () => fileService.getFiles({
-      userId: uid,
-      sortBy: 'stats.views',
-      limit: 5,
-      order: 'desc',
-    }),
+    queryFn: () =>
+      fileService.getFiles({
+        userId: uid,
+        sortBy: "stats.views",
+        limit: 5,
+        order: "desc",
+      }),
     enabled: !!uid && !!userInfo?.filesCount && userInfo.filesCount > 0,
     staleTime: 1000 * 60 * 5,
+
+    select: (res) => res.data,
   });
 
-  const viewedSfx = sfxData?.data ?? null;
 
   const {
     data: boardData,
@@ -266,7 +269,7 @@ function Profile({ userType, uid }: profilePropsType) {
           <section className='mt-10 space-y-4'>
             <Head2>Top 5 Most Viewed Uploads</Head2>
             <SoundGrid>
-              {!isSfxLoading && viewedSfx?.map((obj: IFile) => (
+              {!isSfxLoading && viewedSfx?.map((obj: IFileWithFav) => (
                 <SoundCard key={obj.s_id} obj={obj} sessionUser={session?.user.uid === obj.user.uid ? true : false} />
               ))}
               {
