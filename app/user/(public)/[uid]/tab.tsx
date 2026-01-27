@@ -4,6 +4,7 @@ import { useRouter, usePathname } from "next/navigation";
 import {
   ArrowUpOnSquareStackIcon,
   RectangleGroupIcon,
+  UserIcon
 } from "@heroicons/react/24/solid";
 import Tabs from "../../../components/Tabs";
 
@@ -12,11 +13,17 @@ export default function PublicTab({ uid }: { uid: string }) {
   const pathname = usePathname();
 
   const tabs = [
+        {
+      id: "Profile",
+      label: "Profile",
+      icon: UserIcon,
+      path: `/user/${uid}`,
+    },
     {
       id: "Uploads",
       label: "Uploads",
       icon: ArrowUpOnSquareStackIcon,
-      path: `/user/${uid}`,
+      path: `/user/${uid}/uploads`,
     },
     {
       id: "Soundboards",

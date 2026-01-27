@@ -13,7 +13,7 @@ export async function POST(
 
     const sound = await File.findOneAndUpdate(
       { $or: [{ s_id: id }, { slug: id }] },
-      { $inc: { downloads: 1 } },
+      { $inc: { "stats.downloads": 1 } },
       { new: true }
     );
 

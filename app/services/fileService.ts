@@ -99,7 +99,7 @@ export const fileService = {
 
     return response.data;
   },
-  
+
   getLikedFiles: async ({ page, limit }: { page: number; limit: number }) => {
     const response = await axiosInstance.get('/api/sounds/fav', {
       params: { page, limit },
@@ -151,5 +151,20 @@ export const fileService = {
 
     return response.data;
   },
+
+  increaseViewCount: async (id: string) => {
+    const response = await axiosInstance.patch(`/api/sounds/${id}/increment-view`);
+    return response.data;
+  },
+
+  increaseDownloadCount: async (id: string) => {
+    const response = await axiosInstance.post(`/api/sounds/${id}/increment-download`);
+    return response.data;
+  },
+
+  deleteById: async (id: string) => {
+    const response = await axiosInstance.delete(`/api/sounds/${id}`);
+    return response.data;
+  }
 
 }

@@ -18,7 +18,8 @@ import Loading from "../loading";
 import getInitials from "../hooks/getInitials";
 import { userService } from "../services/userService";
 import { IUser } from "../models/User";
-import Card from "./Card";
+import { useModal } from "../hooks/useModal";
+
 
 type Props = {
   variant: "private" | "public";
@@ -27,6 +28,8 @@ type Props = {
 
 export default function UserHeader({ variant, uid }: Props) {
   const { data: session, status } = useSession();
+
+  const openModal = useModal((s) => s.openModal);
 
   const [user, setUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState<boolean>(variant === "public");
@@ -86,13 +89,13 @@ export default function UserHeader({ variant, uid }: Props) {
             wrapperClassName="size-14 rounded-full ring-[0.12em] ring-offset-6 dark:ring-offset-zinc-900 ring-gray-500/95"
           />
         ) : user.name ? (
-          <div className="size-14 bg-gradient-to-b from-blue-50 to-blue-300 ring-[0.12em] ring-offset-6 rounded-full ring-blue-300/75 flex items-center justify-center dark:ring-offset-zinc-900">
+          <div className="size-14 bg-linear-to-b from-blue-50 to-blue-300 ring-[0.12em] ring-offset-6 rounded-full ring-blue-300/75 flex items-center justify-center dark:ring-offset-zinc-900">
             <span className="text-blue-500 text-2xl font-bold">
               {getInitials(user.name)}
             </span>
           </div>
         ) : (
-          <div className="size-14 bg-gradient-to-b from-blue-50 to-blue-300 ring-[0.12em] ring-offset-6 rounded-full ring-blue-300/75 flex items-center justify-center dark:ring-offset-zinc-900">
+          <div className="size-14 bg-linear-to-b from-blue-50 to-blue-300 ring-[0.12em] ring-offset-6 rounded-full ring-blue-300/75 flex items-center justify-center dark:ring-offset-zinc-900">
             <UserIcon className="size-5 text-blue-500" />
           </div>
         )}
@@ -130,7 +133,7 @@ export default function UserHeader({ variant, uid }: Props) {
 
         <div className="w-32 space-y-4">
           {variant === "private" && (
-            <Button size="sm" className="w-full">
+            <Button size="sm" className="w-full" onClick={() => openModal('create-soundboard-modal')}>
               <PlusIcon className="size-4" />
               Soundboard
             </Button>

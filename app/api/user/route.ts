@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
                 .sort(sort)
                 .skip(skip)
                 .limit(limit)
-                .select("-__v"), 
+                .select("-__v"),
 
             User.countDocuments(query)
         ]);

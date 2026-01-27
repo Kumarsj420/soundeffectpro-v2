@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import TagScroller from "./components/TagScroller";
 import SoundCard, { SoundCardSkelton } from "./components/SoundCard";
-import {  History } from "lucide-react";
+import { History } from "lucide-react";
 import { fileService } from "./services/fileService";
 import { IFile } from "./models/File";
 import { useInfiniteLoader } from "./hooks/useInfiniteLoader";
@@ -19,16 +19,14 @@ import { ChevronRightIcon } from "@heroicons/react/24/solid";
 
 export default function HomePage() {
   const { data: session } = useSession();
-  const [popularSounds, setPopularSounds] = useState<IFile[]>([]);
-  const [trendingSounds, setTrendingSounds] = useState<IFile[]>([]);
-  const [loading, setLoading] = useState({ popular: true, trending: true });
 
   const {
     data: boardData,
     isLoading: isBoardLoading,
   } = useQuery({
     queryKey: ['soundboard'],
-    queryFn: () => categoryService.getCategory({ limit: 5, thumb: true })
+    queryFn: () => categoryService.getCategory({ limit: 5, thumb: true }),
+    staleTime: 1000 * 60 * 5,
   })
 
   const soundboards = boardData?.data ?? null;
@@ -58,30 +56,27 @@ export default function HomePage() {
     data?.pages.flatMap(page => page.data) ?? [];
 
 
-  const fetchPopular = async () => {
-    try {
-      const fileData = await fileService.getFiles({ sortBy: 'stats.downloads', order: 'desc', limit: 5 });
-      setPopularSounds(fileData.data);
-      setLoading(prev => ({ ...prev, popular: false }));
-    } catch (error) {
-      console.log('popular sound files data not recieved', error);
-    }
-  }
+  const {
+    data: popularSfx,
+    isLoading: isPopularSfxLoading,
+  } = useQuery({
+    queryKey: ['popular-sfx'],
+    queryFn: () => fileService.getFiles({ sortBy: 'stats.downloads', order: 'desc', limit: 5 }),
+    staleTime: 1000 * 60 * 5,
+  })
 
-  const fetchTrending = async () => {
-    try {
-      const fileData = await fileService.getFiles({ sortBy: 'stats.likes', order: 'desc', limit: 5 });
-      setTrendingSounds(fileData.data);
-      setLoading(prev => ({ ...prev, trending: false }));
-    } catch (error) {
-      console.log('trending sound files data not recieved', error);
-    }
-  }
+  const popularSfxFiles = popularSfx?.data ?? null;
 
-  useEffect(() => {
-    fetchPopular();
-    fetchTrending();
-  }, [])
+  const {
+    data: trendingSfx,
+    isLoading: isTrendingSfxLoading,
+  } = useQuery({
+    queryKey: ['trending-sfx'],
+    queryFn: () => fileService.getFiles({ sortBy: 'stats.likes', order: 'desc', limit: 5 }),
+    staleTime: 1000 * 60 * 5,
+  })
+
+  const trendingSfxFiles = trendingSfx?.data ?? null;
 
   const loadMoreRef = useInfiniteLoader({
     loading: isFetchingNextPage,
@@ -133,11 +128,11 @@ export default function HomePage() {
             </Link>
           </div>
           <SoundGrid>
-            {!loading.popular && popularSounds.map((obj: IFile) => (
+            {!isPopularSfxLoading && popularSfxFiles?.map((obj: IFile) => (
               <SoundCard key={obj.s_id} obj={obj} sessionUser={session?.user.uid === obj.user.uid ? true : false} />
             ))}
             {
-              loading.popular &&
+              isPopularSfxLoading &&
               Array.from({ length: 5 }).map((_, i) => (
                 <SoundCardSkelton key={i} />
               ))
@@ -152,16 +147,16 @@ export default function HomePage() {
             <Link href='/trending'>
               <Button variant="outline" size="sm">
                 More
-                <ChevronRightIcon className="text-zinc-500 size-4"  />
+                <ChevronRightIcon className="text-zinc-500 size-4" />
               </Button>
             </Link>
           </div>
           <SoundGrid>
-            {!loading.trending && trendingSounds.map((obj: IFile) => (
+            {!isTrendingSfxLoading && trendingSfxFiles?.map((obj: IFile) => (
               <SoundCard key={obj.s_id} obj={obj} sessionUser={session?.user.uid === obj.user.uid ? true : false} />
             ))}
             {
-              loading.trending &&
+              isTrendingSfxLoading &&
               Array.from({ length: 5 }).map((_, i) => (
                 <SoundCardSkelton key={i} />
               ))

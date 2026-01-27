@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 import { signOut } from 'next-auth/react';
 
 function DelAcc() {
-    const { isOpen, type,  closeModal } = useModal();
+    const { isOpen, type, closeModal } = useModal();
     const { data: session } = useSession();
     const openFetchLoading = useFetchLoading((s) => s.openFetchLoading);
     const closeFetchLoading = useFetchLoading((s) => s.closeFetchLoading);
@@ -22,7 +22,6 @@ function DelAcc() {
 
 
     const handleDeleteData = async () => {
-        closeModal();
         openFetchLoading();
         try {
             if (session?.user.uid) {
@@ -41,6 +40,7 @@ function DelAcc() {
             console.log(err);
         } finally {
             closeFetchLoading();
+            closeModal();
         }
     }
 

@@ -41,7 +41,7 @@ const CatStatsSchema = new Schema<CatStats>({
         default: 0,
         min: 0
     }
-});
+}, { _id: false });
 
 const CategorySchema = new Schema<CategoryInterface>({
     sb_id: {
@@ -53,7 +53,9 @@ const CategorySchema = new Schema<CategoryInterface>({
     name: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        minLength: 3,
+        maxLength: 100,
     },
     slug: {
         type: String,
@@ -63,14 +65,11 @@ const CategorySchema = new Schema<CategoryInterface>({
     },
     thumb: {
         type: String,
-        required: true,
         default: null
     },
     visibility: {
         type: Boolean,
         required: true,
-        trim: true,
-        lowercase: true,
         default: true
     },
     total_sfx: {

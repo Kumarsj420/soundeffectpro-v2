@@ -11,6 +11,8 @@ export type ModalType =
     | 'del-acc-modal'
     | 'report-modal'
     | 'embed-modal'
+    | 'create-soundboard-modal'
+    | 'del-sound-modal'
     | null;
 
 interface ModalState {

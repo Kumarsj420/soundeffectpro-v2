@@ -9,7 +9,7 @@ import { getR2Url } from '../lib/r2/r2Url';
 
 function Soundboard({ obj }: { obj: CategoryInterface }) {
   return (
-    <div className='group w-56 h-42 rounded-2xl overflow-hidden relative isolate flex flex-col justify-end bg-gray-50 dark:bg-zinc-900 px-2.5 py-2'>
+    <div className='group w-full aspect-3/2 rounded-2xl overflow-hidden relative isolate flex flex-col justify-end bg-gray-50 dark:bg-zinc-900 px-2.5 py-2'>
       <div className="absolute size-6 bg-gray-900/35 dark:bg-zinc-900/35 top-3.5 left-3.5 rounded-md flex justify-center items-center backdrop-blur-[1px]">
         <RectangleGroupIcon className='size-3.5 text-zinc-200/95' />
       </div>

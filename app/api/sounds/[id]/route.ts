@@ -1,8 +1,10 @@
-// app/api/sounds/[id]/route.ts
-
-import { connectDB } from '@/app/lib/dbConnection';
-import File from '@/app/models/File';
-import { NextRequest, NextResponse } from 'next/server';
+import { connectDB } from "@/app/lib/dbConnection";
+import File from "@/app/models/File";
+import Fav from "@/app/models/Fav";
+import { requireAuth } from "@/app/lib/getSession";
+import { NextRequest, NextResponse } from "next/server";
+import User from "@/app/models/User";
+import { deleteFromR2 } from "@/app/lib/r2/r2delete";
 
 export async function GET(
   request: NextRequest,
@@ -13,32 +15,57 @@ export async function GET(
 
     const { id } = await params;
 
-    // Find by s_id or slug
+    const session = await requireAuth();
+    const uid = session?.user?.uid || null;
+
     const sound = await File.findOne({
       $or: [{ s_id: id }, { slug: id }],
       visibility: true
     });
 
     if (!sound) {
-      return NextResponse.json({
-        success: false,
-        message: 'Sound not found'
-      }, { status: 404 });
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Sound not found"
+        },
+        { status: 404 }
+      );
+    }
+
+    const soundObj = sound.toObject();
+
+    let isFav = false;
+
+    if (uid) {
+      const favExists = await Fav.exists({
+        uid,
+        s_id: soundObj.s_id
+      });
+
+      isFav = Boolean(favExists);
     }
 
     return NextResponse.json({
       success: true,
-      data: sound
+      data: {
+        ...soundObj,
+        isFav
+      }
     });
 
   } catch (error) {
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to fetch sound',
-      error: String(error)
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to fetch sound",
+        error: String(error)
+      },
+      { status: 500 }
+    );
   }
 }
+
 
 export async function PUT(
   request: NextRequest,
@@ -90,28 +117,56 @@ export async function DELETE(
 
     const { id } = await params;
 
-    const deletedSound = await File.findOneAndDelete({
-      $or: [{ s_id: id }, { slug: id }]
-    });
+    console.log("DELETE ID:", id);
 
-    if (!deletedSound) {
-      return NextResponse.json({
-        success: false,
-        message: 'Sound not found'
-      }, { status: 404 });
+    const session = await requireAuth();
+    const uid = session?.user?.uid;
+
+    if (!uid) {
+      return NextResponse.json(
+        { success: false, message: 'Unauthorized, Please login' },
+        { status: 401 }
+      );
     }
+
+    const sound = await File.findOne({ s_id: id });
+
+    if (!sound) {
+      return NextResponse.json(
+        { success: false, message: `Sound not found` },
+        { status: 404 }
+      );
+    }
+
+    if (sound.user?.uid !== uid) {
+      return NextResponse.json(
+        { success: false, message: 'Permission denied for deleting' },
+        { status: 403 }
+      );
+    }
+
+    const r2Key =  `store/${id}.mp3`;
+
+    await deleteFromR2(r2Key);
+
+    await File.deleteOne({ _id: sound._id });
+
+    await User.updateOne(
+      { uid },
+      { $inc: { filesCount: -1 } }
+    );
 
     return NextResponse.json({
       success: true,
-      message: 'Sound deleted successfully',
-      data: deletedSound
+      message: 'Sound deleted successfully'
     });
 
   } catch (error) {
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to delete sound',
-      error: String(error)
-    }, { status: 500 });
+    console.error('Delete sound error:', error);
+
+    return NextResponse.json(
+      { success: false, message: 'Failed to delete sound' },
+      { status: 500 }
+    );
   }
 }

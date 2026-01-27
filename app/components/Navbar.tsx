@@ -42,6 +42,13 @@ const mockSounds: Sound[] = [
 ];
 
 
+const userLinks = [
+    { id: 'your-profile', name: 'Your Profile', href: '/user', icon: UserIcon },
+    { id: 'your-uploads', name: 'Your Uploads', href: '/user/uploads', icon: ArrowUpOnSquareStackIcon },
+    { id: 'your-likes', name: 'Your Likes', href: '/user/likes', icon: HeartIcon },
+    { id: 'your-soundboards', name: 'Your Soundboards', href: '/user/soundboards', icon: CloudArrowUpIcon },
+];
+
 export default function Navbar() {
     const t = useT();
     const [query, setQuery] = useState("");
@@ -199,22 +206,15 @@ export default function Navbar() {
                                                 </div>
 
                                                 <div className="mt-2 px-1 space-y-0.5">
-                                                    <Link href='/user' className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/90 rounded-lg gap-3">
-                                                        <UserIcon className="size-5 text-zinc-400/75" />
-                                                        Your Profile
-                                                    </Link>
-                                                    <Link href='/user/uploads' className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/90 rounded-lg gap-3">
-                                                        <ArrowUpOnSquareStackIcon className="size-5 text-zinc-400/75" />
-                                                        Your Uploads
-                                                    </Link>
-                                                    <Link href='/user/likes' className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/90 rounded-lg gap-3">
-                                                        <HeartIcon className="size-5 text-zinc-400/75" />
-                                                        Your Likes
-                                                    </Link>
-                                                    <Link href='/user/soundboards' className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/90 rounded-lg gap-3">
-                                                        <CloudArrowUpIcon className="size-5 text-zinc-400/75" />
-                                                        Your Soundboards
-                                                    </Link>
+                                                    {
+                                                        userLinks.map((link) => (
+                                                            <Link key={link.id} href={link.href} className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/70 dark:hover:text-white rounded-lg gap-3">
+                                                                <link.icon className="size-5 dark:text-zinc-400/75 dark:group-hover:text-zinc-300" />
+                                                                {link.name}
+                                                            </Link>
+                                                        ))
+                                                    }
+
                                                 </div>
                                             </div>
                                             <div className="mt-1 border-t outline-gray-300/70 dark:border-white/10 grid grid-cols-2 divide-x divide-white/10">

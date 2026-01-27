@@ -12,6 +12,7 @@ import { PAGE_SIZE } from '@/app/global';
 import { fileService } from '@/app/services/fileService';
 import { IFile } from '@/app/models/File';
 import { getR2Url } from '@/app/lib/r2/r2Url';
+import { useSession } from 'next-auth/react';
 
 interface SoundboardPageProps {
     id: string;
@@ -19,6 +20,9 @@ interface SoundboardPageProps {
 export default function SoundboardPage({
     id
 }: SoundboardPageProps) {
+
+    const { data: session } = useSession();
+    const userID = session?.user?.uid;
 
     const {
         data: boardRes,
@@ -117,7 +121,7 @@ export default function SoundboardPage({
                     <SoundGrid className='mt-5'>
                         {
                             sbSounds.map((obj: IFile) => (
-                                <SoundCard key={obj.s_id} obj={obj} />
+                                <SoundCard key={obj.s_id} obj={obj} userBoard={userID === boardData.user.uid ? boardData.sb_id : null} />
                             ))
                         }
                         {

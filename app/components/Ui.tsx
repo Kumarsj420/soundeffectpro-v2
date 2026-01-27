@@ -20,15 +20,15 @@ export function Head3({ children, className, ...props }: { children: React.React
     )
 }
 
-export function Para({ children, className, ...props }: { children: React.ReactNode, className?: string }) {
+export function Para({ children, className, paraHighlight, ...props }: { children: React.ReactNode, className?: string, paraHighlight?: boolean }) {
     return (
-        <p className={cn('text-gray-600/90 dark:text-zinc-400', className)} {...props}>{children}</p>
+        <p className={cn(paraHighlight ? 'text-gray-900 dark:text-white font-semibold' : 'text-gray-600/90 dark:text-zinc-400', className)} {...props}>{children}</p>
     )
 }
 
-export function CardSpan({ children, className, ...props }: { children: React.ReactNode, className?: string }) {
+export function CardSpan({ children, className, paraHighlight, ...props }: { children: React.ReactNode, className?: string, paraHighlight?: boolean }) {
     return (
-        <span className={cn('text-xs font-medium text-gray-600/90 dark:text-zinc-300', className)} {...props}>{children}</span>
+        <span className={cn(paraHighlight ? 'text-gray-600/90 dark:text-zinc-400' : 'text-gray-600/90 dark:text-zinc-300', 'text-xs font-medium inline-block', className)} {...props}>{children}</span>
     )
 }
 

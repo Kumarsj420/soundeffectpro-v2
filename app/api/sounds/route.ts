@@ -6,6 +6,7 @@ import { FilterQuery } from "mongoose";
 import { FileSchema } from "@/app/lib/validators/file.schema";
 import { uploadAudioToR2 } from "@/app/lib/r2/r2audioUpload";
 import User from "@/app/models/User";
+import Fav from "@/app/models/Fav";
 
 type SortOrder = 1 | -1;
 
@@ -36,11 +37,8 @@ export async function GET(request: NextRequest) {
     if (tag) query.tags = tag;
     if (search) query.$text = { $search: search };
 
-    if (userId && (sessionUid === userId)) {
-      query.$or = [
-        { visibility: true },
-        { "user.uid": sessionUid }
-      ];
+    if (userId && sessionUid === userId) {
+      query.$or = [{ visibility: true }, { "user.uid": sessionUid }];
     } else {
       query.visibility = true;
     }
@@ -52,18 +50,33 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
 
-    const [sounds, total] = await Promise.all([
+    const [sounds, total, favs] = await Promise.all([
       File.find(query)
         .sort(sort)
         .skip(skip)
         .limit(limit)
-        .select("-__v"),
-      File.countDocuments(query)
+        .select("-__v")
+        .lean<IFile[]>(),
+
+      File.countDocuments(query),
+
+      sessionUid
+        ? Fav.find({ uid: sessionUid })
+          .select("s_id -_id")
+          .lean<{ s_id: string }[]>()
+        : Promise.resolve([] as { s_id: string }[])
     ]);
+
+    const favSet = new Set(favs.map(f => f.s_id));
+
+    const soundsWithFav = sounds.map(sound => ({
+      ...sound,
+      isFav: favSet.has(sound.s_id)
+    }));
 
     return NextResponse.json({
       success: true,
-      data: sounds,
+      data: soundsWithFav,
       pagination: {
         page,
         limit,
@@ -71,6 +84,7 @@ export async function GET(request: NextRequest) {
         pages: Math.ceil(total / limit)
       }
     });
+
   } catch (error) {
     return NextResponse.json(
       {
@@ -83,10 +97,9 @@ export async function GET(request: NextRequest) {
   }
 }
 
+
 export async function POST(req: NextRequest) {
-
   try {
-
     await connectDB();
 
     const formData = await req.formData();
@@ -124,7 +137,6 @@ export async function POST(req: NextRequest) {
 
       const audioFile = files[i];
       const meta = metaList[i];
-
 
 
       if (audioFile.type !== "audio/mpeg") {
@@ -203,57 +215,5 @@ export async function POST(req: NextRequest) {
       message: error.message || "Upload failed"
     }, { status: 500 });
 
-  }
-}
-
-export async function DELETE(request: NextRequest) {
-  try {
-    await connectDB();
-
-    const searchParams = request.nextUrl.searchParams;
-    const sound_id = searchParams.get('sound_id');
-    const user_id = searchParams.get('user_id');
-
-    if (!sound_id && !user_id) {
-      return NextResponse.json({
-        success: false,
-        message: 'Please provide sound_id or user_id'
-      }, { status: 400 });
-    }
-
-    const query: FilterQuery<IFile> = {};
-
-    if (sound_id && user_id) {
-      query.s_id = sound_id;
-      query['user.uid'] = user_id;
-    } else if (sound_id) {
-      query.s_id = sound_id;
-    } else if (user_id) {
-      query['user.uid'] = user_id;
-    }
-
-    const deletedSounds = await File.deleteMany(query);
-
-    if (deletedSounds.deletedCount === 0) {
-      return NextResponse.json({
-        success: false,
-        message: 'No sounds found to delete'
-      }, { status: 404 });
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: `${deletedSounds.deletedCount} sound(s) deleted successfully`,
-      data: {
-        deletedCount: deletedSounds.deletedCount
-      }
-    });
-
-  } catch (error) {
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to delete sounds',
-      error: String(error)
-    }, { status: 500 });
   }
 }
