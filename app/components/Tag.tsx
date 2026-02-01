@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { cn } from '@/app/services/cn';
-
 
 type TagBaseProps = {
   children: React.ReactNode;
@@ -10,7 +10,6 @@ type TagBaseProps = {
   variant?: 'default' | 'active';
   className?: string;
 };
-
 
 type TagButtonProps = TagBaseProps & {
   as?: 'button';
@@ -22,7 +21,12 @@ type TagSpanProps = TagBaseProps & {
 } & React.HTMLAttributes<HTMLSpanElement>;
 
 
-type TagProps = TagButtonProps | TagSpanProps;
+type TagLinkProps = TagBaseProps & {
+  as: 'link';
+  href: string;
+} & React.AnchorHTMLAttributes<HTMLAnchorElement>;
+
+type TagProps = TagButtonProps | TagSpanProps | TagLinkProps;
 
 const Tag: React.FC<TagProps> = (props) => {
   const {
@@ -37,7 +41,6 @@ const Tag: React.FC<TagProps> = (props) => {
   const sizeClasses = {
     xs: 'px-3 py-0.5 text-xs',
     sm: 'px-3 py-1 text-sm',
-    md: 'px-4 py-1 text-xs sm:text-sm',
   };
 
   const baseClasses =
@@ -78,6 +81,18 @@ const Tag: React.FC<TagProps> = (props) => {
       </span>
     );
   }
+
+
+  if (as === 'link') {
+    const { href, ...linkProps } = rest as TagLinkProps;
+
+    return (
+      <Link href={href} className={classes} {...linkProps}>
+        {children}
+      </Link>
+    );
+  }
+
 
   const buttonProps = rest as React.ButtonHTMLAttributes<HTMLButtonElement>;
 

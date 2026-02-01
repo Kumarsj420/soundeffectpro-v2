@@ -38,9 +38,21 @@ export async function GET(request: NextRequest) {
     const query: FilterQuery<IFile> = {};
 
 
-    if (category) query.category = category;
+    if (category) {
+      query.category = {
+        $regex: `^${category}$`,
+        $options: "i"
+      };
+    }
     if (userId) query["user.uid"] = userId;
-    if (tag) query.tags = tag;
+    if (tag) {
+      query.tags = {
+        $elemMatch: {
+          $regex: `^${tag}$`,
+          $options: "i"
+        }
+      };
+    }
     if (search) query.$text = { $search: search };
 
 
@@ -108,8 +120,8 @@ export async function GET(request: NextRequest) {
 
       sessionUid
         ? Fav.find({ uid: sessionUid })
-            .select("s_id -_id")
-            .lean<{ s_id: string }[]>()
+          .select("s_id -_id")
+          .lean<{ s_id: string }[]>()
         : Promise.resolve([])
 
     ]);

@@ -158,7 +158,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
             <HomeIcon className='size-4.5' />
           </Link>
           <ChevronRightIcon className="text-gray-600 dark:text-zinc-500 size-3.5" />
-          <Link href='##' className="text-gray-500 dark:text-zinc-300 hover:text-blue-400 transition-colors">
+          <Link href={`/category/${sfxInfo?.category ? sfxInfo?.category : 'Random'}`} className="text-gray-500 dark:text-zinc-300 hover:text-blue-400 transition-colors">
             {sfxInfo?.category ? sfxInfo?.category : 'Random'}
           </Link>
           <ChevronRightIcon className="text-gray-600 dark:text-zinc-500 size-3.5" />
@@ -238,7 +238,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
               <div className="flex flex-wrap gap-2">
                 {
                   sfxInfo?.tags.map((tag: string, index: number) => (
-                    <Tag key={index} >
+                    <Tag as='link' href={`/tag/${tag}`} key={index} >
                       {tag}
                     </Tag>
                   ))
@@ -270,7 +270,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
                     <Button
                       variant='outline'
                       size='sm'
-                           onClick={() => openModal('edit-sound-modal', {title: sfxInfo?.title, s_id: sfxInfo?.s_id, btnColor: sfxInfo?.btnColor, tags: sfxInfo?.tags, description: sfxInfo?.description})}
+                      onClick={() => openModal('edit-sound-modal', { title: sfxInfo?.title, s_id: sfxInfo?.s_id, btnColor: sfxInfo?.btnColor, tags: sfxInfo?.tags, description: sfxInfo?.description })}
                     >
                       <PencilSquareIcon className='text-gray-500/80 dark:text-zinc-400/75 size-4' />
                       Edit Sound
@@ -278,7 +278,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
                     <Button
                       variant='error'
                       size='sm'
-                      onClick={() => openModal('del-sound-modal', {title: sfxInfo?.title, s_id: sfxInfo?.s_id, btnColor: sfxInfo?.btnColor})}
+                      onClick={() => openModal('del-sound-modal', { title: sfxInfo?.title, s_id: sfxInfo?.s_id, btnColor: sfxInfo?.btnColor })}
                     >
                       <TrashIcon className='text-error-100 size-4' />
                       Delete Sound
@@ -288,7 +288,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
                   <Button
                     variant='error'
                     size='sm'
-                    onClick={() => openModal('report-modal', {title: sfxInfo?.title, s_id: sfxInfo?.s_id, btnColor: sfxInfo?.btnColor})}
+                    onClick={() => openModal('report-modal', { title: sfxInfo?.title, s_id: sfxInfo?.s_id, btnColor: sfxInfo?.btnColor })}
                   >
                     <FlagIcon className='text-error-100 size-4' />
                     Report Sound
