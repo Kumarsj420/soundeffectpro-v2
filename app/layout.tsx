@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`dark ${nunito.className}`}>
       <head>
-        <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.GOOGLE_AD_CLIENT}`}
+        <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_GOOGLE_AD_CLIENT}`}
           crossOrigin="anonymous"></script>
       </head>
       <body
@@ -43,7 +43,9 @@ export default function RootLayout({
         </div>
         <Providers>
           <Navbar />
-          <GoogleAd slot='3080916601' />
+          <div className="max-w-7xl m-auto px-5 sm:px-7">
+            <GoogleAd slot='3080916601' />
+          </div>
           <Modal_Root />
           <FetchLoading />
           <ToastContainer
