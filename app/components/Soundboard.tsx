@@ -16,28 +16,28 @@ function Soundboard({ obj }: { obj: CategoryInterface }) {
       <CustomImg
         src={getR2Url(`thumb/${obj.thumb}`) ?? ''}
         alt={obj.name}
-        width={224}
-        height={168}
+        fill
+        sizes="100vw"
         wrapperClassName='absolute inset-0 w-full h-full rounded-[inherit] group-hover:scale-120 group-hover:brightness-85 transition duration-200 ease-in-out -z-10'
       />
 
-      <div className="absolute inset-0 -z-10 bg-linear-to-t from-gray-900 via-gray-900/40 dark:from-zinc-900 dark:via-zinc-900/40" />
+      <div className="absolute inset-0 -z-10 bg-linear-to-t from-gray-800 via-gray-800/40 dark:from-zinc-900 dark:via-zinc-900/40" />
       <div className="absolute inset-0 -z-10 rounded-2xl inset-ring inset-ring-gray-900/10" />
       <div className="flex justify-between gap-1 overflow-hidden">
         <CardSpan>
-          <time dateTime='june 25' className="mr-8 whitespace-nowrap">
+          <time dateTime='june 25' className="mr-8 whitespace-nowrap text-gray-200 dark:text-zinc-400">
             {new Date(
               obj.createdAt
             ).toLocaleDateString()}
           </time>
         </CardSpan>
-        <CardSpan className="block  truncate">
-          <span className="group/anker ">by <span className="text-gray-900 dark:text-white group-hover/anker:text-blue-400">{obj.user.name ?? 'Anonymous'}</span></span>
+        <CardSpan className="block  truncate text-gray-200 dark:text-zinc-400">
+          <span className="group/anker ">by <span className="text-white group-hover/anker:text-blue-400">{obj.user.name ?? 'Anonymous'}</span></span>
         </CardSpan>
       </div>
       <Head3 className='line-clamp-2 mt-1 leading-tight'>
-        <Link href={`/soundboard/${obj.slug}-${obj.sb_id}`} className='group-hover:underline'>
-          <span className="absolute inset-0" />
+        <Link href={`/soundboard/${obj.slug}-${obj.sb_id}`} className='group-hover:underline text-white'>
+          <span className="absolute inset-0 " />
           {obj.name}
         </Link>
       </Head3>
