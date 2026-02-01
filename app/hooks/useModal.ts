@@ -13,6 +13,7 @@ export type ModalType =
     | 'embed-modal'
     | 'create-soundboard-modal'
     | 'del-sound-modal'
+    | 'edit-sound-modal'
     | null;
 
 interface ModalState {

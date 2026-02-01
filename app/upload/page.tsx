@@ -38,7 +38,7 @@ interface FileInfo {
   duration: number;
 }
 
-const colorOptions = [
+export const colorOptions = [
   {
     id: 'coral-red',
     name: 'Coral Red',

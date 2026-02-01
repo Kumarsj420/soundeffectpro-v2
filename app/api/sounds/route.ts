@@ -8,12 +8,14 @@ import { uploadAudioToR2 } from "@/app/lib/r2/r2audioUpload";
 import User from "@/app/models/User";
 import Fav from "@/app/models/Fav";
 
+
 type SortOrder = 1 | -1;
 
 export const runtime = "nodejs";
 
 export async function GET(request: NextRequest) {
   try {
+
     await connectDB();
 
     const session = await requireAuth();
@@ -23,19 +25,24 @@ export async function GET(request: NextRequest) {
 
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");
+
     const category = searchParams.get("category");
     const search = searchParams.get("search");
+
     const sortBy = searchParams.get("sortBy") || "createdAt";
     const order = searchParams.get("order") || "desc";
+
     const userId = searchParams.get("userId");
     const tag = searchParams.get("tag");
 
     const query: FilterQuery<IFile> = {};
 
+
     if (category) query.category = category;
     if (userId) query["user.uid"] = userId;
     if (tag) query.tags = tag;
     if (search) query.$text = { $search: search };
+
 
     if (userId && sessionUid === userId) {
       query.$or = [{ visibility: true }, { "user.uid": sessionUid }];
@@ -43,14 +50,53 @@ export async function GET(request: NextRequest) {
       query.visibility = true;
     }
 
-    const sort: Record<string, SortOrder> = {
-      [sortBy]: order === "asc" ? 1 : -1,
-      _id: order === "asc" ? 1 : -1
-    };
+
+    let sort: Record<string, SortOrder> = {};
+
+    if (sortBy.startsWith('stats.weekly.')) {
+
+      sort = {
+        'stats.weekly.periodStart': -1,
+        [sortBy]: -1
+      };
+
+    }
+
+    else if (sortBy.startsWith('stats.monthly.')) {
+
+      sort = {
+        'stats.monthly.periodStart': -1,
+        [sortBy]: -1
+      };
+
+    }
+
+    else if (sortBy.startsWith('stats.halfYearly.')) {
+
+      sort = {
+        'stats.halfYearly.periodStart': -1,
+        [sortBy]: -1
+      };
+
+    }
+
+    else {
+
+      sort = {
+        [sortBy]: order === "asc" ? 1 : -1,
+        _id: order === "asc" ? 1 : -1
+      };
+
+    }
 
     const skip = (page - 1) * limit;
 
+    // -----------------------
+    // DB Queries
+    // -----------------------
+
     const [sounds, total, favs] = await Promise.all([
+
       File.find(query)
         .sort(sort)
         .skip(skip)
@@ -62,10 +108,15 @@ export async function GET(request: NextRequest) {
 
       sessionUid
         ? Fav.find({ uid: sessionUid })
-          .select("s_id -_id")
-          .lean<{ s_id: string }[]>()
-        : Promise.resolve([] as { s_id: string }[])
+            .select("s_id -_id")
+            .lean<{ s_id: string }[]>()
+        : Promise.resolve([])
+
     ]);
+
+    // -----------------------
+    // Merge Favorites
+    // -----------------------
 
     const favSet = new Set(favs.map(f => f.s_id));
 
@@ -73,6 +124,10 @@ export async function GET(request: NextRequest) {
       ...sound,
       isFav: favSet.has(sound.s_id)
     }));
+
+    // -----------------------
+    // Response
+    // -----------------------
 
     return NextResponse.json({
       success: true,
@@ -86,14 +141,15 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Failed to fetch sounds",
-        error: String(error)
-      },
-      { status: 500 }
-    );
+
+    console.error(error);
+
+    return NextResponse.json({
+      success: false,
+      message: "Failed to fetch sounds",
+      error: String(error)
+    }, { status: 500 });
+
   }
 }
 

@@ -1,17 +1,29 @@
 import mongoose, { Schema, Model } from "mongoose";
 import { Types } from "mongoose";
 import { v4 as uuidv4 } from "uuid";
+import { getWeekStart, getMonthStart, getHalfYearStart } from "../lib/statsPeriod";
 
 export interface IUser {
     uid: string,
     name: string
 }
 
+export interface IPeriodStat {
+    views: number;
+    likes: number;
+    downloads: number;
+    periodStart: Date;
+}
+
 export interface IStats {
-    views: number,
-    likes: number,
-    downloads: number,
-    reports: number,
+    views: number;
+    likes: number;
+    downloads: number;
+    reports: number;
+
+    weekly: IPeriodStat;
+    monthly: IPeriodStat;
+    halfYearly: IPeriodStat;
 }
 
 export interface IFile {
@@ -47,28 +59,52 @@ const UserSchema = new Schema<IUser>({
     }
 }, { _id: false })
 
+const PeriodStatSchema = new Schema<IPeriodStat>({
+    views: { type: Number, default: 0 },
+    likes: { type: Number, default: 0 },
+    downloads: { type: Number, default: 0 },
+    periodStart: { type: Date, required: true},
+}, { _id: false });
+
+
 const StatsSchema = new Schema<IStats>({
-    views: {
-        type: Number,
-        default: 0,
-        min: 0
+    views: { type: Number, default: 0, min: 0 },
+    likes: { type: Number, default: 0, min: 0 },
+    downloads: { type: Number, default: 0, min: 0 },
+    reports: { type: Number, default: 0, min: 0 },
+
+    weekly: {
+        type: PeriodStatSchema,
+        default: () => ({
+            views: 0,
+            likes: 0,
+            downloads: 0,
+            periodStart: getWeekStart()
+        })
     },
-    likes: {
-        type: Number,
-        default: 0,
-        min: 0
+
+    monthly: {
+        type: PeriodStatSchema,
+        default: () => ({
+            views: 0,
+            likes: 0,
+            downloads: 0,
+            periodStart: getMonthStart()
+        })
     },
-    downloads: {
-        type: Number,
-        default: 0,
-        min: 0
-    },
-    reports: {
-        type: Number,
-        default: 0,
-        min: 0
+
+    halfYearly: {
+        type: PeriodStatSchema,
+        default: () => ({
+            views: 0,
+            likes: 0,
+            downloads: 0,
+            periodStart: getHalfYearStart()
+        })
     }
-}, { _id: false })
+
+}, { _id: false });
+
 
 const FileSchema = new Schema<IFile>({
     s_id: {
@@ -163,6 +199,53 @@ FileSchema.index({ 'stats.views': -1 });
 FileSchema.index({ 'stats.downloads': -1 });
 FileSchema.index({ 'user.uid': 1 });
 FileSchema.index({ tags: 1 });
+
+FileSchema.index({
+  'stats.weekly.periodStart': 1,
+  'stats.weekly.views': -1
+});
+
+FileSchema.index({
+  'stats.weekly.periodStart': 1,
+  'stats.weekly.downloads': -1
+});
+
+FileSchema.index({
+  'stats.weekly.periodStart': 1,
+  'stats.weekly.likes': -1
+});
+
+FileSchema.index({
+  'stats.monthly.periodStart': 1,
+  'stats.monthly.views': -1
+});
+
+FileSchema.index({
+  'stats.monthly.periodStart': 1,
+  'stats.monthly.downloads': -1
+});
+
+FileSchema.index({
+  'stats.monthly.periodStart': 1,
+  'stats.monthly.likes': -1
+});
+
+FileSchema.index({
+  'stats.halfYearly.periodStart': 1,
+  'stats.halfYearly.views': -1
+});
+
+FileSchema.index({
+  'stats.halfYearly.periodStart': 1,
+  'stats.halfYearly.downloads': -1
+});
+
+FileSchema.index({
+  'stats.halfYearly.periodStart': 1,
+  'stats.halfYearly.likes': -1
+});
+
+
 
 FileSchema.pre('save', function (next) {
     if (!this.slug || this.isModified('title')) {

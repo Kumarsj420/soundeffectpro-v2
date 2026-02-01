@@ -154,7 +154,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
         {/* breadcrumps */}
         <nav className="flex items-center gap-1.5 text-sm mb-5">
           <Link href='/' className="text-gray-500 dark:text-zinc-400 hover:text-blue-400 transition-colors flex items-center gap-1">
-            <HomeIcon className='size-4' />
+            <HomeIcon className='size-4.5' />
           </Link>
           <ChevronRightIcon className="text-gray-600 dark:text-zinc-500 size-3.5" />
           <Link href='##' className="text-gray-500 dark:text-zinc-300 hover:text-blue-400 transition-colors">
@@ -269,6 +269,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
                     <Button
                       variant='outline'
                       size='sm'
+                           onClick={() => openModal('edit-sound-modal', {title: sfxInfo?.title, s_id: sfxInfo?.s_id, btnColor: sfxInfo?.btnColor, tags: sfxInfo?.tags, description: sfxInfo?.description})}
                     >
                       <PencilSquareIcon className='text-gray-500/80 dark:text-zinc-400/75 size-4' />
                       Edit Sound
@@ -286,6 +287,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
                   <Button
                     variant='error'
                     size='sm'
+                    onClick={() => openModal('report-modal', {title: sfxInfo?.title, s_id: sfxInfo?.s_id, btnColor: sfxInfo?.btnColor})}
                   >
                     <FlagIcon className='text-error-100 size-4' />
                     Report Sound

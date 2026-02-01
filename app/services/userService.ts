@@ -11,6 +11,26 @@ export interface SoundboardPayload {
     s_id: string;
 }
 
+export interface ReportPayload {
+    senderEmail: string;
+    type?: string;
+    from: string;
+    content: string;
+}
+
+export interface ReportResponse {
+    success: boolean;
+    message: string;
+    data?: {
+        _id: string;
+        senderEmail: string;
+        type?: string;
+        from: string;
+        content: string;
+        createdAt: string;
+        updatedAt: string;
+    };
+}
 
 export const userService = {
     getUserByUID: async (uid: string): Promise<IUserResponse> => {
@@ -62,7 +82,17 @@ export const userService = {
     userFavToggle: async (s_id: string): Promise<{ success: boolean; status: string; message: string }> => {
         const res = await axiosInstance.post("/api/user/fav", { s_id });
         return res.data;
-    }
+    },
+
+    submitReport: async (
+        payload: ReportPayload
+    ): Promise<ReportResponse> => {
+
+        const res = await axiosInstance.post("/api/report", payload);
+
+        return res.data;
+    },
+
 
 
 };

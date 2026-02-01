@@ -17,18 +17,12 @@ import { useFetchLoading } from '@/app/hooks/useFetchLoading';
 import { categoryService } from '@/app/services/categoryService';
 import { useSession } from 'next-auth/react';
 
-// Extract individual field schemas for validation
 const nameSchema = z
     .string()
     .min(3, "Name must be at least 3 characters")
     .max(100, "Name must be under 100 characters")
     .trim();
 
-const thumbSchema = z
-    .string()
-    .url("Invalid thumbnail URL")
-    .nullable()
-    .optional();
 
 function CreateSoundboardModal() {
     const { isOpen, type, closeModal } = useModal();

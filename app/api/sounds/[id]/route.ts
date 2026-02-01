@@ -67,7 +67,7 @@ export async function GET(
 }
 
 
-export async function PUT(
+export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -77,36 +77,45 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
 
-    delete body.s_id;
     delete body._id;
+    delete body.s_id;
+
+    const updateData = Object.fromEntries(
+      Object.entries(body).filter(([_, value]) => value !== undefined)
+    );
 
     const updatedSound = await File.findOneAndUpdate(
-      { $or: [{ s_id: id }, { slug: id }] },
-      body,
-      { new: true, runValidators: true }
+      { s_id: id },
+      { $set: updateData },
+      { new: true }
     );
 
     if (!updatedSound) {
-      return NextResponse.json({
-        success: false,
-        message: 'Sound not found'
-      }, { status: 404 });
+      return NextResponse.json(
+        { success: false, message: "Sound not found" },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Sound updated successfully',
+      message: "Sound patched successfully",
       data: updatedSound
     });
 
   } catch (error) {
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to update sound',
-      error: String(error)
-    }, { status: 500 });
+    console.error("PATCH ERROR:", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to patch sound"
+      },
+      { status: 500 }
+    );
   }
 }
+
 
 export async function DELETE(
   request: NextRequest,
@@ -145,7 +154,7 @@ export async function DELETE(
       );
     }
 
-    const r2Key =  `store/${id}.mp3`;
+    const r2Key = `store/${id}.mp3`;
 
     await deleteFromR2(r2Key);
 

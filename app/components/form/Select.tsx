@@ -42,6 +42,7 @@ interface SelectProps {
     className?: string;
     wrapperClassName?: string;
     id?: string;
+    maxHeight?: 'sm' | 'md' | 'lg';
 }
 
 type labelProps = {
@@ -62,6 +63,7 @@ export function Select({
     className,
     wrapperClassName,
     id,
+    maxHeight = 'lg'
 }: SelectProps) {
     const [open, setOpen] = useState(false);
     const [internalValue, setInternalValue] = useState(defaultValue);
@@ -159,7 +161,7 @@ export function Select({
                         {...getFloatingProps()}
                         className="z-50 mt-1 w-full rounded-xl bg-white dark:bg-zinc-800 shadow-lg ring-1 ring-black/10 overflow-hidden"
                     >
-                        <div className="overflow-y-auto max-h-70 scrollbar-mini">
+                        <div className={cn("overflow-y-auto scrollbar-mini", maxHeight === 'sm' ? 'max-h-40' : maxHeight === 'md' ? 'max-h-55' : 'max-h-70')}>
                             {children}
                         </div>
                     </div>

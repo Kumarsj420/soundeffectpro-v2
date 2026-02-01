@@ -21,7 +21,7 @@ export interface IGetFilesParams {
   limit?: number;
   category?: string;
   search?: string;
-  sortBy?: string;   // createdAt | views | downloads
+  sortBy?: string;
   order?: "asc" | "desc";
   userId?: string;
   tag?: string;
@@ -46,6 +46,23 @@ export interface IUploadSoundResponse {
   message: string;
   data: IFile[];
 }
+
+export type IUpdateSoundPayload = Partial<{
+  title: string;
+  slug: string;
+  duration: string;
+  tags: string[];
+  category: string;
+  description: string;
+  btnColor: string;
+}>;
+
+export interface IPatchSoundResponse {
+  success: boolean;
+  message: string;
+  data: IFile;
+}
+
 
 
 export const fileService = {
@@ -169,6 +186,24 @@ export const fileService = {
   deleteById: async (id: string) => {
     const response = await axiosInstance.delete(`/api/sounds/${id}`);
     return response.data;
+  },
+
+  patchSoundById: async (
+    id: string,
+    payload: IUpdateSoundPayload
+  ): Promise<IPatchSoundResponse> => {
+
+    if (!Object.keys(payload).length) {
+      throw new Error("Nothing to update");
+    }
+
+    const response = await axiosInstance.patch<IPatchSoundResponse>(
+      `/api/sounds/${id}`,
+      payload
+    );
+
+    return response.data;
   }
+
 
 }

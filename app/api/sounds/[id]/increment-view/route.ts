@@ -1,6 +1,7 @@
 import { connectDB } from '@/app/lib/dbConnection';
 import File from '@/app/models/File';
 import { NextRequest, NextResponse } from 'next/server';
+import { incrementFileStat } from '@/app/lib/fileStatInc';
 
 export async function PATCH(
   request: NextRequest,
@@ -13,11 +14,13 @@ export async function PATCH(
 
     const sound = await File.findOneAndUpdate(
       { s_id: id },
-      { $inc: { "stats.views" : 1 } },
+      { $inc: { "stats.views": 1 } },
       { new: true }
     );
 
-    if (!sound) {
+    const trendStatInc = await incrementFileStat(id, 'views');
+
+    if (!sound || !trendStatInc) {
       return NextResponse.json({
         success: false,
         message: 'Sound not found'

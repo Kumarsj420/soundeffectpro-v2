@@ -70,7 +70,7 @@ export default function HomePage() {
     isLoading: isTrendingSfxLoading,
   } = useQuery({
     queryKey: ['trending-sfx'],
-    queryFn: () => fileService.getFiles({ sortBy: 'stats.likes', order: 'desc', limit: 5 }),
+    queryFn: () => fileService.getFiles({ sortBy: 'stats.weekly.views', order: 'desc', limit: 5 }),
     staleTime: 1000 * 60 * 5,
   })
 
@@ -141,7 +141,7 @@ export default function HomePage() {
 
         <section className="space-y-4 mt-10">
           <div className="flex items-center justify-between">
-            <Head2>Trending <span className="text-gray-600/90 dark:text-zinc-300/80 font-light">| Sound Buttons</span></Head2>
+            <Head2>Weekly Trending <span className="text-gray-600/90 dark:text-zinc-300/80 font-light">| Sound Buttons</span></Head2>
             <Link href='/trending'>
               <Button variant="outline" size="sm">
                 More

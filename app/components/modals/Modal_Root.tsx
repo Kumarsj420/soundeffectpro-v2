@@ -4,6 +4,8 @@ import AddToSbModal from './Ats'
 import DelAcc from './DelAcc'
 import CreateSoundboardModal from './CreateSoundboard'
 import DelSound from './DelSound'
+import ReportModal from './Report'
+import EditSound from './EditSound'
 
 export default function Modal_Root() {
   return (
@@ -12,6 +14,8 @@ export default function Modal_Root() {
     <DelAcc />
     <CreateSoundboardModal />
     <DelSound />
+    <ReportModal />
+    <EditSound />
    </>
   )
 }
