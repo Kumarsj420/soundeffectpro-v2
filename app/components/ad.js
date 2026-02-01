@@ -16,7 +16,7 @@ export default function GoogleAd({ slot, format = 'auto', responsive = true }) {
     <ins
       className="adsbygoogle"
       style={{ display: 'block' }}
-      data-ad-client={process.env.GOOGLE_AD_CLIENT}
+      data-ad-client={process.env.NEXT_PUBLIC_GOOGLE_AD_CLIENT}
       data-ad-slot={slot}
       data-ad-format={format}
       data-full-width-responsive={responsive.toString()}

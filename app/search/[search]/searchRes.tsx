@@ -22,7 +22,7 @@ export default function SearchRes({
     isFetchingNextPage,
     isLoading,
   } = useInfiniteQuery({
-    queryKey: ["sounds", "trending"],
+    queryKey: ["sounds", "search", search],
     initialPageParam: 1,
     queryFn: ({ pageParam }) =>
       fileService.getFiles({

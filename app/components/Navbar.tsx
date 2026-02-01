@@ -21,8 +21,8 @@ import {
     useDismiss,
     useInteractions,
 } from "@floating-ui/react";
-
-
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 interface Sound {
     id: number;
@@ -53,18 +53,10 @@ export default function Navbar() {
     const t = useT();
     const [query, setQuery] = useState("");
     const [results, setResults] = useState<Sound[]>([]);
+    const [searchInp, setSearchInp] = useState('');
+    const router = useRouter();
 
-    const handleSearch = (value: string) => {
-        setQuery(value);
-        if (value.trim().length > 0) {
-            const filtered = mockSounds.filter((sound) =>
-                sound.title.toLowerCase().includes(value.toLowerCase())
-            );
-            setResults(filtered);
-        } else {
-            setResults([]);
-        }
-    };
+
 
     const { data: session, status } = useSession();
     const [openMenu, setOpenMenu] = useState(false);
@@ -83,6 +75,18 @@ export default function Navbar() {
         useInteractions([dismiss]);
 
 
+    const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        if (searchInp === '') {
+            toast.error('Please enter search value');
+            return;
+        }
+
+        router.push(`/search/${searchInp}`);
+
+    }
+
 
     if (status === 'loading') {
         return <Loading />;
@@ -98,16 +102,19 @@ export default function Navbar() {
 
                 {/* Search */}
                 <div className="hidden md:flex flex-1 max-w-md mx-6 relative">
-                    <input
-                        type="text"
-                        value={query}
-                        onChange={(e) => handleSearch(e.target.value)}
-                        placeholder="Search sounds.."
-                        className="w-full rounded-l-lg bg-gray-50 dark:bg-zinc-800 px-4 py-2 text-sm focus:outline-none ring-[0.1em] ring-inset ring-gray-300 dark:ring-zinc-600/80 focus:ring-blue-400 focus:ring-[0.12em] placeholder:text-gray-500/85 dark:placeholder:text-zinc-400/90 text-gray-900 dark:text-white"
-                    />
-                    <button className="px-3 py-2 bg-blue-500 hover:bg-blue-400 text-white rounded-r-lg cursor-pointer">
-                        <Search size={18} />
-                    </button>
+                    <form onSubmit={(e) => handleSearchSubmit(e)} className="w-full flex ">
+                        <input
+                            type="text"
+                            value={searchInp}
+                            onChange={(e) => setSearchInp(e.target.value)}
+                            placeholder="Search sounds.."
+                            className="w-full rounded-l-lg bg-gray-50 dark:bg-zinc-800 px-4 py-2 text-sm focus:outline-none ring-[0.1em] ring-inset ring-gray-300 dark:ring-zinc-600/80 focus:ring-blue-400 focus:ring-[0.12em] placeholder:text-gray-500/85 dark:placeholder:text-zinc-400/90 text-gray-900 dark:text-white"
+                        />
+                        <button type='submit' className="px-3 py-2 bg-blue-500 hover:bg-blue-400 text-white rounded-r-lg cursor-pointer">
+                            <Search size={18} />
+                        </button>
+                    </form>
+
 
                     {results.length > 0 && (
                         <ul className="absolute top-full mt-1 w-full bg-white dark:bg-zinc-800 border border-gray-300/80 dark:border-zinc-700 rounded-lg shadow-lg dark:shadow-none shadow-gray-300/80 max-h-56 overflow-y-auto z-50">
@@ -175,7 +182,7 @@ export default function Navbar() {
                                             className={`w-screen max-w-61 origin-top-right rounded-2xl bg-white shadow-lg shadow-gray-200 outline-1 outline-gray-300/70  dark:divide-white/10 dark:bg-zinc-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10 overflow-hidden `}
                                         >
                                             <div className="py-2 px-3">
-                                                <div className="bg-white dark:bg-zinc-900 ring-[0.1em] ring-gray-200 dark:ring-0 dark:bg-gradient-to-b dark:from-zinc-600/80 dark:to-zinc-800 rounded-xl relative z-10 dark:after:absolute dark:after:inset-0.5 dark:after:-z-10  dark:dark:after:bg-zinc-900 dark:after:rounded-[inherit] shadow-lg shadow-gray-300/70 dark:shadow-none px-4 py-3 flex gap-3 items-stretch">
+                                                <div className="bg-white dark:bg-zinc-900 ring-[0.1em] ring-gray-200 dark:ring-0 dark:bg-linear-to-b dark:from-zinc-600/80 dark:to-zinc-800 rounded-xl relative z-10 dark:after:absolute dark:after:inset-0.5 dark:after:-z-10  dark:dark:after:bg-zinc-900 dark:after:rounded-[inherit] shadow-lg shadow-gray-300/70 dark:shadow-none px-4 py-3 flex gap-3 items-stretch">
                                                     <div>
                                                         {
                                                             session?.user.image ? (
@@ -201,7 +208,7 @@ export default function Navbar() {
                                                     <div className="flex-1 overflow-hidden">
                                                         <span className="truncate block text-sm font-bold">{session?.user.name ?? 'Anonymous'}
                                                         </span>
-                                                        <span className="text-xs text-gray-500 dark:text-zinc-400 block -translate-y-[1px]">Id: <span className="font-semibold">{session?.user.uid}</span></span>
+                                                        <span className="text-xs text-gray-500 dark:text-zinc-400 block -translate-y-px">Id: <span className="font-semibold">{session?.user.uid}</span></span>
                                                     </div>
                                                 </div>
 
