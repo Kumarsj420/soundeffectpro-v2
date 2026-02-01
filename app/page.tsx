@@ -86,7 +86,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen text-white">
       <div className="space-y-8">
-        <TagScroller />
+        {/* <TagScroller /> */}
 
         <section className="space-y-4">
           <div className="flex items-center justify-between">
