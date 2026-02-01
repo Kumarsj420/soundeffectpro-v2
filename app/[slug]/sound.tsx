@@ -23,6 +23,7 @@ import { Head1, Para, CardSpan } from '../components/Ui';
 import Link from 'next/link';
 import Tag from '../components/Tag';
 import { useRouter } from 'next/navigation';
+import GoogleAd from '../components/ad';
 
 interface SoundDetailsPageProps {
   id: string;
@@ -298,6 +299,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
           </div>
         </div>
       </section >
+      <GoogleAd slot='4593368893' />
       <section>
         <Head2>Related Sounds</Head2>
 

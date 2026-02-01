@@ -128,7 +128,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
       <div className="mt-1.5 flex justify-between gap-3 overflow-hidden">
         <CardSpan>{obj.duration}</CardSpan>
         <CardSpan className="block  truncate">
-          <Link href={`/user/${obj.user.uid}`} className="group/anker ">by <span className="text-gray-900 dark:text-white group-hover/anker:text-blue-400">{obj.user.name}</span></Link>
+          <Link href={`/user/${obj.user.uid}?name=${obj.user.name}`} className="group/anker ">by <span className="text-gray-900 dark:text-white group-hover/anker:text-blue-400">{obj.user.name}</span></Link>
         </CardSpan>
       </div>
 
@@ -289,7 +289,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
 
 export function SoundCardSkelton() {
   return (
-    <div className="bg-gradient-to-br from-white  to-gray-100/70 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl shadow-lg shadow-gray-300/60 dark:shadow-none p-4 relative group ring-1 ring-gray-300/80 dark:ring-0 ">
+    <div className="bg-linear-to-br from-white  to-gray-100/70 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl shadow-lg shadow-gray-300/60 dark:shadow-none p-4 relative group ring-1 ring-gray-300/80 dark:ring-0 ">
       <div className="flex justify-center mb-4">
         <div className="size-21 bg-zinc-700 rounded-full animate-pulse"></div>
       </div>
