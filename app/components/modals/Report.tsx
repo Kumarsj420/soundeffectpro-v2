@@ -1,5 +1,5 @@
 'use client'
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal, { ModalHeader, ModalBody, ModalFooter } from './Modal_Structure';
 import { useModal } from '@/app/hooks/useModal';
 import Button from '../form/Button';
@@ -18,6 +18,7 @@ import Label from '../form/Label';
 import Input from '../form/Input';
 import Textarea from '../form/Textarea';
 import { Select, Option } from '../form/Select';
+import { reportValidationSchema } from '@/app/lib/validators/report.schema';
 
 interface SoundData {
     s_id?: string;
@@ -48,14 +49,94 @@ function ReportModal() {
     const openFetchLoading = useFetchLoading((s) => s.openFetchLoading);
     const closeFetchLoading = useFetchLoading((s) => s.closeFetchLoading);
 
-    const [emailInp, setEmailInp] = useState(email);
+    const [emailInp, setEmailInp] = useState(email ?? '');
     const [typeInp, setTypeInp] = useState('');
     const [messageInp, setMessageInp] = useState('');
+
+    const [emailTouched, setEmailTouched] = useState(false);
+    const [typeTouched, setTypeTouched] = useState(false);
+    const [messageTouched, setMessageTouched] = useState(false);
+
+    const emailSchema = reportValidationSchema.shape.senderEmail;
+    const typeSchema = reportValidationSchema.shape.type;
+    const messageSchema = reportValidationSchema.shape.content;
+
+
+    const [emailError, setEmailError] = useState<string | null>(null);
+    const [typeError, setTypeError] = useState<string | null>(null);
+    const [messageError, setMessageError] = useState<string | null>(null);
+
+    const [triggerValidation, setTriggerValidation] = useState(false);
 
     const { s_id = '', title = '', btnColor = '' } = (data as SoundData) || {};
 
     const audioUrl = s_id ? getR2Url(`store/${s_id}.mp3`) : null;
     const { play, pause, loading, playing } = useLazyAudio(audioUrl ?? "");
+
+    useEffect(() => {
+        if (email) {
+            setEmailInp(email);
+        }
+    }, [email]);
+
+    useEffect(() => {
+        if (triggerValidation) {
+            console.log('triggering validation');
+
+            const emailResult = emailSchema.safeParse(emailInp);
+            const typeResult = typeSchema.safeParse(typeInp);
+            const messageResult = messageSchema.safeParse(messageInp);
+
+            if (!emailResult.success) {
+                setEmailError(emailResult.error.issues[0].message);
+            } else {
+                setEmailError(null);
+            }
+
+            if (!typeResult.success) {
+                setTypeError(typeResult.error.issues[0].message);
+            } else {
+                setTypeError(null);
+            }
+
+            if (!messageResult.success) {
+                setMessageError(messageResult.error.issues[0].message);
+            } else {
+                setMessageError(null)
+            }
+        }
+    }, [triggerValidation]);
+
+    useEffect(() => {
+        const result = emailSchema.safeParse(emailInp);
+        if (!result.success) {
+            setEmailError(result.error.issues[0].message);
+        } else {
+            setEmailError(null);
+        }
+    }, [emailInp])
+
+    useEffect(() => {
+        if (!typeTouched) return;
+        const result = typeSchema.safeParse(typeInp);
+        if (!result.success) {
+            setTypeError(result.error.issues[0].message);
+        } else {
+            setTypeError(null);
+        }
+    }, [typeInp])
+
+    useEffect(() => {
+        if (!messageTouched) return;
+        const result = messageSchema.safeParse(messageInp);
+        if (!result.success) {
+            setMessageError(result.error.issues[0].message);
+        } else {
+            setMessageError(null);
+        }
+    }, [messageInp])
+
+
 
     if (!isOpen || type !== 'report-modal') return null;
 
@@ -91,11 +172,30 @@ function ReportModal() {
                 <form className='mt-5 space-y-5'>
                     <div>
                         <Label htmlFor='report-email' required>Email</Label>
-                        <Input type='email' id='report-email' placeholder='Your email' value={emailInp} onChange={(e) => setEmailInp(e.target.value)} />
+                        <Input
+                            type='email'
+                            id='report-email'
+                            placeholder='Your email'
+                            value={emailInp}
+                            onChange={(e) => {
+                                setEmailInp(e.target.value)
+                            }}
+                            error={emailError ?? undefined}
+                            success={!emailError}
+                        />
                     </div>
                     <div>
                         <Label htmlFor='report-reason' required>Reason</Label>
-                        <Select maxHeight='md' value={typeInp} onChange={(val) => setTypeInp(val)}>
+                        <Select
+                            maxHeight='md'
+                            value={typeInp}
+                            onChange={(val) => {
+                                if (!typeTouched) setTypeTouched(true)
+                                setTypeInp(val)
+                            }}
+                            error={typeTouched ? typeError ?? undefined : undefined}
+                            success={!typeError && typeTouched}
+                        >
                             {
                                 reportReasons.map((item) => (
                                     <Option key={item.id} value={item.value}>{item.label}</Option>
@@ -105,7 +205,18 @@ function ReportModal() {
                     </div>
                     <div>
                         <Label htmlFor='report-des' required>Message</Label>
-                        <Textarea id='report-des' placeholder='Describe reason' className='min-h-30 resize-none' value={messageInp} onChange={(e) => setMessageInp(e.target.value)} />
+                        <Textarea
+                            id='report-des'
+                            placeholder='Describe reason'
+                            className='resize-none'
+                            rows={4}
+                            value={messageInp} onChange={(e) => {
+                                if (!messageTouched) setMessageTouched(true);
+                                setMessageInp(e.target.value)
+                            }}
+                            error={messageTouched ? messageError ?? undefined : undefined}
+                            success={!messageError && messageTouched}
+                        />
                     </div>
                 </form>
 

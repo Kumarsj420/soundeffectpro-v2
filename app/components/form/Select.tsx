@@ -72,7 +72,6 @@ export function Select({
     const selectedValue = isControlled ? value : internalValue;
 
 
-
     const { refs, floatingStyles, context } = useFloating({
         open,
         onOpenChange: setOpen,
@@ -115,10 +114,10 @@ export function Select({
             ' bg-gray-100 text-gray-500 ring-gray-300 cursor-not-allowed';
     } else if (error) {
         triggerClasses +=
-            ' bg-red-50 text-red-800 ring-red-300 focus:ring-red-400';
+            ' text-error-800 dark:text-error-100 ring-error-300 focus:ring-error-400 bg-error-500/15';
     } else if (success) {
         triggerClasses +=
-            ' bg-white text-green-800 ring-emerald-400 focus:ring-emerald-400';
+            ' ring-gray-400/60 dark:ring-zinc-600/90 focus:ring-success-400';
     } else {
         triggerClasses +=
             ' bg-white dark:bg-zinc-800 text-gray-900 dark:text-white hover:ring-gray-400 ring-gray-400/60 dark:ring-zinc-600/90 dark:hover:ring-zinc-500';

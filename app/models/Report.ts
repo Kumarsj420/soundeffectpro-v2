@@ -23,7 +23,6 @@ export interface IReport {
 
 const ReportSchema = new Schema<IReport>(
     {
-
         senderEmail: {
             type: String,
             required: true,

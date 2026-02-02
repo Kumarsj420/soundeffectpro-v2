@@ -41,7 +41,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   } else if (error) {
     inputClasses += `text-error-800 dark:text-error-100 ring-error-300 focus:ring-error-400 bg-error-500/15`;
   } else if (success) {
-    inputClasses += `ring-gray-400/60 dark:ring-zinc-600/90 focus:ring-success-400`;
+    inputClasses += `ring-gray-400/60 dark:ring-zinc-600/90 focus:ring-success-400 `;
   } else {
     inputClasses += `text-gray-900 dark:text-white focus:ring-blue-400 dark:focus:ring-blue-400 bg-white dark:bg-zinc-800 hover:ring-gray-400 ring-gray-400/60 dark:ring-zinc-600/90 dark:hover:ring-zinc-500`;
   }

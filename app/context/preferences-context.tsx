@@ -28,7 +28,7 @@ type PreferencesContextType = {
 
 
 const DEFAULT_PREFERENCES: PreferencesState = {
-  theme: "system",
+  theme: "dark",
   nsfw: true,
   cookies: true,
 };
