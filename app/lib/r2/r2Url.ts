@@ -1,4 +1,4 @@
-export function getR2Url(key?: string | null) {
+export function getR2Url(key?: string | null, forceDownload = false) {
   if (!key) return null;
   return `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${key}`;
 }

@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import Modal, { ModalHeader, ModalBody, ModalFooter } from './Modal_Structure';
 import { useModal } from '@/app/hooks/useModal';
 import Button from '../form/Button';
@@ -20,7 +20,7 @@ import { Select, Option } from '../form/Select';
 import { reportValidationSchema } from '@/app/lib/validators/report.schema';
 import { userService } from '@/app/services/userService';
 import { AxiosError } from 'axios';
-import type { ReportType, ReportTargetType } from "@/app/services/userService";
+import type { ReportType } from "@/app/services/userService";
 
 
 interface ReportData {
@@ -81,6 +81,14 @@ function ReportModal() {
             setEmailInp(email);
         }
     }, [email]);
+
+    useEffect(() => {
+        setTriggerValidation(false);
+        setTypeTouched(false);
+        setMessageTouched(false);
+        setTypeInp(undefined);
+        setMessageInp('');
+    }, [isOpen])
 
     useEffect(() => {
         if (triggerValidation) {

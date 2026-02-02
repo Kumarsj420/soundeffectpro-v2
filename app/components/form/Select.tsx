@@ -168,7 +168,7 @@ export function Select({
             )}
 
             {error && (
-                <p className="text-red-500 mt-1.5 text-xs font-medium">{error}</p>
+                <p className="text-error-500 mt-1.5 text-xs font-medium">{error}</p>
             )}
         </div>
     );

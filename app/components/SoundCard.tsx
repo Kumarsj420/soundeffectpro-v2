@@ -146,7 +146,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
             {abbriviatedNum(likeCount)}
           </Button>
 
-          <Button size="auto" className="py-1 px-1.5 rounded-md gap-1">
+          <Button size="auto" className="py-1 px-1.5 rounded-md gap-1" onClick={() => openModal('download-modal', { s_id: obj?.s_id, title: obj?.title, btnColor: obj?.btnColor })}>
             <ArrowDownTrayIcon className="size-3.5" /> {abbriviatedNum(obj.stats.downloads)}
           </Button>
         </div>

@@ -198,7 +198,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
                 Embed <span className="hidden sm:inline">Button</span>
               </Button>
 
-              <Button>
+              <Button onClick={() => openModal('download-modal', { s_id: id, title: sfxInfo?.title, btnColor: sfxInfo?.btnColor })}>
                 <ArrowDownOnSquareStackIcon className='size-5' />
                 Download <span className="hidden sm:inline">Sound</span>
               </Button>
@@ -259,6 +259,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
               <Button
                 variant='outline'
                 size='sm'
+                onClick={() => openModal('share-modal')}
               >
                 <ShareIcon className='text-gray-500/80 dark:text-zinc-400/75 size-4' />
                 Share Sound
