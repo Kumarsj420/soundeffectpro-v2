@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import mongoose, { FilterQuery } from "mongoose";
 import { connectDB } from "@/app/lib/dbConnection";
 import Report, { IReport } from "@/app/models/Report";
+import { reportValidationSchema } from "@/app/lib/validators/report.schema";
 
 export async function GET(request: NextRequest) {
     try {
@@ -77,38 +78,76 @@ export async function POST(request: NextRequest) {
 
         const body = await request.json();
 
-        const { senderEmail, type, from, content } = body;
+        const { senderEmail, type, content, target } = body;
 
-        // Validation
-        if (!senderEmail || !content || !from) {
+        const validated = reportValidationSchema.safeParse({
+            senderEmail,
+            type,
+            content,
+        });
+
+        if (!validated.success) {
             return NextResponse.json(
-                { success: false, message: "Required fields missing" },
+                {
+                    success: false,
+                    errors: validated.error.flatten().fieldErrors,
+                },
                 { status: 400 }
             );
         }
 
+        if (!target?.from || !target?.id) {
+            return NextResponse.json(
+                { success: false, message: "Target information missing" },
+                { status: 400 }
+            );
+        }
+
+        if (!["sound", "soundboard"].includes(target.from)) {
+            return NextResponse.json(
+                { success: false, message: "Invalid target type" },
+                { status: 400 }
+            );
+        }
+
+        const alreadyReported = await Report.findOne({
+            senderEmail: validated.data.senderEmail,
+            "target.id": target.id,
+            "target.from": target.from,
+        });
+
+        if (alreadyReported) {
+            return NextResponse.json(
+                { success: false, message: "You already reported this item" },
+                { status: 409 }
+            );
+        }
+
         const report = await Report.create({
-            senderEmail,
-            type,
-            from,
-            content
+            senderEmail: validated.data.senderEmail,
+            type: validated.data.type,
+            content: validated.data.content,
+            target: {
+                from: target.from,
+                id: target.id,
+            },
         });
 
         return NextResponse.json(
             {
                 success: true,
                 message: "Report submitted successfully",
-                data: report
+                data: report,
             },
             { status: 201 }
         );
-
     } catch (error) {
+        console.error(error);
+
         return NextResponse.json(
             {
                 success: false,
                 message: "Failed to submit report",
-                error: String(error)
             },
             { status: 500 }
         );
@@ -131,9 +170,23 @@ export async function PATCH(request: NextRequest) {
 
         const body = await request.json();
 
+        // Allow ONLY read update
+        const updateData: Partial<{ read: boolean }> = {};
+
+        if (typeof body.read === "boolean") {
+            updateData.read = body.read;
+        }
+
+        if (Object.keys(updateData).length === 0) {
+            return NextResponse.json(
+                { success: false, message: "No valid fields to update" },
+                { status: 400 }
+            );
+        }
+
         const updatedReport = await Report.findByIdAndUpdate(
             id,
-            { $set: body },
+            { $set: updateData },
             { new: true }
         ).select("-__v");
 
@@ -147,15 +200,15 @@ export async function PATCH(request: NextRequest) {
         return NextResponse.json({
             success: true,
             message: "Report updated successfully",
-            data: updatedReport
+            data: updatedReport,
         });
-
     } catch (error) {
+        console.error(error);
+
         return NextResponse.json(
             {
                 success: false,
                 message: "Failed to update report",
-                error: String(error)
             },
             { status: 500 }
         );

@@ -195,6 +195,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
 
                         <li>
                           <button
+                            onClick={() => openModal('edit-sound-modal', { title: obj.title, s_id: obj.s_id, btnColor: obj.btnColor, tags: obj.tags, description: obj.description })}
                             className="group flex items-center px-4 py-2 text-sm text-gray-600/90 hover:bg-gray-100 hover:text-gray-900 hover:outline-hidden dark:text-zinc-300 dark:hover:bg-white/5 dark:hover:text-white w-full"
                           >
                             <PencilSquareIcon
@@ -261,6 +262,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
                     ) : (
                       <li>
                         <button
+                          onClick={() => openModal('report-modal', { title: obj.title, s_id: obj.s_id, btnColor: obj.btnColor })}
                           className="group flex items-center px-4 py-2 text-sm text-error-500 hover:bg-gray-100 hover:text-error-600 hover:outline-hidden dark:text-error-400 dark:hover:bg-white/5 dark:hover:text-error-300 w-full"
                         >
                           <Badge variant='error' size="auto" className="p-1 size-6 rounded-md mr-3">

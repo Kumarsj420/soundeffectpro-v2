@@ -9,7 +9,6 @@ import { useSession } from 'next-auth/react';
 import { FlagIcon } from '@heroicons/react/24/solid';
 import { useFetchLoading } from '@/app/hooks/useFetchLoading';
 import { toast } from 'react-toastify';
-import { fileService } from '@/app/services/fileService';
 import Card from '../Card';
 import SoundButton from '../SoundButton';
 import { getR2Url } from '@/app/lib/r2/r2Url';
@@ -19,8 +18,12 @@ import Input from '../form/Input';
 import Textarea from '../form/Textarea';
 import { Select, Option } from '../form/Select';
 import { reportValidationSchema } from '@/app/lib/validators/report.schema';
+import { userService } from '@/app/services/userService';
+import { AxiosError } from 'axios';
+import type { ReportType, ReportTargetType } from "@/app/services/userService";
 
-interface SoundData {
+
+interface ReportData {
     s_id?: string;
     title?: string;
     btnColor?: string;
@@ -50,10 +53,10 @@ function ReportModal() {
     const closeFetchLoading = useFetchLoading((s) => s.closeFetchLoading);
 
     const [emailInp, setEmailInp] = useState(email ?? '');
-    const [typeInp, setTypeInp] = useState('');
+    const [typeInp, setTypeInp] = useState<ReportType | undefined>(undefined);
     const [messageInp, setMessageInp] = useState('');
 
-    const [emailTouched, setEmailTouched] = useState(false);
+
     const [typeTouched, setTypeTouched] = useState(false);
     const [messageTouched, setMessageTouched] = useState(false);
 
@@ -68,7 +71,7 @@ function ReportModal() {
 
     const [triggerValidation, setTriggerValidation] = useState(false);
 
-    const { s_id = '', title = '', btnColor = '' } = (data as SoundData) || {};
+    const { s_id = '', title = '', btnColor = '' } = (data as ReportData) || {};
 
     const audioUrl = s_id ? getR2Url(`store/${s_id}.mp3`) : null;
     const { play, pause, loading, playing } = useLazyAudio(audioUrl ?? "");
@@ -81,7 +84,8 @@ function ReportModal() {
 
     useEffect(() => {
         if (triggerValidation) {
-            console.log('triggering validation');
+            setTypeTouched(true);
+            setMessageTouched(true);
 
             const emailResult = emailSchema.safeParse(emailInp);
             const typeResult = typeSchema.safeParse(typeInp);
@@ -137,8 +141,52 @@ function ReportModal() {
     }, [messageInp])
 
 
-
     if (!isOpen || type !== 'report-modal') return null;
+
+    const handleSaveReport = async () => {
+        if (!uid) return;
+        setTriggerValidation(true);
+        await new Promise(resolve => setTimeout(resolve, 0));
+        const res = emailSchema.safeParse(emailInp).success && typeSchema.safeParse(typeInp).success && messageSchema.safeParse(messageInp).success;
+
+        if (!res) {
+            toast.error('Update fields correctly');
+            setTriggerValidation(false);
+            return
+        }
+
+        openFetchLoading();
+
+        try {
+            const payload = {
+                senderEmail: emailInp,
+                type: typeInp,
+                content: messageInp,
+                target: {
+                    from: "sound" as const,
+                    id: s_id,
+                },
+            }
+
+            const res = await userService.submitReport(payload);
+            if (res.success) {
+                toast.success('Report send successfully');
+                toast.info('Report received and under review')
+                closeModal();
+            }
+
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+
+            toast.error(
+                err.response?.data?.message || "Something went wrong"
+            );
+        } finally {
+            closeFetchLoading();
+        }
+
+
+    }
 
     return (
         <Modal open={isOpen} onClose={closeModal} maxWidth='xl' >
@@ -191,7 +239,7 @@ function ReportModal() {
                             value={typeInp}
                             onChange={(val) => {
                                 if (!typeTouched) setTypeTouched(true)
-                                setTypeInp(val)
+                                setTypeInp(val as ReportType)
                             }}
                             error={typeTouched ? typeError ?? undefined : undefined}
                             success={!typeError && typeTouched}
@@ -209,7 +257,7 @@ function ReportModal() {
                             id='report-des'
                             placeholder='Describe reason'
                             className='resize-none'
-                            rows={4}
+                            rows={5}
                             value={messageInp} onChange={(e) => {
                                 if (!messageTouched) setMessageTouched(true);
                                 setMessageInp(e.target.value)
@@ -231,7 +279,12 @@ function ReportModal() {
                     >
                         Cancel
                     </Button>
-                    <Button size='sm' variant='error' type='button'>
+                    <Button
+                        size='sm'
+                        variant='error'
+                        type='button'
+                        onClick={() => handleSaveReport()}
+                    >
                         Report Sound
                     </Button>
                 </div>

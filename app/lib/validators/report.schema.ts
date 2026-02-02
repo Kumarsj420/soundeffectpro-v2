@@ -31,7 +31,7 @@ export const reportValidationSchema = z.object({
         .string()
         .trim()
         .min(10, "Message must be at least 10 characters")
-        .max(600, "Message must not exceed 1000 characters"),
+        .max(600, "Message must not exceed 600 characters"),
 });
 
 // Type inference

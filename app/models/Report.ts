@@ -1,20 +1,28 @@
-import mongoose, { Schema, Model } from "mongoose";
+import mongoose, { Schema, Model, Types } from "mongoose";
+
+export const REPORT_TYPES = [
+    "hate speech",
+    "abuse",
+    "inappropriate content",
+    "sexual content",
+    "harassment and bullying",
+    "terrorism advocacy",
+    "misinformation",
+    "spam and scams",
+    "copyright violation",
+    "privacy violation",
+    "other",
+] as const;
+
+export type ReportType = typeof REPORT_TYPES[number];
 
 export interface IReport {
     senderEmail: string;
-    type:
-    | "hate speech"
-    | "abuse"
-    | "inappropriate content"
-    | "sexual content"
-    | "harassment and bullying"
-    | "terrorism advocacy"
-    | "misinformation"
-    | "spam and scams"
-    | "copyright violation"
-    | "privacy violation"
-    | "other";
-    from: "sound" | "soundboard";
+    type: ReportType;
+    target: {
+        from: "sound" | "soundboard";
+        id: string;
+    };
     content: string;
     read: boolean;
     createdAt: Date;
@@ -28,38 +36,28 @@ const ReportSchema = new Schema<IReport>(
             required: true,
             trim: true,
             lowercase: true,
-            index: true,
-            match: [
-                /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                "Please provide a valid email address",
-            ],
+            match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         },
 
         type: {
             type: String,
-            required: true,
-            enum: [
-                "hate speech",
-                "abuse",
-                "inappropriate content",
-                "sexual content",
-                "harassment and bullying",
-                "terrorism advocacy",
-                "misinformation",
-                "spam and scams",
-                "copyright violation",
-                "privacy violation",
-                "other",
-            ],
+            enum: REPORT_TYPES,
             default: "other",
-            index: true,
+            required: true,
         },
 
-        from: {
-            type: String,
-            required: true,
-            enum: ["sound", "soundboard"],
-            index: true,
+        target: {
+            from: {
+                type: String,
+                enum: ["sound", "soundboard"],
+                required: true,
+            },
+
+            id: {
+                type: String,
+                required: true,
+                index: true,
+            },
         },
 
         content: {
@@ -73,7 +71,6 @@ const ReportSchema = new Schema<IReport>(
         read: {
             type: Boolean,
             default: false,
-            index: true,
         },
     },
     {
@@ -83,10 +80,9 @@ const ReportSchema = new Schema<IReport>(
 );
 
 ReportSchema.index({ createdAt: -1 });
-ReportSchema.index({ read: 1 });
+ReportSchema.index({ read: 1, createdAt: -1 });
 ReportSchema.index({ type: 1 });
-ReportSchema.index({ from: 1 });
-ReportSchema.index({ senderEmail: 1 });
+ReportSchema.index({ "target.from": 1, "target.id": 1 });
 
 const Report: Model<IReport> =
     mongoose.models.Report ||

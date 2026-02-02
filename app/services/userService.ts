@@ -13,10 +13,29 @@ export interface SoundboardPayload {
 
 export interface ReportPayload {
     senderEmail: string;
-    type?: string;
-    from: string;
+    type?: ReportType;
     content: string;
+    target: {
+        from: ReportTargetType;
+        id: string;
+    };
 }
+
+
+export type ReportTargetType = "sound" | "soundboard";
+
+export type ReportType =
+    | "hate speech"
+    | "abuse"
+    | "inappropriate content"
+    | "sexual content"
+    | "harassment and bullying"
+    | "terrorism advocacy"
+    | "misinformation"
+    | "spam and scams"
+    | "copyright violation"
+    | "privacy violation"
+    | "other";
 
 export interface ReportResponse {
     success: boolean;
@@ -24,13 +43,18 @@ export interface ReportResponse {
     data?: {
         _id: string;
         senderEmail: string;
-        type?: string;
-        from: string;
+        type: ReportType;
         content: string;
+        read: boolean;
+        target: {
+            from: ReportTargetType;
+            id: string;
+        };
         createdAt: string;
         updatedAt: string;
     };
 }
+
 
 export const userService = {
     getUserByUID: async (uid: string): Promise<IUserResponse> => {
@@ -87,12 +111,12 @@ export const userService = {
     submitReport: async (
         payload: ReportPayload
     ): Promise<ReportResponse> => {
-
-        const res = await axiosInstance.post("/api/report", payload);
+        const res = await axiosInstance.post<ReportResponse>(
+            "/api/report",
+            payload
+        );
 
         return res.data;
     },
-
-
 
 };
