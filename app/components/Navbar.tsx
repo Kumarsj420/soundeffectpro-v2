@@ -117,13 +117,13 @@ export default function Navbar() {
                                 <div className="w-full h-full rounded-full dark:bg-zinc-500/10 bg-linear-to-t from-zinc-500/10 via-zinc-700/5 to-zinc-800/5"></div>
                             </div>
                         </div>
-                        <button type='submit' className="px-3 py-2 bg-blue-500 hover:bg-blue-400 text-white rounded-r-xl cursor-pointer relative z-10 overflow-hidden">
-                            <div className="absolute h-full w-4/5 p-1 right-0 top-0 -z-10 ">
-                              <div className="w-full h-full bg-linear-to-l from-blue-100/30 via-blue-200/15 to-blue-300/10 rounded-r-lg"></div>
+                        <button type='submit' className="px-3 py-2 bg-linear-to-r from-blue-400 to-blue-600 hover:from-blue-300 hover:to-blue-500 text-white rounded-r-xl cursor-pointer relative z-10 overflow-hidden">
+                            <div className="absolute h-full w-full p-0.75 right-0 top-0 -z-10 ">
+                              <div className="w-full h-full bg-linear-to-l from-blue-100/30 via-blue-200/10 to-blue-300/5 rounded-r-lg"></div>
                             </div>
                             <div className="relative scale-110">
                                 <RiSearch2Line className="size-4.5" />
-                                <div className="absolute w-[27%] h-[27%] rounded-full bg-blue-200 top-[32%] left-[37%] z-10"></div>
+                                <div className="absolute w-[27%] h-[27%] rounded-full bg-white top-[32%] left-[37%] z-10"></div>
                             </div>
                         </button>
                     </form>

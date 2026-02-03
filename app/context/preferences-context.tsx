@@ -80,7 +80,7 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
     const storedCookies = localStorage.getItem("cookies");
 
     setPreferences({
-      theme: normalizeTheme(storedTheme) ?? "system",
+      theme: normalizeTheme(storedTheme) ?? "dark",
       nsfw:
         storedNSFW !== null
           ? storedNSFW === "true"
