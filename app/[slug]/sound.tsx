@@ -24,6 +24,7 @@ import Link from 'next/link';
 import Tag from '../components/Tag';
 import { useRouter } from 'next/navigation';
 import GoogleAd from '../components/ad';
+import { usePathname } from 'next/navigation';
 
 interface SoundDetailsPageProps {
   id: string;
@@ -38,7 +39,10 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
   const userId = session?.user?.uid;
   const openModal = useModal((s) => s.openModal);
 
-  const router = useRouter();
+  const pathname = usePathname();
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!.replace(/\/$/, "");
+  const url = baseUrl + pathname;
+
 
   const openFetchLoading = useFetchLoading((s) => s.openFetchLoading);
   const closeFetchLoading = useFetchLoading((s) => s.closeFetchLoading);
@@ -259,7 +263,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
               <Button
                 variant='outline'
                 size='sm'
-                onClick={() => openModal('share-modal')}
+                onClick={() => openModal('share-modal', { url })}
               >
                 <ShareIcon className='text-gray-500/80 dark:text-zinc-400/75 size-4' />
                 Share Sound

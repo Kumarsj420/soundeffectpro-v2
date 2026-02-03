@@ -23,6 +23,8 @@ import {
 } from "@floating-ui/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { RiSearch2Line } from "react-icons/ri";
+import { BiSearchAlt } from "react-icons/bi";
 
 interface Sound {
     id: number;
@@ -103,15 +105,26 @@ export default function Navbar() {
                 {/* Search */}
                 <div className="hidden md:flex flex-1 max-w-md mx-6 relative">
                     <form onSubmit={(e) => handleSearchSubmit(e)} className="w-full flex ">
-                        <input
-                            type="text"
-                            value={searchInp}
-                            onChange={(e) => setSearchInp(e.target.value)}
-                            placeholder="Search sounds.."
-                            className="w-full rounded-l-lg bg-gray-50 dark:bg-zinc-800 px-4 py-2 text-sm focus:outline-none ring-[0.1em] ring-inset ring-gray-300 dark:ring-zinc-600/80 focus:ring-blue-400 focus:ring-[0.12em] placeholder:text-gray-500/85 dark:placeholder:text-zinc-400/90 text-gray-900 dark:text-white"
-                        />
-                        <button type='submit' className="px-3 py-2 bg-blue-500 hover:bg-blue-400 text-white rounded-r-lg cursor-pointer">
-                            <Search size={18} />
+                        <div className="w-full rounded-l-xl bg-gray-50 dark:bg-zinc-800 focus-within:outline-none ring-[0.1em] ring-inset ring-gray-300 dark:ring-zinc-600/80 focus-within:ring-blue-400 focus-within:ring-[0.12em] relative overflow-x-hidden z-10">
+                            <input
+                                type="text"
+                                value={searchInp}
+                                onChange={(e) => setSearchInp(e.target.value)}
+                                placeholder="Search sounds.."
+                                className="w-full px-4 py-2 text-sm  placeholder:text-gray-500/85 dark:placeholder:text-zinc-400/90 text-gray-900 dark:text-white outline-none ring-0 bg-transparent"
+                            />
+                            <div className="absolute w-full bottom-1/6 left-0 -z-10 h-3.5 px-2">
+                                <div className="w-full h-full rounded-full dark:bg-zinc-500/10 bg-linear-to-t from-zinc-500/10 via-zinc-700/5 to-zinc-800/5"></div>
+                            </div>
+                        </div>
+                        <button type='submit' className="px-3 py-2 bg-blue-500 hover:bg-blue-400 text-white rounded-r-xl cursor-pointer relative z-10 overflow-hidden">
+                            <div className="absolute h-full w-4/5 p-1 right-0 top-0 -z-10 ">
+                              <div className="w-full h-full bg-linear-to-l from-blue-100/30 via-blue-200/15 to-blue-300/10 rounded-r-lg"></div>
+                            </div>
+                            <div className="relative scale-110">
+                                <RiSearch2Line className="size-4.5" />
+                                <div className="absolute w-[27%] h-[27%] rounded-full bg-blue-200 top-[32%] left-[37%] z-10"></div>
+                            </div>
                         </button>
                     </form>
 
