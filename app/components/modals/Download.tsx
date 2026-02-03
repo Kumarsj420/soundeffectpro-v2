@@ -10,6 +10,7 @@ import { useLazyAudio } from '@/app/hooks/useAudio';
 import { ArrowDownOnSquareStackIcon } from '@heroicons/react/24/solid';
 import Button from '../form/Button';
 import { toast } from 'react-toastify';
+import GoogleAd from '../ad';
 
 interface SoundData {
     s_id?: string;
@@ -159,9 +160,7 @@ function DownloadModal() {
                     </div>
 
                     {/* Ad Space */}
-                    <div className="rounded-xl border border-dashed border-gray-400/80 bg-gray-100 dark:border-zinc-700 dark:bg-zinc-900/20 p-8 text-center min-h-30">
-                        <p className="text-xs text-gray-500 dark:text-zinc-500 uppercase tracking-wide">Advertisement Space</p>
-                    </div>
+                    <GoogleAd slot='7537739191' />
                 </div>
 
             </ModalBody>
