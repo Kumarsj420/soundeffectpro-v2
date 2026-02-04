@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import Button from "./form/Button";
 import { UserIcon, ArrowUpOnSquareStackIcon, HeartIcon, CloudArrowUpIcon, CogIcon, CursorArrowRippleIcon } from "@heroicons/react/24/solid";
-import Loading from "../loading";
+import Loading from "../(main)/loading";
 import getInitials from "../hooks/getInitials";
 import CustomImg from "./CustomImg";
 import { useT } from "../hooks/useT";

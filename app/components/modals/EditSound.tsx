@@ -16,7 +16,7 @@ import Label from '../form/Label';
 import Input from '../form/Input';
 import Textarea from '../form/Textarea';
 import TagInput from '../form/TagInput';
-import { colorOptions } from '@/app/upload/page';
+import { colorOptions } from '@/app/(main)/upload/page';
 import { cn } from '@/app/services/cn';
 import { FileSchema } from '@/app/lib/validators/file.schema';
 import { TAG_LIMIT, MIN_TAGS } from '@/app/global';

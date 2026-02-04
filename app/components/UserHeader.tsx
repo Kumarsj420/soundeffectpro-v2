@@ -14,7 +14,7 @@ import {
 
 import { Head1 } from "./Ui";
 import Button from "./form/Button";
-import Loading from "../loading";
+import Loading from "../(main)/loading";
 import getInitials from "../hooks/getInitials";
 import { userService } from "../services/userService";
 import { IUser } from "../models/User";
