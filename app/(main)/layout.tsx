@@ -8,6 +8,8 @@ import FetchLoading from "../components/fetchLoading";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import GoogleAd from "../components/ad"
+import Script from 'next/script'
+import AnalyticsTracker from "../components/AnalyticsTracker";
 
 export const metadata: Metadata = {
   title: "Sound Effect Pro | Download Unlimited Free Sound Effects | Trending Sound Buttons",
@@ -32,6 +34,34 @@ export default function RootLayout({
       <head>
         <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_GOOGLE_AD_CLIENT}`}
           crossOrigin="anonymous"></script>
+
+        {/* Google Analytics */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+          strategy="afterInteractive"
+        />
+
+        <Script id="ga-script" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
+              page_path: window.location.pathname,
+            });
+          `}
+        </Script>
+
+        {/* Microsoft Clarity */}
+        <Script id="clarity-script" strategy="afterInteractive">
+          {`
+            (function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "${process.env.NEXT_PUBLIC_CLARITY_ID}");
+          `}
+        </Script>
       </head>
       <body
         className={` antialiased bg-gray-100 text-gray-900 dark:bg-zinc-950 dark:text-white`}
@@ -48,6 +78,7 @@ export default function RootLayout({
           </div>
           <Modal_Root />
           <FetchLoading />
+          <AnalyticsTracker />
           <ToastContainer
             position="top-right"
             autoClose={3000}
