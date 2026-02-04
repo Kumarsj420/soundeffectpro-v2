@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import Modal, { ModalHeader, ModalBody } from './Modal_Structure';
 import { useModal } from '@/app/hooks/useModal';
 import Button from '../form/Button';
-import { toast } from 'react-toastify';
 import Label from '../form/Label';
 import Input from '../form/Input';
 import {

@@ -180,6 +180,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
                   </li>
                   <li>
                     <button
+                      onClick={() => openModal('embed-modal', { s_id: obj.s_id })}
                       className="group flex items-center px-4 py-2 text-sm text-gray-600/90 hover:bg-gray-100 hover:text-gray-900 hover:outline-hidden dark:text-zinc-300 dark:hover:bg-white/5 dark:hover:text-white w-full"
                     >
                       <CodeBracketIcon

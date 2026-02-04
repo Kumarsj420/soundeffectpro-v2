@@ -195,7 +195,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
                 Soundboard
               </Button>
 
-              <Button variant='outline'>
+              <Button variant='outline' onClick={() => openModal('embed-modal', {s_id: id})}>
                 <span>
                   <CodeBracketIcon className='text-gray-500/80 dark:text-zinc-500 size-5' />
                 </span>

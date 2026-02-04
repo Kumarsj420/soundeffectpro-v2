@@ -8,6 +8,7 @@ import ReportModal from './Report'
 import EditSound from './EditSound'
 import DownloadModal from './Download'
 import ShareModal from './Share'
+import EmbedModal from './Embed'
 
 export default function Modal_Root() {
   return (
@@ -20,6 +21,7 @@ export default function Modal_Root() {
       <EditSound />
       <DownloadModal />
       <ShareModal />
+      <EmbedModal />
     </>
   )
 }
