@@ -1,4 +1,5 @@
 "use client"
+import React from "react";
 import {
     Head1,
     SoundGrid
@@ -9,6 +10,7 @@ import { useInfiniteLoader } from '../../hooks/useInfiniteLoader';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { PAGE_SIZE } from '../../global';
 import { CategoryInterface } from "../../models/Category";
+import GoogleAd from "@/app/components/ad";
 
 export default function SoundboardPage() {
     const {
@@ -48,8 +50,18 @@ export default function SoundboardPage() {
         <div>
             <Head1>Popular Soundboards</Head1>
             <SoundGrid className="mt-5">
-                {topSoundboards.map((obj: CategoryInterface) => (
-                    <Soundboard key={obj.sb_id} obj={obj} />
+                {topSoundboards.map((obj: CategoryInterface, index) => (
+                    <React.Fragment key={obj.sb_id}>
+                        <Soundboard key={obj.sb_id} obj={obj} />
+
+                        {(index + 1) % 20 === 0 && (
+                            <div className="col-span-full">
+                                <GoogleAd slot="4718938506" />
+                            </div>
+                        )}
+
+                    </React.Fragment>
+
                 ))}
                 {
                     (isLoading || isFetchingNextPage) &&

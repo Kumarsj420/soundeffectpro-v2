@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import SoundButton from '../../components/SoundButton';
 import { fileService } from '../../services/fileService';
 import Loading from '../loading';
@@ -174,11 +174,15 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
         <div className="grid grid-cols-1 md:grid-cols-[1.5fr_2fr] gap-8 mb-12">
           {/* sound player */}
           <div className="bg-linear-to-br from-white to-gray-100/70 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl p-6 flex flex-col gap-5 justify-between min-h-97.5 ring-1 ring-gray-300/80 dark:ring-0 shadow-xl shadow-gray-300/60 dark:shadow-none">
-            <div className='flex justify-center items-center flex-1 mt-5 '>
-              <div className="scale-220">
-                <SoundButton onClick={playing ? pause : play} className={`hue-rotate-${sfxInfo?.btnColor} ${loading ? 'saturate-0 animate-pulse pointer-events-none' : ''} ${playing ? 'btn-animation ' : ''}`} />
+            <div className='flex justify-center items-center flex-1 mt-5'>
+              <div className="w-55 h-46  flex items-center justify-center">
+                <SoundButton onClick={playing ? pause : play} className={`scale-220  hue-rotate-${sfxInfo?.btnColor} ${loading ? 'saturate-0 animate-pulse pointer-events-none' : ''} ${playing ? 'btn-animation ' : ''}`} />
               </div>
             </div>
+            <div>
+             <GoogleAd slot='7839390248' />
+            </div>
+
             <div className="grid grid-cols-2 gap-3 ">
               <Button variant='outline' onClick={() => handleFavToggle()}>
                 {
@@ -195,7 +199,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
                 Soundboard
               </Button>
 
-              <Button variant='outline' onClick={() => openModal('embed-modal', {s_id: id})}>
+              <Button variant='outline' onClick={() => openModal('embed-modal', { s_id: id })}>
                 <span>
                   <CodeBracketIcon className='text-gray-500/80 dark:text-zinc-500 size-5' />
                 </span>
@@ -304,13 +308,21 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
           </div>
         </div>
       </section >
-      <GoogleAd slot='4593368893' />
       <section>
         <Head2>Related Sounds</Head2>
 
         <SoundGrid className='mt-5'>
-          {relatedSounds.map((obj: IFileWithFav) => (
-            <SoundCard key={obj.s_id} obj={obj} sessionUser={obj.user.uid === userId} />
+          {relatedSounds.map((obj: IFileWithFav, index) => (
+              <React.Fragment key={obj.s_id}>
+                        <SoundCard key={obj.s_id} obj={obj} sessionUser={session?.user.uid === obj.user.uid} />
+
+                        {(index + 1) % 20 === 0 && (
+                            <div className="col-span-full">
+                                <GoogleAd slot="4718938506" />
+                            </div>
+                        )}
+
+                    </React.Fragment>
           ))}
           {
             (isRelatedLoading || isFetchingNextPage) &&

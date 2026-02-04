@@ -1,4 +1,5 @@
 "use client"
+import React from "react";
 import TagScroller from "../components/TagScroller";
 import SoundCard, { SoundCardSkelton } from "../components/SoundCard";
 import { History } from "lucide-react";
@@ -14,6 +15,7 @@ import { useSession } from "next-auth/react";
 import Button from "../components/form/Button";
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import { IFileWithFav } from "../services/fileService";
+import GoogleAd from "../components/ad";
 
 export default function HomePage() {
   const { data: session } = useSession();
@@ -170,8 +172,20 @@ export default function HomePage() {
           </div>
 
           <SoundGrid>
-            {recentSounds.map((obj: IFileWithFav) => (
-              <SoundCard key={obj.s_id} obj={obj} sessionUser={session?.user.uid === obj.user.uid ? true : false} />
+            {recentSounds.map((obj: IFileWithFav, index) => (
+              <React.Fragment key={obj.s_id}>
+                <SoundCard
+                  obj={obj}
+                  sessionUser={session?.user.uid === obj.user.uid}
+                />
+
+                {(index + 1) % 20 === 0 && (
+                  <div className="col-span-full">
+                    <GoogleAd slot="4718938506" />
+                  </div>
+                )}
+
+              </React.Fragment>
             ))}
             {
               (isLoading || isFetchingNextPage) &&

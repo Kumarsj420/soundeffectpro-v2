@@ -8,12 +8,16 @@ import { Head1, SoundGrid } from '../../../components/Ui';
 import { PAGE_SIZE } from '../../../global';
 import { notFound } from 'next/navigation';
 import { IFileWithFav } from '../../../services/fileService';
+import { useSession } from 'next-auth/react';
+import GoogleAd from '@/app/components/ad';
 
 export default function TagRes({
     tag,
 }: {
     tag: string
 }) {
+
+    const { data: session } = useSession();
 
     const {
         data,
@@ -54,8 +58,18 @@ export default function TagRes({
             <Head1>{tag} Tag Sound Buttons</Head1>
 
             <SoundGrid className='mt-5'>
-                {catSounds.map((obj: IFileWithFav) => (
-                    <SoundCard key={obj.s_id} obj={obj} />
+                {catSounds.map((obj: IFileWithFav, index) => (
+                    <React.Fragment key={obj.s_id}>
+                        <SoundCard key={obj.s_id} obj={obj} sessionUser={session?.user.uid === obj.user.uid} />
+
+                        {(index + 1) % 20 === 0 && (
+                            <div className="col-span-full">
+                                <GoogleAd slot="4718938506" />
+                            </div>
+                        )}
+
+                    </React.Fragment>
+
                 ))}
                 {
                     (isLoading || isFetchingNextPage) &&
