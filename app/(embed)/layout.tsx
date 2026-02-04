@@ -2,7 +2,16 @@ import '../globals.css' // If you need styles
 import Providers from './provider'
 
 export const metadata = {
-  title: 'SFX Embed',
+  title: 'Sound Effect Pro Embed',
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+    },
+  },
 }
 
 export default function EmbedLayout({

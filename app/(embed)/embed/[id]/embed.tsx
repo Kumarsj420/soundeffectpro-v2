@@ -63,7 +63,7 @@ function EmbedPage({ id, theme, type }: { id: string, theme: 'light' | 'dark', t
                                                 </div>
                                                 <div className='mt-7 overflow-hidden space-y-1'>
                                                     <a href={`https://www.soundeffectpro.com//${sfxInfo?.slug}-${sfxInfo?.s_id}`} target='_blank' className='line-clamp-2 text-gray-900 dark:text-white font-semibold hover:text-blue-400 capitalize'>{sfxInfo?.title} </a>
-                                                    <a href={`https://www.soundeffectpro.com//user/${sfxInfo?.user.uid}?name=${sfxInfo?.user.name}`} target='_blank' className='text-xs hover:underline text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-200 line-clamp-1'><span className='text-blue-500 dark:text-blue-400 font-semibold'>@ </span>{sfxInfo?.user.name}</a>
+                                                    <a href={`https://www.soundeffectpro.com/user/${sfxInfo?.user.uid}?name=${sfxInfo?.user.name}`} target='_blank' className='text-xs hover:underline text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-200 line-clamp-1'><span className='text-blue-500 dark:text-blue-400 font-semibold'>@ </span>{sfxInfo?.user.name}</a>
                                                     <div className="mt-3 flex items-center flex-wrap gap-2.5">
                                                         {
                                                             sfxInfo?.tags.map((tag: string, index: number) => (
