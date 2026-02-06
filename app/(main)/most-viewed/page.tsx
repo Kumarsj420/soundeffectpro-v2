@@ -17,13 +17,13 @@ export default function Popular() {
         isFetchingNextPage,
         isLoading,
     } = useInfiniteQuery({
-        queryKey: ["sounds", "popular"],
+        queryKey: ["sounds", "most-viewed"],
         initialPageParam: 1,
         queryFn: ({ pageParam }) =>
             fileService.getFiles({
                 page: pageParam,
                 limit: PAGE_SIZE,
-                sortBy: 'stats.downloads',
+                sortBy: 'stats.views',
                 order: 'desc',
             }),
         getNextPageParam: (lastPage) => {
@@ -44,7 +44,7 @@ export default function Popular() {
 
     return (
         <>
-            <Head1>Popular & All Time Most Downloaded Sound Effect Buttons</Head1>
+            <Head1>All Time Most Viewed Sound Effect Buttons</Head1>
 
             <SoundGrid className='mt-5'>
                 {popularSounds.map((obj: IFileWithFav) => (

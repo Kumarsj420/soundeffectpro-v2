@@ -40,3 +40,11 @@ export function SoundGrid({ children, className, ...props }: { children: React.R
         </div>
     )
 }
+
+export function ListItem({ children, className, ...props }: { children: React.ReactNode, className?: string }) {
+    return (
+        <li className={cn('text-gray-600 dark:text-zinc-300/90 list-disc ml-5', className)} {...props}>
+            {children}
+        </li>
+    )
+}

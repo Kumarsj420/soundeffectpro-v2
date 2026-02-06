@@ -144,7 +144,7 @@ export default function HomePage() {
         <section className="space-y-4 mt-10">
           <div className="flex items-center justify-between">
             <Head2>Weekly Trending <span className="text-gray-600/90 dark:text-zinc-300/80 font-light">| Sound Buttons</span></Head2>
-            <Link href='/trending'>
+            <Link href='/filter-buttons?period=week&field=views'>
               <Button variant="outline" size="sm">
                 More
                 <ChevronRightIcon className="text-zinc-500 size-4" />

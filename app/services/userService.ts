@@ -55,6 +55,38 @@ export interface ReportResponse {
     };
 }
 
+export interface MessagePayload {
+    senderEmail: string;
+    type?: MessageType;
+    content: string;
+}
+
+export type MessageType =
+    | "contact"
+    | "feedback"
+    | "inquiry"
+    | "support"
+    | "technical issue"
+    | "other";
+
+
+export interface MessageResponse {
+    success: boolean;
+    message: string;
+    data?: {
+        _id: string;
+        senderEmail: string;
+        type: MessageType;
+        content: string;
+        read: boolean;
+        createdAt: string;
+        updatedAt: string;
+    };
+    errors?: Array<{
+        field: string;
+        message: string;
+    }>;
+}
 
 export const userService = {
     getUserByUID: async (uid: string): Promise<IUserResponse> => {
@@ -113,6 +145,17 @@ export const userService = {
     ): Promise<ReportResponse> => {
         const res = await axiosInstance.post<ReportResponse>(
             "/api/report",
+            payload
+        );
+
+        return res.data;
+    },
+
+    postMessage: async (
+        payload: MessagePayload
+    ): Promise<MessageResponse> => {
+        const res = await axiosInstance.post<MessageResponse>(
+            "/api/message",
             payload
         );
 

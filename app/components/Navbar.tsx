@@ -1,30 +1,25 @@
 "use client";
 import { useState } from "react";
-import { Search, Upload, Menu as MenuIcon } from "lucide-react";
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import Link from "next/link";
 import Logo from "./Logo";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import Button from "./form/Button";
-import { UserIcon, ArrowUpOnSquareStackIcon, HeartIcon, CloudArrowUpIcon, CogIcon, CursorArrowRippleIcon } from "@heroicons/react/24/solid";
+import { UserIcon, ArrowUpOnSquareStackIcon, HeartIcon, CloudArrowUpIcon, CogIcon, CursorArrowRippleIcon, DocumentTextIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import Loading from "../(main)/loading";
 import getInitials from "../hooks/getInitials";
 import CustomImg from "./CustomImg";
 import { useT } from "../hooks/useT";
-import {
-    useFloating,
-    offset,
-    flip,
-    shift,
-    autoUpdate,
-    useDismiss,
-    useInteractions,
-} from "@floating-ui/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { RiSearch2Line } from "react-icons/ri";
-import { BiSearchAlt } from "react-icons/bi";
+import { ImUpload2 } from "react-icons/im";
+import { useDropdown } from "../hooks/useDropdown";
+import { IoNavigate } from "react-icons/io5";
+import NavLink from "./NavLink";
+import Label from "./form/Label";
+import Toggle from "./form/Toggle";
+import { TbMenu2 } from "react-icons/tb";
 
 interface Sound {
     id: number;
@@ -51,6 +46,24 @@ const userLinks = [
     { id: 'your-soundboards', name: 'Your Soundboards', href: '/user/soundboards', icon: CloudArrowUpIcon },
 ];
 
+const navLinks = [
+    { id: 'recent-sound', title: 'Recent Sound Button', href: '/recent-buttons' },
+    { id: 'most-downloaded', title: 'Most Downloaded Button', href: '/popular' },
+    { id: 'most-viewed', title: 'Most Viewed Button', href: '/most-viewed' },
+    { id: 'most-liked', title: 'Most Liked Button', href: '/most-liked' },
+    { id: 'top-soundboards', title: 'Top Soundboards', href: '/soundboard' }
+]
+
+const policyLinks = [
+    { id: 'privacy-plicy', title: 'Privacy Policy', href: '/page/privacy-policy' },
+    { id: 'terms-conditions', title: 'Terms & Conditions', href: '/page/terms-conditions' },
+    { id: 'dmca-copyright', title: 'DMCA Copyright', href: '/page/dmca-copyright' },
+    { id: 'cookies-policy', title: 'Cookies Policy', href: '/page/cookie-policy' },
+    { id: 'community-guidelines', title: 'Community Guidelines', href: '/page/community-guidelines' },
+    { id: 'Contact-us', title: 'Contact Us', href: '/contact' }
+
+]
+
 export default function Navbar() {
     const t = useT();
     const [query, setQuery] = useState("");
@@ -61,20 +74,19 @@ export default function Navbar() {
 
 
     const { data: session, status } = useSession();
-    const [openMenu, setOpenMenu] = useState(false);
+    const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
-    const { refs, floatingStyles, context } = useFloating({
-        open: openMenu,
-        onOpenChange: setOpenMenu,
-        middleware: [offset(14), flip(), shift()],
-        whileElementsMounted: autoUpdate,
-        placement: "bottom-end",
-    })
+    const profileDropdown = useDropdown(
+        "profile",
+        openDropdown,
+        setOpenDropdown
+    );
 
-    const dismiss = useDismiss(context);
-
-    const { getReferenceProps, getFloatingProps } =
-        useInteractions([dismiss]);
+    const menuDropdown = useDropdown(
+        "menu",
+        openDropdown,
+        setOpenDropdown
+    );
 
 
     const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -119,7 +131,7 @@ export default function Navbar() {
                         </div>
                         <button type='submit' className="px-3 py-2 bg-linear-to-r from-blue-400 to-blue-600 hover:from-blue-300 hover:to-blue-500 text-white rounded-r-xl cursor-pointer relative z-10 overflow-hidden">
                             <div className="absolute h-full w-full p-0.75 right-0 top-0 -z-10 ">
-                              <div className="w-full h-full bg-linear-to-l from-blue-100/30 via-blue-200/10 to-blue-300/5 rounded-r-lg"></div>
+                                <div className="w-full h-full bg-linear-to-l from-blue-100/30 via-blue-200/10 to-blue-300/5 rounded-r-lg"></div>
                             </div>
                             <div className="relative scale-110">
                                 <RiSearch2Line className="size-4.5" />
@@ -154,7 +166,7 @@ export default function Navbar() {
                 <div className="md:flex items-stretch gap-4 hidden">
                     <Link href='/upload'>
                         <Button size="auto" className="p-2">
-                            <Upload size={18} />
+                            <ImUpload2 className='size-4.5 scale-90' />
                         </Button>
                     </Link>
 
@@ -163,8 +175,9 @@ export default function Navbar() {
                         status === 'authenticated' ? (
                             <>
 
-
-                                <button className="group" ref={refs.setReference} onClick={() => setOpenMenu(!openMenu)} {...getReferenceProps()}>
+                                <button className="group" ref={profileDropdown.refs.setReference}
+                                    onClick={profileDropdown.toggle}
+                                    {...profileDropdown.getReferenceProps()}>
                                     {
                                         session?.user.image ? (
                                             <CustomImg
@@ -187,11 +200,11 @@ export default function Navbar() {
                                 </button>
 
                                 {
-                                    openMenu && (
+                                    profileDropdown.open && (
                                         <div
-                                            ref={refs.setFloating}
-                                            style={floatingStyles}
-                                            {...getFloatingProps()}
+                                            ref={profileDropdown.refs.setFloating}
+                                            style={profileDropdown.floatingStyles}
+                                            {...profileDropdown.getFloatingProps()}
                                             className={`w-screen max-w-61 origin-top-right rounded-2xl bg-white shadow-lg shadow-gray-200 outline-1 outline-gray-300/70  dark:divide-white/10 dark:bg-zinc-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10 overflow-hidden `}
                                         >
                                             <div className="py-2 px-3">
@@ -228,10 +241,9 @@ export default function Navbar() {
                                                 <div className="mt-2 px-1 space-y-0.5">
                                                     {
                                                         userLinks.map((link) => (
-                                                            <Link key={link.id} href={link.href} className="group flex items-center px-4 py-2 text-sm text-gray-600/90  dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white w-full hover:bg-zinc-700/70 dark:hover:text-white rounded-lg gap-3">
-                                                                <link.icon className="size-5 dark:text-zinc-400/75 dark:group-hover:text-zinc-300" />
+                                                            <NavLink key={link.id} href={link.href} icon={link.icon}>
                                                                 {link.name}
-                                                            </Link>
+                                                            </NavLink>
                                                         ))
                                                     }
 
@@ -262,54 +274,69 @@ export default function Navbar() {
                     }
 
 
-                    <Menu as="div" className="relative inline-block">
-                        <MenuButton className="flex items-center rounded-full text-gray-500/75 hover:text-gray-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:text-zinc-400 dark:hover:text-zinc-300 dark:focus-visible:outline-indigo-500">
-                            <span className="sr-only">Open options</span>
-                            <MenuIcon size={27} />
-                        </MenuButton>
+                    <button className="text-gray-500 dark:text-zinc-400" ref={menuDropdown.refs.setReference}
+                        onClick={menuDropdown.toggle}
+                        {...menuDropdown.getReferenceProps()} >
+                        {
+                            menuDropdown.open ? (
+                                <XMarkIcon className="size-6.5" />
+                            ) : (
+                                <TbMenu2 className="size-6.5" />
+                            )
+                        }
 
-                        <MenuItems
-                            transition
-                            className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg outline-1 outline-gray-300 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-zinc-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
-                        >
-                            <div className="py-1">
-                                <MenuItem>
-                                    <a
-                                        href="#"
-                                        className="block px-4 py-2 text-sm text-zinc-700 data-focus:bg-zinc-100 data-focus:text-zinc-900 data-focus:outline-hidden dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
-                                    >
-                                        Account settings
-                                    </a>
-                                </MenuItem>
-                                <MenuItem>
-                                    <a
-                                        href="#"
-                                        className="block px-4 py-2 text-sm text-zinc-700 data-focus:bg-zinc-100 data-focus:text-zinc-900 data-focus:outline-hidden dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
-                                    >
-                                        Support
-                                    </a>
-                                </MenuItem>
-                                <MenuItem>
-                                    <a
-                                        href="#"
-                                        className="block px-4 py-2 text-sm text-zinc-700 data-focus:bg-zinc-100 data-focus:text-zinc-900 data-focus:outline-hidden dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
-                                    >
-                                        License
-                                    </a>
-                                </MenuItem>
-                                <form action="#" method="POST">
-                                    <MenuItem>
-                                        <button
-                                            type="submit"
-                                            className="block w-full px-4 py-2 text-left text-sm text-zinc-700 data-focus:bg-zinc-100 data-focus:text-zinc-900 data-focus:outline-hidden dark:text-zinc-300 dark:data-focus:bg-white/5 dark:data-focus:text-white"
-                                        >
-                                            Sign out
-                                        </button>
-                                    </MenuItem>
-                                </form>
+                    </button>
+
+                    {
+                        menuDropdown.open && (
+                            <div
+                                ref={menuDropdown.refs.setFloating}
+                                style={menuDropdown.floatingStyles}
+                                {...menuDropdown.getFloatingProps()}
+                                className={`w-screen max-w-lg origin-top-right rounded-2xl bg-white shadow-lg shadow-gray-200 outline-1 outline-gray-300/70 dark:divide-white/10 dark:bg-zinc-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10 overflow-hidden px-5 py-4`}
+                            >
+                                <div className="grid grid-cols-[1.5fr_1fr] gap-5 divide-x divide-gray-200 dark:divide-white/10">
+                                    {/* Nav Links Section */}
+                                    <div className="pr-5 divide-y divide-gray-200 dark:divide-white/10 space-y-3">
+                                        <div className="flex items-center gap-2 pb-3">
+                                            <IoNavigate className="size-5.5 text-gray-500 dark:text-zinc-300/80" />
+                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Nav & Theme</h3>
+                                        </div>
+                                        <nav className="space-y-1">
+                                            {
+                                                navLinks.map((link) => (
+                                                    <NavLink key={link.id} href={link.href} onClick={menuDropdown.close}>
+                                                        {link.title}
+                                                    </NavLink>
+                                                ))
+                                            }
+                                            <div className="flex items-center justify-between px-4 py-2">
+                                                <Label >Dark Mode</Label>
+                                                <Toggle />
+                                            </div>
+                                        </nav>
+                                    </div>
+
+                                    {/* Policies Section */}
+                                    <div className="divide-y divide-gray-200 dark:divide-white/10 space-y-3">
+                                        <div className="flex items-center gap-2 pb-3">
+                                            <DocumentTextIcon className="size-5.5 text-gray-500 dark:text-zinc-300/80" />
+                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Policies</h3>
+                                        </div>
+                                        <nav className="space-y-1">
+                                            {
+                                                policyLinks.map((link) => (
+                                                    <NavLink key={link.id} href={link.href} onClick={menuDropdown.close}>
+                                                        {link.title}
+                                                    </NavLink>
+                                                ))
+                                            }
+                                        </nav>
+                                    </div>
+                                </div>
                             </div>
-                        </MenuItems>
-                    </Menu>
+                        )
+                    }
                 </div>
             </div>
         </header>

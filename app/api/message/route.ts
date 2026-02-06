@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import mongoose, { FilterQuery } from "mongoose";
 import { connectDB } from "@/app/lib/dbConnection";
 import Message, { IMessage } from "@/app/models/Message";
+import { messageCreateSchema, messageUpdateSchema } from "@/app/lib/validators/message.schema";
+import { ZodError } from "zod";
 
 export async function GET(request: NextRequest) {
     try {
@@ -73,19 +75,12 @@ export async function POST(request: NextRequest) {
 
         const body = await request.json();
 
-        const { senderEmail, type, content } = body;
-
-        if (!senderEmail || !content) {
-            return NextResponse.json(
-                { success: false, message: "Email and content are required" },
-                { status: 400 }
-            );
-        }
+        const validatedData = messageCreateSchema.parse(body);
 
         const message = await Message.create({
-            senderEmail,
-            type,
-            content
+            senderEmail: validatedData.senderEmail,
+            type: validatedData.type,
+            content: validatedData.content
         });
 
         return NextResponse.json(
@@ -98,6 +93,21 @@ export async function POST(request: NextRequest) {
         );
 
     } catch (error) {
+
+        if (error instanceof ZodError) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Validation failed",
+                    errors: error.issues.map(err => ({
+                        field: err.path.join('.'),
+                        message: err.message
+                    }))
+                },
+                { status: 400 }
+            );
+        }
+
         return NextResponse.json(
             {
                 success: false,
@@ -125,9 +135,11 @@ export async function PATCH(request: NextRequest) {
 
         const body = await request.json();
 
+        const validatedData = messageUpdateSchema.parse(body);
+
         const updatedMessage = await Message.findByIdAndUpdate(
             id,
-            { $set: body },
+            { $set: validatedData },
             { new: true }
         ).select("-__v");
 
@@ -145,6 +157,21 @@ export async function PATCH(request: NextRequest) {
         });
 
     } catch (error) {
+        // Handle Zod validation errors
+        if (error instanceof ZodError) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Validation failed",
+                    errors: error.issues.map(err => ({
+                        field: err.path.join('.'),
+                        message: err.message
+                    }))
+                },
+                { status: 400 }
+            );
+        }
+
         return NextResponse.json(
             {
                 success: false,

@@ -1,19 +1,20 @@
 "use client"
-import React from "react";
-import {
-    Head1,
-    SoundGrid
-} from "../../components/Ui";
-import Soundboard, { SoundboardSkelton } from "../../components/Soundboard";
-import { categoryService } from "../../services/categoryService";
+import React from 'react'
+import SoundCard, { SoundCardSkelton } from '../../components/SoundCard';
+import { fileService } from '../../services/fileService';
 import { useInfiniteLoader } from '../../hooks/useInfiniteLoader';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { Head1, SoundGrid } from '../../components/Ui';
 import { PAGE_SIZE } from '../../global';
-import { CategoryInterface } from "../../models/Category";
-import GoogleAd from "@/app/components/ad";
+import { IFileWithFav } from '../../services/fileService';
+import GoogleAd from '@/app/components/ad';
+import { useSession } from 'next-auth/react';
 
-export default function SoundboardPage() {
-    
+
+export default function Recent() {
+
+    const { data: session } = useSession();
+
     const {
         data,
         fetchNextPage,
@@ -21,15 +22,12 @@ export default function SoundboardPage() {
         isFetchingNextPage,
         isLoading,
     } = useInfiniteQuery({
-        queryKey: ["soundboards", "popular-board"],
+        queryKey: ["sounds", "recent"],
         initialPageParam: 1,
         queryFn: ({ pageParam }) =>
-            categoryService.getCategory({
+            fileService.getFiles({
                 page: pageParam,
                 limit: PAGE_SIZE,
-                sortBy: 'stats.downloads',
-                order: 'desc',
-                thumb: true
             }),
         getNextPageParam: (lastPage) => {
             const { page, pages } = lastPage.pagination;
@@ -38,7 +36,8 @@ export default function SoundboardPage() {
         staleTime: 1000 * 60 * 5,
     });
 
-    const topSoundboards = data?.pages.flatMap(page => page.data) ?? [];
+    const trendingSounds =
+        data?.pages.flatMap(page => page.data) ?? [];
 
     const loadMoreRef = useInfiniteLoader({
         loading: isFetchingNextPage,
@@ -46,14 +45,14 @@ export default function SoundboardPage() {
         onLoadMore: fetchNextPage,
     });
 
-
     return (
-        <div>
-            <Head1>Popular Soundboards</Head1>
-            <SoundGrid className="mt-5">
-                {topSoundboards.map((obj: CategoryInterface, index) => (
-                    <React.Fragment key={obj.sb_id}>
-                        <Soundboard key={obj.sb_id} obj={obj} />
+        <>
+            <Head1>Recently Uploaded Sound Effect Buttons</Head1>
+
+            <SoundGrid className='mt-5'>
+                {trendingSounds.map((obj: IFileWithFav, index) => (
+                    <React.Fragment key={obj.s_id}>
+                        <SoundCard key={obj.s_id} obj={obj} sessionUser={session?.user.uid === obj.user.uid} />
 
                         {(index + 1) % 20 === 0 && (
                             <div className="col-span-full">
@@ -67,15 +66,16 @@ export default function SoundboardPage() {
                 {
                     (isLoading || isFetchingNextPage) &&
                     Array.from({ length: PAGE_SIZE }).map((_, i) => (
-                        <SoundboardSkelton key={i} />
+                        <SoundCardSkelton key={i} />
                     ))
                 }
             </SoundGrid>
 
-            {!hasNextPage && topSoundboards.length > 0 && (
-                <p className="text-center mt-4 text-gray-500">No more soundboards to load</p>
+            {!hasNextPage && trendingSounds.length > 0 && (
+                <p className="text-center mt-4 text-gray-500">No more sounds to load</p>
             )}
             <div ref={loadMoreRef} className="h-10" />
-        </div>
-    );
+        </>
+
+    )
 }

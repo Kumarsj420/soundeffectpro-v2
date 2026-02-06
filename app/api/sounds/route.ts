@@ -15,7 +15,6 @@ export const runtime = "nodejs";
 
 export async function GET(request: NextRequest) {
   try {
-
     await connectDB();
 
     const session = await requireAuth();
@@ -35,100 +34,127 @@ export async function GET(request: NextRequest) {
     const userId = searchParams.get("userId");
     const tag = searchParams.get("tag");
 
+    const skip = (page - 1) * limit;
+
+    // -----------------------
+    // Build Query
+    // -----------------------
     const query: FilterQuery<IFile> = {};
 
-
     if (category) {
-      query.category = {
-        $regex: `^${category}$`,
-        $options: "i"
-      };
+      query.category = { $regex: `^${category}$`, $options: "i" };
     }
+
     if (userId) query["user.uid"] = userId;
+
     if (tag) {
       query.tags = {
-        $elemMatch: {
-          $regex: `^${tag}$`,
-          $options: "i"
-        }
+        $elemMatch: { $regex: `^${tag}$`, $options: "i" }
       };
     }
+
     if (search) query.$text = { $search: search };
 
-
+    // visibility rule
     if (userId && sessionUid === userId) {
       query.$or = [{ visibility: true }, { "user.uid": sessionUid }];
     } else {
       query.visibility = true;
     }
 
+    // -----------------------
+    // Detect Period Sorting
+    // -----------------------
+    const isPeriodSort =
+      sortBy.startsWith("stats.weekly.") ||
+      sortBy.startsWith("stats.monthly.") ||
+      sortBy.startsWith("stats.halfYearly.");
 
-    let sort: Record<string, SortOrder> = {};
+    let sounds: IFile[] = [];
+    let total = 0;
 
-    if (sortBy.startsWith('stats.weekly.')) {
+    // =====================================================
+    // ⭐ PERIOD SORT → USE AGGREGATION (NO DUPLICATES)
+    // =====================================================
+    if (isPeriodSort) {
+      const [, period, metric] = sortBy.split(".");
+      // stats.weekly.views → period=weekly metric=views
 
-      sort = {
-        'stats.weekly.periodStart': -1,
-        [sortBy]: -1
-      };
+      const aggPipeline: any[] = [
+        { $match: query },
 
+        // explode stats array (creates virtual rows)
+        { $unwind: `$stats.${period}` },
+
+        // newest period first
+        {
+          $sort: {
+            [`stats.${period}.periodStart`]: -1
+          }
+        },
+
+        // ⭐ collapse duplicates → keep latest stat per file
+        {
+          $group: {
+            _id: "$_id",
+            doc: { $first: "$$ROOT" },
+            latestStat: { $first: `$stats.${period}` }
+          }
+        },
+
+        // attach latest stat to doc
+        {
+          $addFields: {
+            "doc.latestPeriodStat": "$latestStat"
+          }
+        },
+        { $replaceRoot: { newRoot: "$doc" } },
+
+        // now sort by metric
+        {
+          $sort: {
+            [`latestPeriodStat.${metric}`]: -1,
+            _id: -1
+          }
+        },
+
+        { $skip: skip },
+        { $limit: limit },
+
+        { $project: { __v: 0 } }
+      ];
+
+      sounds = await File.aggregate(aggPipeline);
+      total = await File.countDocuments(query);
     }
 
-    else if (sortBy.startsWith('stats.monthly.')) {
-
-      sort = {
-        'stats.monthly.periodStart': -1,
-        [sortBy]: -1
-      };
-
-    }
-
-    else if (sortBy.startsWith('stats.halfYearly.')) {
-
-      sort = {
-        'stats.halfYearly.periodStart': -1,
-        [sortBy]: -1
-      };
-
-    }
-
+    // =====================================================
+    // ⭐ NORMAL SORT → USE FIND (FAST PATH)
+    // =====================================================
     else {
-
-      sort = {
+      let sort: Record<string, SortOrder> = {
         [sortBy]: order === "asc" ? 1 : -1,
         _id: order === "asc" ? 1 : -1
       };
 
-    }
-
-    const skip = (page - 1) * limit;
-
-    // -----------------------
-    // DB Queries
-    // -----------------------
-
-    const [sounds, total, favs] = await Promise.all([
-
-      File.find(query)
+      sounds = await File.find(query)
         .sort(sort)
         .skip(skip)
         .limit(limit)
         .select("-__v")
-        .lean<IFile[]>(),
+        .lean<IFile[]>();
 
-      File.countDocuments(query),
+      total = await File.countDocuments(query);
+    }
 
-      sessionUid
-        ? Fav.find({ uid: sessionUid })
+    // -----------------------
+    // Fetch Favorites
+    // -----------------------
+    const favs = sessionUid
+      ? await Fav.find({ uid: sessionUid })
           .select("s_id -_id")
           .lean<{ s_id: string }[]>()
-        : Promise.resolve([])
-
-    ]);
-
-    // -----------------------
-    // Merge Favorites
-    // -----------------------
+      : [];
 
     const favSet = new Set(favs.map(f => f.s_id));
 
@@ -140,7 +166,6 @@ export async function GET(request: NextRequest) {
     // -----------------------
     // Response
     // -----------------------
-
     return NextResponse.json({
       success: true,
       data: soundsWithFav,
@@ -153,15 +178,16 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-
     console.error(error);
 
-    return NextResponse.json({
-      success: false,
-      message: "Failed to fetch sounds",
-      error: String(error)
-    }, { status: 500 });
-
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to fetch sounds",
+        error: String(error)
+      },
+      { status: 500 }
+    );
   }
 }
 
