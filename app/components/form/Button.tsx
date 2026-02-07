@@ -23,7 +23,7 @@ const Button: React.FC<ButtonProps> = ({
   const variants = {
     primary: 'bg-linear-to-b from-blue-600 via-blue-600 to-blue-400 hover:from-blue-500 hover:via-blue-500 hover:to-blue-300  text-white shadow-md shadow-blue-300/40 after:absolute after:inset-[0.15em] after:bg-linear-to-b after:from-blue-200/15 dark:after:from-blue-200/20 after:via-blue-200/10 after:to-blue-300/5 after:rounded-[inherit]',
     secondary: 'bg-gray-600/80 text-white hover:bg-gray-700 focus:ring-gray-500 disabled:bg-gray-300',
-    outline: 'bg-white hover:bg-gray-50 text-gray-500 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700 shadow-md shadow-gray-200 dark:shadow-zinc-700/40 ring-1 ring-inset ring-gray-300 hover:ring-gray-400/80 dark:ring-zinc-700 dark:ring-zinc-600',
+    outline: 'bg-white hover:bg-gray-50 text-gray-500 dark:bg-zinc-800 dark:text-zinc-300/80 dark:hover:bg-zinc-700 shadow-md shadow-gray-200 dark:shadow-zinc-700/40 ring-1 ring-inset ring-gray-300 hover:ring-gray-400/80 dark:ring-zinc-700 dark:ring-zinc-600',
     error: 'bg-error-500 hover:bg-error-400 text-white shadow-md shadow-error-300/40',
     success: 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-md shadow-emerald-300/40',
     warning: 'bg-amber-500 hover:bg-amber-400 text-white shadow-md shadow-amber-300/40',
@@ -32,6 +32,7 @@ const Button: React.FC<ButtonProps> = ({
   };
 
   const sizes = {
+    xs: 'px-2.5 py-1.5 text-sm',
     sm: 'px-3 py-2 text-sm',
     md: 'px-4 py-2.5 text-sm',
     lg: 'px-5 py-3 text-base',

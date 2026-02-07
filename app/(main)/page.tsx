@@ -2,11 +2,10 @@
 import React from "react";
 import TagScroller from "../components/TagScroller";
 import SoundCard, { SoundCardSkelton } from "../components/SoundCard";
-import { History } from "lucide-react";
 import { fileService } from "../services/fileService";
 import { useInfiniteLoader } from "../hooks/useInfiniteLoader";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { SoundGrid, Head2 } from "../components/Ui";
+import { SoundGrid, Head2, Head1 } from "../components/Ui";
 import Link from "next/link";
 import { PAGE_SIZE } from '../global';
 import Soundboard, { SoundboardSkelton } from "../components/Soundboard";
@@ -16,6 +15,7 @@ import Button from "../components/form/Button";
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import { IFileWithFav } from "../services/fileService";
 import GoogleAd from "../components/ad";
+import { SiAudioboom } from "react-icons/si";
 
 export default function HomePage() {
   const { data: session } = useSession();
@@ -44,6 +44,8 @@ export default function HomePage() {
       fileService.getFiles({
         page: pageParam,
         limit: PAGE_SIZE,
+        sortBy: 'stats.halfYearly.views',
+        order: 'desc'
       }),
     getNextPageParam: (lastPage) => {
       const { page, pages } = lastPage.pagination;
@@ -88,15 +90,18 @@ export default function HomePage() {
   return (
     <main className="min-h-screen text-white">
       <div className="space-y-8">
-        {/* <TagScroller /> */}
+
+        <h1 className="sr-only">Welcome to Sound Effect Pro — discover meme sound buttons and download viral, trending, and popular sound effects in one place for free.</h1>
+
+        <TagScroller />
 
         <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <Head2>Soundboards</Head2>
+            <Head2>Popular Soundboards</Head2>
             <Link href='/soundboard'>
               <Button variant="outline" size="sm">
                 More
-                <ChevronRightIcon className="text-zinc-500 size-4" />
+                <ChevronRightIcon className="text-zinc-400/80 size-4" />
               </Button>
             </Link>
           </div>
@@ -167,8 +172,8 @@ export default function HomePage() {
         {/* Recent Section */}
         <section className="space-y-4 mt-10">
           <div className="flex items-center gap-2">
-            <History className="text-gray-500/80 dark:text-zinc-500" size={25} />
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Recent</h2>
+            <SiAudioboom className="text-gray-500/80 dark:text-zinc-300/80" size={25} />
+            <Head2>Viral Sound Effect Buttons</Head2>
           </div>
 
           <SoundGrid>

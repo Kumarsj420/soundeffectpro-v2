@@ -19,25 +19,25 @@ function getSortBy(period: 'week' | 'month' | 'halfyear', field: 'views' | 'like
 }
 
 function getPageTitle(period: 'week' | 'month' | 'halfyear', field: 'views' | 'likes' | 'downloads'): string {
-    const titleMap: Record<'week' | 'month' | 'halfyear', Record<'views' | 'likes' | 'downloads', string>> = {
-        week: {
-            views: 'Trending Sound Effect Buttons This Week',
-            likes: 'Most Liked Sound Effect Buttons This Week',
-            downloads: 'Most Downloaded Sound Effect Buttons This Week'
-        },
-        month: {
-            views: 'Trending Sound Effect Buttons This Month',
-            likes: 'Most Liked Sound Effect Buttons This Month',
-            downloads: 'Most Downloaded Sound Effect Buttons This Month'
-        },
-        halfyear: {
-            views: 'Top Trending Sound Effect Buttons In Last 6 Months',
-            likes: 'Most Liked Sound Effect Buttons In Last 6 Months',
-            downloads: 'Most Downloaded Sound Effect Buttons In Last 6 Months'
-        }
-    };
+  const titleMap: Record<'week' | 'month' | 'halfyear', Record<'views' | 'likes' | 'downloads', string>> = {
+    week: {
+      views: 'Trending Sound Effect Buttons This Week',
+      likes: 'Most Viral Sound Effect Buttons This Week',
+      downloads: 'Most Popular Sound Effect Buttons This Week'
+    },
+    month: {
+      views: 'Trending Sound Effect Buttons This Month',
+      likes: 'Most Viral Sound Effect Buttons This Month',
+      downloads: 'Most Popular Sound Effect Buttons This Month'
+    },
+    halfyear: {
+      views: 'Top Trending Sound Effect Buttons In Last 6 Months',
+      likes: 'Most Viral Sound Effect Buttons In Last 6 Months',
+      downloads: 'Most Popular Sound Effect Buttons In Last 6 Months'
+    }
+  };
 
-    return titleMap[period][field];
+  return titleMap[period][field];
 }
 
 

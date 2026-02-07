@@ -20,6 +20,7 @@ import NavLink from "./NavLink";
 import Label from "./form/Label";
 import Toggle from "./form/Toggle";
 import { TbMenu2 } from "react-icons/tb";
+import { useTheme } from "../context/preferences-context";
 
 interface Sound {
     id: number;
@@ -69,6 +70,7 @@ export default function Navbar() {
     const [query, setQuery] = useState("");
     const [results, setResults] = useState<Sound[]>([]);
     const [searchInp, setSearchInp] = useState('');
+    const [theme, setTheme] = useTheme();
     const router = useRouter();
 
 
@@ -311,8 +313,8 @@ export default function Navbar() {
                                                 ))
                                             }
                                             <div className="flex items-center justify-between px-4 py-2">
-                                                <Label >Dark Mode</Label>
-                                                <Toggle />
+                                                <Label htmlFor="setting-theme-nav">Dark Mode</Label>
+                                                <Toggle id='setting-theme-nav' checked={theme === 'dark' ? true : false} onChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')} />
                                             </div>
                                         </nav>
                                     </div>

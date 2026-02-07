@@ -44,7 +44,7 @@ export default function Popular() {
 
     return (
         <>
-            <Head1>All Time Most Viewed Sound Effect Buttons</Head1>
+            <Head1>All Time Most Viral And Top Viewed Sound Effect Buttons</Head1>
 
             <SoundGrid className='mt-5'>
                 {popularSounds.map((obj: IFileWithFav) => (

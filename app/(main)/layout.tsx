@@ -67,8 +67,8 @@ export default function RootLayout({
         className={` antialiased bg-gray-100 text-gray-900 dark:bg-zinc-950 dark:text-white`}
       >
         <div className="w-full bg-linear-to-r from-sky-500 to-indigo-600  ">
-          <p className="max-w-7xl m-auto px-5 sm:px-7 py-1.5 text-sm/5 text-white">
-            We&apos;re rolling out updates. You may experience limited functionality during this time.
+          <p className="max-w-7xl m-auto px-5 sm:px-7 py-1.5 text-xs/5 font-semibold text-white">
+            Our site will be fully ready in 2 days. Some responsiveness and theme updates are still in progress — please use dark mode until then.
           </p>
         </div>
         <Providers>
