@@ -36,9 +36,7 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
 
-    // -----------------------
-    // Build Query
-    // -----------------------
+
     const query: FilterQuery<IFile> = {};
 
     if (category) {
@@ -73,17 +71,13 @@ export async function GET(request: NextRequest) {
     let sounds: IFile[] = [];
     let total = 0;
 
-    // =====================================================
-    // ⭐ PERIOD SORT → USE AGGREGATION (NO DUPLICATES)
-    // =====================================================
     if (isPeriodSort) {
       const [, period, metric] = sortBy.split(".");
-      // stats.weekly.views → period=weekly metric=views
+   
 
       const aggPipeline: any[] = [
         { $match: query },
 
-        // explode stats array (creates virtual rows)
         { $unwind: `$stats.${period}` },
 
         // newest period first

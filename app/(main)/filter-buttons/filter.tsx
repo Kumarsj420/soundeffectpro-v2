@@ -7,6 +7,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { Head1, SoundGrid } from '../../components/Ui';
 import { PAGE_SIZE } from '../../global';
 import { IFileWithFav } from '../../services/fileService';
+import Breadcrumps from '@/app/components/Breadcrumps';
 
 function getSortBy(period: 'week' | 'month' | 'halfyear', field: 'views' | 'likes' | 'downloads'): string {
   const periodMap: Record<'week' | 'month' | 'halfyear', string> = {
@@ -77,6 +78,7 @@ export default function FilterSounds({ period, field }: { period: 'week' | 'mont
 
   return (
     <>
+      <Breadcrumps cat={{ label: 'Sounds', link: '/popular' }} title={getPageTitle(period, field)} className='mb-5' />
       <Head1>{getPageTitle(period, field)}</Head1>
 
       <SoundGrid className='mt-5'>

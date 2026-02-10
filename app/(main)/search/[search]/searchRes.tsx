@@ -51,8 +51,6 @@ export default function SearchRes({
 
   return (
     <>
-      <Head1>Search Results For {search}</Head1>
-
       <SoundGrid className='mt-5'>
         {searchSounds.map((obj: IFileWithFav) => (
           <SoundCard key={obj.s_id} obj={obj} />

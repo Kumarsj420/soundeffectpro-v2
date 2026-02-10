@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { ReactNode, useState } from "react";
 import { PreferencesProvider } from "./context/preferences-context";
 import { LanguageProvider } from "./context/LanguageContext";
+import { TagContextProvider } from "./context/TagContext";
 
 export default function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
@@ -24,7 +25,9 @@ export default function Providers({ children }: { children: ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <LanguageProvider>
           <PreferencesProvider>
-            {children}
+            <TagContextProvider>
+              {children}
+            </TagContextProvider>
           </PreferencesProvider>
         </LanguageProvider>
       </QueryClientProvider>

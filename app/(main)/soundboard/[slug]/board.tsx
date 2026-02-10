@@ -13,6 +13,7 @@ import { fileService } from '@/app/services/fileService';
 import { getR2Url } from '@/app/lib/r2/r2Url';
 import { useSession } from 'next-auth/react';
 import { IFileWithFav } from '@/app/services/fileService';
+import Breadcrumps from '@/app/components/Breadcrumps';
 
 interface SoundboardPageProps {
     id: string;
@@ -78,6 +79,7 @@ export default function SoundboardPage({
 
     return (
         <div className="min-h-screen text-gray-900 dark:text-zinc-100">
+            <Breadcrumps cat={{label: 'Soundboard', link: '/soundboard'}} title={boardData.name} className='mb-5' />
             <div>
                 {/* Soundboard Header */}
                 <section className="flex flex-col md:flex-row gap-6 items-start ">

@@ -4,6 +4,7 @@ import Fav from "@/app/models/Fav";
 import File from "@/app/models/File";
 import { requireAuth } from "@/app/lib/getSession";
 import User from "@/app/models/User";
+import { incrementFileStat } from "@/app/lib/fileStatInc";
 
 export const runtime = "nodejs";
 
@@ -16,7 +17,7 @@ export async function POST(req: NextRequest) {
 
     if (!uid) {
       return NextResponse.json(
-        { success: false, message: "Unauthorized" },
+        { success: false, message: "Login to use this feature" },
         { status: 401 }
       );
     }
@@ -65,6 +66,8 @@ export async function POST(req: NextRequest) {
         { s_id },
         { $inc: { "stats.likes": 1 } }
       ),
+
+      incrementFileStat(s_id, 'likes'),
 
       User.updateOne(
         { uid },

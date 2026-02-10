@@ -38,9 +38,11 @@ const Tag: React.FC<TagProps> = (props) => {
     ...rest
   } = props;
 
-  const sizeClasses = {
-    xs: 'px-3 py-0.5 text-xs',
+   const sizeClasses = {
+    xs: 'px-2.5 py-1 text-xs',
     sm: 'px-3 py-1 text-sm',
+    md: 'px-4 py-2 text-sm',
+    lg: 'px-5 py-2.5 text-base',
   };
 
   const baseClasses =

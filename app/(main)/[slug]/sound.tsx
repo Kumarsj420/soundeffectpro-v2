@@ -22,9 +22,9 @@ import { useSession } from 'next-auth/react';
 import { Head1, Para, CardSpan } from '../../components/Ui';
 import Link from 'next/link';
 import Tag from '../../components/Tag';
-import { useRouter } from 'next/navigation';
 import GoogleAd from '../../components/ad';
 import { usePathname } from 'next/navigation';
+import Breadcrumps from '@/app/components/Breadcrumps';
 
 interface SoundDetailsPageProps {
   id: string;
@@ -157,20 +157,8 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
     <div className=" min-h-screen text-zinc-200">
       <section >
         {/* breadcrumps */}
-        <nav className="flex items-center gap-1.5 text-sm mb-5">
-          <Link href='/' className="text-gray-500 dark:text-zinc-400 hover:text-blue-400 transition-colors flex items-center gap-1">
-            <HomeIcon className='size-4.5' />
-          </Link>
-          <ChevronRightIcon className="text-gray-600 dark:text-zinc-500 size-3.5" />
-          <Link href={`/category/${sfxInfo?.category ? sfxInfo?.category : 'Random'}`} className="text-gray-500 dark:text-zinc-300 hover:text-blue-400 transition-colors">
-            {sfxInfo?.category ? sfxInfo?.category : 'Random'}
-          </Link>
-          <ChevronRightIcon className="text-gray-600 dark:text-zinc-500 size-3.5" />
-          <span className="text-gray-900 dark:text-white truncate max-w-xs">
-            {sfxInfo?.title}
-          </span>
-        </nav>
-
+        <Breadcrumps cat={{label: sfxInfo?.category ? sfxInfo?.category : 'Random', link: `/category/${sfxInfo?.category ? sfxInfo?.category : 'Random'}`}} title={sfxInfo?.title} className='mb-5' />
+       
         <div className="grid grid-cols-1 md:grid-cols-[1.5fr_2fr] gap-8 mb-12">
           {/* sound player */}
           <div className="bg-linear-to-br from-white to-gray-100/70 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl p-6 flex flex-col gap-5 justify-between min-h-97.5 ring-1 ring-gray-300/80 dark:ring-0 shadow-xl shadow-gray-300/60 dark:shadow-none">

@@ -24,8 +24,8 @@ export default function HomePage() {
     data: boardData,
     isLoading: isBoardLoading,
   } = useQuery({
-    queryKey: ['soundboard'],
-    queryFn: () => categoryService.getCategory({ limit: 5, thumb: true }),
+    queryKey: ['soundboard', 'monthly-trending'],
+    queryFn: () => categoryService.getCategory({ limit: 5, thumb: true , sortBy: 'stats.monthly.views', order: 'desc'}),
     staleTime: 1000 * 60 * 5,
   })
 
@@ -93,12 +93,11 @@ export default function HomePage() {
 
         <h1 className="sr-only">Welcome to Sound Effect Pro — discover meme sound buttons and download viral, trending, and popular sound effects in one place for free.</h1>
 
-        <TagScroller />
 
         <section className="space-y-4">
           <div className="flex items-center justify-between">
             <Head2>Popular Soundboards</Head2>
-            <Link href='/soundboard'>
+            <Link href='/soundboard/filter-board?period=month&field=views'>
               <Button variant="outline" size="sm">
                 More
                 <ChevronRightIcon className="text-zinc-400/80 size-4" />
@@ -121,29 +120,7 @@ export default function HomePage() {
           </SoundGrid>
         </section>
 
-        {/* Popular Section */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <Head2>Popular <span className="text-gray-600/90 dark:text-zinc-300/80 font-light">| Sound Buttons</span></Head2>
-            <Link href='/popular'>
-              <Button variant="outline" size="sm">
-                More
-                <ChevronRightIcon className="text-zinc-500 size-4" />
-              </Button>
-            </Link>
-          </div>
-          <SoundGrid>
-            {!isPopularSfxLoading && popularSfxFiles?.map((obj: IFileWithFav) => (
-              <SoundCard key={obj.s_id} obj={obj} sessionUser={session?.user.uid === obj.user.uid ? true : false} />
-            ))}
-            {
-              isPopularSfxLoading &&
-              Array.from({ length: 5 }).map((_, i) => (
-                <SoundCardSkelton key={i} />
-              ))
-            }
-          </SoundGrid>
-        </section>
+
 
 
         <section className="space-y-4 mt-10">

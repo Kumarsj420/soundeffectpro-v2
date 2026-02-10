@@ -1,20 +1,24 @@
-"use client"
+'use client'
 import React from "react";
 import {
-    Head1,
     SoundGrid
-} from "../../components/Ui";
-import Soundboard, { SoundboardSkelton } from "../../components/Soundboard";
-import { categoryService } from "../../services/categoryService";
-import { useInfiniteLoader } from '../../hooks/useInfiniteLoader';
+} from "@/app/components/Ui";
+import Soundboard, { SoundboardSkelton } from "@/app/components/Soundboard";
+import { categoryService } from "@/app/services/categoryService";
+import { useInfiniteLoader } from '@/app/hooks/useInfiniteLoader';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { PAGE_SIZE } from '../../global';
-import { CategoryInterface } from "../../models/Category";
+import { PAGE_SIZE } from '@/app/global';
+import { CategoryInterface } from "@/app/models/Category";
 import GoogleAd from "@/app/components/ad";
-import Breadcrumps from "@/app/components/Breadcrumps";
 
-export default function SoundboardPage() {
-    
+function SearchBoard(
+    {
+        search,
+    }: {
+        search: string
+    }
+) {
+
     const {
         data,
         fetchNextPage,
@@ -22,14 +26,13 @@ export default function SoundboardPage() {
         isFetchingNextPage,
         isLoading,
     } = useInfiniteQuery({
-        queryKey: ["soundboards", "recents"],
+        queryKey: ["soundboards", "search", search],
         initialPageParam: 1,
         queryFn: ({ pageParam }) =>
             categoryService.getCategory({
                 page: pageParam,
                 limit: PAGE_SIZE,
-                sortBy: 'createdAt',
-                order: 'desc',
+                search,
                 thumb: true
             }),
         getNextPageParam: (lastPage) => {
@@ -47,11 +50,8 @@ export default function SoundboardPage() {
         onLoadMore: fetchNextPage,
     });
 
-
     return (
-        <div>
-            <Breadcrumps title="Soundboard" className="mb-5" />
-            <Head1>Recent Soundboards</Head1>
+        <>
             <SoundGrid className="mt-5">
                 {topSoundboards.map((obj: CategoryInterface, index) => (
                     <React.Fragment key={obj.sb_id}>
@@ -78,6 +78,8 @@ export default function SoundboardPage() {
                 <p className="text-center mt-4 text-gray-500">No more soundboards to load</p>
             )}
             <div ref={loadMoreRef} className="h-10" />
-        </div>
-    );
+        </>
+    )
 }
+
+export default SearchBoard

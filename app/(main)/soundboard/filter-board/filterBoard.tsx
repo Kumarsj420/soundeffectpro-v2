@@ -3,18 +3,44 @@ import React from "react";
 import {
     Head1,
     SoundGrid
-} from "../../components/Ui";
-import Soundboard, { SoundboardSkelton } from "../../components/Soundboard";
-import { categoryService } from "../../services/categoryService";
-import { useInfiniteLoader } from '../../hooks/useInfiniteLoader';
+} from "../../../components/Ui";
+import Soundboard, { SoundboardSkelton } from "../../../components/Soundboard";
+import { categoryService } from "../../../services/categoryService";
+import { useInfiniteLoader } from '../../../hooks/useInfiniteLoader';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { PAGE_SIZE } from '../../global';
-import { CategoryInterface } from "../../models/Category";
+import { PAGE_SIZE } from '../../../global';
+import { CategoryInterface } from "../../../models/Category";
 import GoogleAd from "@/app/components/ad";
 import Breadcrumps from "@/app/components/Breadcrumps";
 
-export default function SoundboardPage() {
-    
+function getSortBy(period: 'week' | 'month' | 'halfyear', field: 'views'): string {
+    const periodMap: Record<'week' | 'month' | 'halfyear', string> = {
+        week: 'weekly',
+        month: 'monthly',
+        halfyear: 'halfYearly'
+    };
+
+    return `stats.${periodMap[period]}.${field}`;
+}
+
+function getPageTitle(period: 'week' | 'month' | 'halfyear', field: 'views'): string {
+    const titleMap: Record<'week' | 'month' | 'halfyear', Record<'views', string>> = {
+        week: {
+            views: 'Trending Soundboards This Week'
+        },
+        month: {
+            views: 'Popular Soundboards This Month'
+        },
+        halfyear: {
+            views: 'Viral Soundboards In Last 6 Months'
+        }
+    };
+
+    return titleMap[period][field];
+}
+
+function FilterBoard({ period, field }: { period: 'week' | 'month' | 'halfyear', field: 'views' }) {
+
     const {
         data,
         fetchNextPage,
@@ -22,13 +48,13 @@ export default function SoundboardPage() {
         isFetchingNextPage,
         isLoading,
     } = useInfiniteQuery({
-        queryKey: ["soundboards", "recents"],
+        queryKey: ["soundboards", period, field],
         initialPageParam: 1,
         queryFn: ({ pageParam }) =>
             categoryService.getCategory({
                 page: pageParam,
                 limit: PAGE_SIZE,
-                sortBy: 'createdAt',
+                sortBy: getSortBy(period, field),
                 order: 'desc',
                 thumb: true
             }),
@@ -50,8 +76,8 @@ export default function SoundboardPage() {
 
     return (
         <div>
-            <Breadcrumps title="Soundboard" className="mb-5" />
-            <Head1>Recent Soundboards</Head1>
+            <Breadcrumps cat={{ label: 'Soundboard', link: '/soundboard' }} title={getPageTitle(period, field)} className="mb-5" />
+            <Head1>{getPageTitle(period, field)}</Head1>
             <SoundGrid className="mt-5">
                 {topSoundboards.map((obj: CategoryInterface, index) => (
                     <React.Fragment key={obj.sb_id}>
@@ -81,3 +107,5 @@ export default function SoundboardPage() {
         </div>
     );
 }
+
+export default FilterBoard

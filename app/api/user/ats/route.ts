@@ -30,7 +30,6 @@ export async function POST(req: NextRequest) {
             s_id,
         });
 
-        // Increment total_sfx in Category
         await Category.findOneAndUpdate(
             { sb_id },
             { $inc: { total_sfx: 1 } }

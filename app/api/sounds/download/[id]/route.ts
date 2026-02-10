@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/app/lib/getSession';
 import { connectDB } from '@/app/lib/dbConnection';
 import File from '@/app/models/File';
+import { incrementFileStat } from '@/app/lib/fileStatInc';
 
 export async function GET(
     request: NextRequest,
@@ -52,6 +53,8 @@ export async function GET(
             { s_id: id },
             { $inc: { 'stats.downloads': 1 } }
         );
+
+        await incrementFileStat(id, 'downloads');
 
         return new NextResponse(blob, {
             headers: {

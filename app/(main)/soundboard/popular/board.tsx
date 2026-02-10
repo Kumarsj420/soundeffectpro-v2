@@ -1,20 +1,16 @@
 "use client"
 import React from "react";
-import {
-    Head1,
-    SoundGrid
-} from "../../components/Ui";
-import Soundboard, { SoundboardSkelton } from "../../components/Soundboard";
-import { categoryService } from "../../services/categoryService";
-import { useInfiniteLoader } from '../../hooks/useInfiniteLoader';
+import { Head1, SoundGrid } from "@/app/components/Ui";
+import Soundboard, { SoundboardSkelton } from "@/app/components/Soundboard";
+import { categoryService } from "@/app/services/categoryService";
+import { useInfiniteLoader } from '@/app/hooks/useInfiniteLoader';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { PAGE_SIZE } from '../../global';
-import { CategoryInterface } from "../../models/Category";
+import { PAGE_SIZE } from '@/app/global';
+import { CategoryInterface } from "@/app/models/Category";
 import GoogleAd from "@/app/components/ad";
 import Breadcrumps from "@/app/components/Breadcrumps";
 
-export default function SoundboardPage() {
-    
+export default function PopularBoard() {
     const {
         data,
         fetchNextPage,
@@ -28,7 +24,7 @@ export default function SoundboardPage() {
             categoryService.getCategory({
                 page: pageParam,
                 limit: PAGE_SIZE,
-                sortBy: 'createdAt',
+                sortBy: 'stats.views',
                 order: 'desc',
                 thumb: true
             }),
@@ -50,8 +46,8 @@ export default function SoundboardPage() {
 
     return (
         <div>
-            <Breadcrumps title="Soundboard" className="mb-5" />
-            <Head1>Recent Soundboards</Head1>
+            <Breadcrumps cat={{label: 'Soundboard', link: '/soundboard'}} title="Popular Soundboards" className="mb-5" />
+            <Head1>All Time Most Popular Soundboards</Head1>
             <SoundGrid className="mt-5">
                 {topSoundboards.map((obj: CategoryInterface, index) => (
                     <React.Fragment key={obj.sb_id}>

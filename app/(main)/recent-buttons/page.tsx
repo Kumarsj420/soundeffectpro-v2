@@ -9,7 +9,7 @@ import { PAGE_SIZE } from '../../global';
 import { IFileWithFav } from '../../services/fileService';
 import GoogleAd from '@/app/components/ad';
 import { useSession } from 'next-auth/react';
-
+import Breadcrumps from '@/app/components/Breadcrumps';
 
 export default function Recent() {
 
@@ -47,6 +47,7 @@ export default function Recent() {
 
     return (
         <>
+           <Breadcrumps cat={{label: 'Sounds', link: '/popular'}} title='Recent Sounds' className='mb-5'/>
             <Head1>Recently Uploaded Sound Effect Buttons</Head1>
 
             <SoundGrid className='mt-5'>

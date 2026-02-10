@@ -16,6 +16,9 @@ export async function GET(request: NextRequest) {
   try {
     await connectDB();
 
+    const session = await requireAuth();
+    const sessionUid = session?.user?.uid || null;
+
     const searchParams = request.nextUrl.searchParams;
 
     const page = parseInt(searchParams.get('page') || '1');
@@ -29,51 +32,86 @@ export async function GET(request: NextRequest) {
     const userID = searchParams.get('userID');
 
     const query: FilterQuery<CategoryInterface> = {};
+
     if (search) query.$text = { $search: search };
     if (sbID) query.sb_id = sbID;
-    if (thumb === 'true') {
-      query.thumb = { $ne: null };
-    }
+    if (thumb === 'true') query.thumb = { $ne: null };
     if (userID) query['user.uid'] = userID;
 
-    query.visibility = (visibility) ? visibility : true;
-
-
-
-    const sort: Record<string, SortOrder> = {
-      [sortBy]: order === 'asc' ? 1 : -1,
-      _id: order === 'asc' ? 1 : -1,
+    if (userID && sessionUid === userID) {
+      query.$or = [{ visibility: true }, { "user.uid": sessionUid }, { total_sfx: { $gt: 0 } }];
+    } else {
+      query.visibility = true;
+      query.total_sfx = { $gt: 0 };
     }
 
     const skip = (page - 1) * limit;
 
-    const [category, total] = await Promise.all([
-      Category.find(query)
+
+    const isPeriodSort =
+      sortBy.startsWith('stats.weekly.') ||
+      sortBy.startsWith('stats.monthly.') ||
+      sortBy.startsWith('stats.halfYearly.');
+
+    let categories: CategoryInterface[] = [];
+    let total = 0;
+
+
+    if (isPeriodSort) {
+      const [, period, metric] = sortBy.split('.');
+
+      const sort: Record<string, SortOrder> = {
+        [`stats.${period}.periodStart`]: -1,
+        [`stats.${period}.${metric}`]: -1,
+        _id: -1
+      };
+
+      categories = await Category.find(query)
         .sort(sort)
         .skip(skip)
         .limit(limit)
-        .select('-__v'),
-      Category.countDocuments(query)
-    ])
+        .select('-__v')
+        .lean<CategoryInterface[]>();
+
+      total = await Category.countDocuments(query);
+    }
+
+
+    else {
+      const sort: Record<string, SortOrder> = {
+        [sortBy]: order === 'asc' ? 1 : -1,
+        _id: order === 'asc' ? 1 : -1,
+      };
+
+      categories = await Category.find(query)
+        .sort(sort)
+        .skip(skip)
+        .limit(limit)
+        .select('-__v')
+        .lean<CategoryInterface[]>();
+
+      total = await Category.countDocuments(query);
+    }
 
     return NextResponse.json({
       success: true,
-      data: category,
+      data: categories,
       pagination: {
         page,
         limit,
         total,
         pages: Math.ceil(total / limit)
       }
-    })
-
+    });
 
   } catch (error) {
+    console.error(error);
+
     return NextResponse.json({
       success: false,
-      message: 'failed to fetch category details',
+      message: 'Failed to fetch categories',
       error: String(error)
-    }, { status: 500 })
+    }, { status: 500 });
   }
 }
 

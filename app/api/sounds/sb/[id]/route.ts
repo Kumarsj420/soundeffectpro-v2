@@ -4,6 +4,7 @@ import File, { IFile } from "@/app/models/File";
 import Fav from "@/app/models/Fav";
 import { requireAuth } from "@/app/lib/getSession";
 import { NextRequest, NextResponse } from "next/server";
+import { incrementCategoryStat } from "@/app/lib/catStatInc";
 
 export async function GET(
     request: NextRequest,
@@ -38,12 +39,15 @@ export async function GET(
             );
         }
 
+        await incrementCategoryStat(id, 'views');
+
         const soundIds = boards.map(b => b.s_id);
 
         const query = {
             s_id: { $in: soundIds },
             visibility: true
         };
+
 
         const [total, files] = await Promise.all([
             File.countDocuments(query),

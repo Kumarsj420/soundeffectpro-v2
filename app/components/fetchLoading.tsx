@@ -10,7 +10,6 @@ export default function FetchLoading() {
                     <div className="relative inline-block">
                         <div className="size-20 border-4 border-zinc-500 border-t-green-500 rounded-full animate-spin"></div>
                     </div>
-
                 </div>
             </div>
         );

@@ -2,17 +2,18 @@
 import React, { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Tag from "./Tag";
+import Button from "./form/Button";
+import { useTags } from "../context/TagContext";
+import PTag from "./PTags";
 
-const tags: string[] = [
-  "Meme", "Anime", "Gaming", "Movies", "Comedy", 
-  "Sports", "Series", "Politics", "Creators", "Celebrities", "Music", "Technology", "Food", "Travel", "Fashion", 
-"Fitness", "Education", "Science", "Business", "Art"
-];
+
 
 const TagScroller: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const { tags, prTags } = useTags();
 
   const checkScrollability = () => {
     if (scrollRef.current) {
@@ -48,43 +49,61 @@ const TagScroller: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center space-x-2 bg-gray-50 dark:bg-zinc-900/60 px-2 rounded-xl ring-1 ring-gray-300/70 dark:ring-zinc-800">
-      <button
+    <div className="flex items-center space-x-2 bg-gray-50 dark:bg-zinc-900 px-2 rounded-xl ring-1 ring-gray-300/70 dark:ring-zinc-700/70 ">
+      <Button
         onClick={scrollLeft}
         disabled={!canScrollLeft}
-        className={`p-1.5 sm:p-2 rounded-full bg-white ring-1 ring-gray-300 disabled:ring-gray-200/70 shadow-md shadow-gray-300 dark:shadow-none  dark:ring-0 dark:bg-zinc-800 hover:bg-blue-500 hover:text-white hover:ring-blue-100 text-gray-500 dark:text-white disabled:bg-gray-50 disabled:text-zinc-300 dark:disabled:bg-zinc-800/55 dark:disabled:text-zinc-600 transition-colors duration-200 cursor-pointer`}
+        className="rounded-full p-1.5 sm:p-2 after:inset-[0.35em] after:h-[65%]"
+        variant="outline"
+        size="auto"
         aria-label="Scroll left"
       >
         <ChevronLeft className="size-3.5 sm:size-4" />
-      </button>
+      </Button>
 
-      {/* Tag Scroller */}
-      <div 
+      <div
         ref={scrollRef}
-        className="flex overflow-x-auto space-x-2 py-3 no-scrollbar flex-1"
+        className="flex overflow-x-auto space-x-2 py-2 no-scrollbar flex-1 divide-x divide-gray-300/70 dark:divide-zinc-700/70"
         onScroll={checkScrollability}
         style={{
           scrollbarWidth: 'none',
           msOverflowStyle: 'none'
         }}
       >
-        {tags.map((tag: string, index: number) => (
-          <Tag
-            key={`${tag}-${index}`}
-          >
-            {tag}
-          </Tag>
-        ))}
+        <div className="pr-2 flex gap-2 items-center">
+          {
+            prTags.map((tag, index: number) => (
+              <PTag key={index} size="sm" as="link" href={tag.link} variant={tag.btnVariant} className="flex gap-1.5" >
+                <tag.icon className="size-4.5" />
+                {tag.label}
+              </PTag>
+            ))
+          }
+        </div>
+        <div className="flex gap-2 items-center">
+          {tags.map((tag, index: number) => (
+            <Tag
+              key={`${tag}-${index}`}
+              size="sm"
+              href={tag.link}
+              as="link"
+            >
+              {tag.label}
+            </Tag>
+          ))}
+        </div>
+
       </div>
 
-      <button
+      <Button
         onClick={scrollRight}
         disabled={!canScrollRight}
-        className={`p-1.5 sm:p-2 rounded-full bg-white ring-1 ring-gray-300 disabled:ring-gray-200/70 shadow-md shadow-gray-300 dark:shadow-none  dark:ring-0 dark:bg-zinc-800 hover:bg-blue-500 hover:text-white hover:ring-blue-100 text-gray-500 dark:text-white disabled:bg-gray-50 disabled:text-zinc-300 dark:disabled:bg-zinc-800/55 dark:disabled:text-zinc-600 transition-colors duration-200 cursor-pointer`}
+        className="rounded-full p-1.5 sm:p-2 after:inset-[0.35em] after:h-[65%]"
+        variant='outline'
         aria-label="Scroll right"
       >
         <ChevronRight className="size-3.5 sm:size-4" />
-      </button>
+      </Button>
     </div>
   );
 };

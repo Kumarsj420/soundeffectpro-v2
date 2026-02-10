@@ -7,6 +7,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { Head1, SoundGrid } from '../../components/Ui';
 import { PAGE_SIZE } from '../../global';
 import { IFileWithFav } from '../../services/fileService';
+import Breadcrumps from '@/app/components/Breadcrumps';
 
 export default function Popular() {
 
@@ -44,7 +45,8 @@ export default function Popular() {
 
     return (
         <>
-            <Head1>All Time Most Liked  Sound Effect Buttons</Head1>
+            <Breadcrumps cat={{ label: 'Sounds', link: '/popular' }} title='Most Liked' className='mb-5' />
+            <Head1>All Time Most Liked Sound Effect Buttons</Head1>
 
             <SoundGrid className='mt-5'>
                 {popularSounds.map((obj: IFileWithFav) => (

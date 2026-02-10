@@ -3,6 +3,7 @@ import Fav from "@/app/models/Fav";
 import File, { IFile } from "@/app/models/File";
 import { requireAuth } from "@/app/lib/getSession";
 import { NextRequest, NextResponse } from "next/server";
+import { incrementFileStat } from "@/app/lib/fileStatInc";
 
 export async function GET(request: NextRequest) {
   try {
