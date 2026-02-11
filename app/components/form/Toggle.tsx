@@ -32,8 +32,8 @@ const Toggle: React.FC<ToggleProps> = ({
 
       <div
         className={cn(
-          'group relative inline-flex shrink-0 rounded-full bg-white dark:bg-zinc-800 p-0.5',
-          'inset-ring inset-ring-gray-300 dark:inset-ring-zinc-700',
+          'group relative inline-flex shrink-0 rounded-full bg-gray-200 dark:bg-zinc-700 p-0.5',
+          'inset-ring inset-ring-gray-300 dark:inset-ring-zinc-600',
           'outline-offset-2 outline-blue-500',
           'transition-colors duration-200 ease-in-out',
           'has-checked:bg-blue-500 has-focus-visible:outline-2',

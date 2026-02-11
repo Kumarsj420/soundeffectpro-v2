@@ -1,13 +1,12 @@
 "use client";
 import { useState } from "react";
-import { Heart, Download, EllipsisVertical } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import React from "react";
 import Link from "next/link";
 import SoundButton from "./SoundButton";
 import { useLazyAudio } from './../hooks/useAudio';
 import { useNumberAbbreviation } from './../hooks/useNumberAbbreviation'
 import { Head3, CardSpan } from "./Ui";
-import { IFile } from "../models/File";
 import {
   useFloating,
   offset,
@@ -28,7 +27,6 @@ import { useFetchLoading } from "../hooks/useFetchLoading";
 import { toast } from "react-toastify";
 import { useModal } from "../hooks/useModal";
 import { IFileWithFav } from "../services/fileService";
-
 
 
 export interface SoundCardProps {
@@ -118,9 +116,11 @@ const SoundCard: React.FC<SoundCardProps> = ({
   }
 
   return (
-    <div className="bg-linear-to-br from-white  to-gray-100/70 dark:from-zinc-700/75 dark:to-zinc-900 rounded-3xl shadow-lg shadow-gray-300/60 dark:shadow-none p-4 relative group/card ring-1 ring-gray-300/80 dark:ring-0">
+    <div className="bg-linear-to-br from-white via-white  to-gray-200 dark:bg-zinc-950 dark:from-zinc-700/85 dark:via-zinc-800 dark:to-zinc-900 rounded-3xl shadow-lg shadow-gray-300/60 dark:shadow-none p-4 relative group/card ring-1 ring-gray-300/80 dark:ring-0">
       <div className="flex justify-center mb-4">
-        <SoundButton onClick={playing ? pause : play} className={`hue-rotate-${obj.btnColor} ${loading ? 'saturate-0 animate-pulse pointer-events-none' : ''} ${playing ? 'btn-animation ' : ''}`} />
+        <div className="flex justify-center items-center w-31.5 h-26 sm:w-25 sm:h-20">
+          <SoundButton onClick={playing ? pause : play} className={` scale-126 sm:scale-100 hue-rotate-${obj.btnColor} ${loading ? 'saturate-0 animate-pulse pointer-events-none' : ''} ${playing ? 'btn-animation' : ''}`} />
+        </div>
       </div>
       <Link href={`/${obj.slug}-${obj.s_id}`} className="  text-gray-900 dark:text-white">
         <Head3 className="truncate capitalize hover:text-blue-400">{obj.title}</Head3>
@@ -294,14 +294,14 @@ export function SoundCardSkelton() {
   return (
     <div className="bg-linear-to-br from-white  to-gray-100/70 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl shadow-lg shadow-gray-300/60 dark:shadow-none p-4 relative group ring-1 ring-gray-300/80 dark:ring-0 ">
       <div className="flex justify-center mb-4">
-        <div className="size-21 bg-zinc-700 rounded-full animate-pulse"></div>
+        <div className="size-21 bg-gray-300 dark:bg-zinc-700 rounded-full animate-pulse"></div>
       </div>
-      <div className="bg-zinc-700 h-5 w-full rounded-lg animate-pulse">
+      <div className="bg-gray-300 dark:bg-zinc-700 h-5 w-full rounded-lg animate-pulse">
       </div>
-      <div className="mt-1.5 bg-zinc-700 h-4 w-full rounded-lg animate-pulse">
+      <div className="mt-1.5 bg-gray-300 dark:bg-zinc-700 h-4 w-full rounded-lg animate-pulse">
       </div>
 
-      <div className="mt-3.5 bg-zinc-700 h-6 w-full rounded-lg animate-pulse">
+      <div className="mt-3.5 bg-gray-300 dark:bg-zinc-700 h-6 w-full rounded-lg animate-pulse">
       </div>
     </div>
   );

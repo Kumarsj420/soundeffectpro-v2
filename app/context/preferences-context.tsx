@@ -28,7 +28,7 @@ type PreferencesContextType = {
 
 
 const DEFAULT_PREFERENCES: PreferencesState = {
-  theme: "dark",
+  theme: "system",
   nsfw: true,
   cookies: true,
 };
@@ -80,7 +80,7 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
     const storedCookies = localStorage.getItem("cookies");
 
     setPreferences({
-      theme: normalizeTheme(storedTheme) ?? "dark",
+      theme: normalizeTheme(storedTheme) ?? "system",
       nsfw:
         storedNSFW !== null
           ? storedNSFW === "true"

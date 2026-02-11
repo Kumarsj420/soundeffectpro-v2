@@ -48,20 +48,20 @@ function Soundboard({ obj }: { obj: CategoryInterface }) {
 
 export function SoundboardSkelton() {
   return (
-    <div className='group w-full aspect-3/2 rounded-2xl overflow-hidden relative isolate flex flex-col justify-end bg-gray-900 dark:bg-zinc-900 px-2.5 py-2'>
+    <div className='group w-full aspect-3/2 rounded-2xl overflow-hidden relative isolate flex flex-col justify-end bg-white dark:bg-zinc-900 px-2.5 py-2'>
       <div className="absolute size-6 bg-gray-800/35 dark:bg-zinc-900/35 top-3.5 left-3.5 rounded-md flex justify-center items-center backdrop-blur-[1px] animate-pulse">
-        <RectangleGroupIcon className='size-3.5 text-gray-500 dark:text-zinc-500 animate-pulse' />
+        <RectangleGroupIcon className='size-3.5 text-gray-400 dark:text-zinc-500 animate-pulse' />
       </div>
       <div
-        className='absolute inset-0 w-full h-full rounded-[inherit] -z-10 bg-zinc-800 animate-pulse'
+        className='absolute inset-0 w-full h-full rounded-[inherit] -z-10 bg-white dark:bg-zinc-800 animate-pulse'
       />
 
-      <div className="absolute inset-0 -z-10 bg-linear-to-t from-gray-900 via-gray-900/40  dark:from-zinc-900 dark:via-zinc-900/60 " />
+      <div className="absolute inset-0 -z-10 bg-linear-to-t from-gray-300 via-gray-300/40  dark:from-zinc-900 dark:via-zinc-900/60 " />
       <div className="absolute inset-0 -z-10 rounded-2xl inset-ring inset-ring-gray-900/10 dark:inset-ring-zinc-900/10" />
 
-      <div className="w-full h-5 bg-zinc-700 rounded-lg animate-pulse">
+      <div className="w-full h-5 bg-gray-400 dark:bg-zinc-700 rounded-lg animate-pulse">
       </div>
-      <div className='mt-1 w-full h-6 bg-zinc-700 rounded-lg animate-pulse'>
+      <div className='mt-1 w-full bg-gray-400 h-6 dark:bg-zinc-700 rounded-lg animate-pulse'>
       </div>
     </div>
   )

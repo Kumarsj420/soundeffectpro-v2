@@ -4,6 +4,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Tag from "./Tag";
 import Button from "./form/Button";
 import { useTags } from "../context/TagContext";
+import { SiBuymeacoffee } from "react-icons/si";
+import { FaFonticonsFi } from "react-icons/fa";
 import PTag from "./PTags";
 
 
@@ -79,6 +81,16 @@ const TagScroller: React.FC = () => {
               </PTag>
             ))
           }
+        </div>
+        <div className="pr-2 flex gap-2 items-center">
+          <PTag size="sm" as="link" target="_blank" href='https://buymeacoffee.com/memecup' variant='purplePink' className="flex gap-1.5" >
+            <SiBuymeacoffee className="size-4.5" />
+            Buy me a coffee
+          </PTag>
+          <PTag size="sm" as="link" target="_blank"  href='https://www.tastynicks.com/' variant='greenTeal' className="flex gap-1.5" >
+            <FaFonticonsFi className="size-4.5" />
+            Tasty Nicks Fonts
+          </PTag>
         </div>
         <div className="flex gap-2 items-center">
           {tags.map((tag, index: number) => (

@@ -40,7 +40,7 @@ const Tag: React.FC<TagProps> = (props) => {
 
    const sizeClasses = {
     xs: 'px-2.5 py-1 text-xs',
-    sm: 'px-3 py-1 text-sm',
+    sm: 'px-2.5 py-0.5 sm:px-3 sm:py-1 text-sm',
     md: 'px-4 py-2 text-sm',
     lg: 'px-5 py-2.5 text-base',
   };
@@ -50,10 +50,10 @@ const Tag: React.FC<TagProps> = (props) => {
 
   const variantClasses = {
     default:
-      'bg-gradient-to-b from-gray-200 to-white text-gray-900 shadow-gray-300 ' +
+      'bg-gradient-to-b from-gray-300 to-white text-gray-900 shadow-gray-200 ' +
       'dark:from-zinc-700 dark:to-zinc-800 dark:text-white dark:shadow-none ' +
       'after:absolute after:inset-[0.1em] after:rounded-[inherit] after:-z-10 ' +
-      'after:bg-white dark:after:bg-zinc-800 hover:brightness-105 dark:hover:brightness-125',
+      'after:bg-white dark:after:bg-zinc-800 hover:after:bg-gray-100 dark:hover:after:bg-zinc-700 dark:hover:brightness-125',
 
     active:
       'bg-gradient-to-b from-blue-500 to-blue-600 text-white ' +

@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import GoogleAd from "../components/ad"
 import Script from 'next/script'
 import AnalyticsTracker from "../components/AnalyticsTracker";
+import BottomMenu from "../components/BottomMenu";
 
 export const metadata: Metadata = {
   title: "Sound Effect Pro | Download Unlimited Free Sound Effects | Trending Sound Buttons",
@@ -68,6 +69,7 @@ export default function RootLayout({
       >
         <Providers>
           <Navbar />
+          <BottomMenu />
           <div className="max-w-7xl m-auto px-5 sm:px-7">
             <GoogleAd slot='3080916601' />
           </div>
