@@ -25,7 +25,7 @@ function MenuNav({ href, children, icon: Icon, iconSize }: MNavProp) {
                 <div className="flex size-7 sm:size-8 justify-center items-center">
                     <Icon className="size-5 sm:size-6" />
                 </div>
-                <span className="text-xs text-white font-light">{children}</span>
+                <span className="text-xs text-gray-900 dark:text-white font-light">{children}</span>
             </div>
         </Link>
     )
@@ -37,9 +37,9 @@ export default function BottomMenu() {
 
     const user = session?.user?.uid;
     return (
-        <div className="fixed bottom-0 left-0 w-full bg-zinc-800 z-99  border-t border-t-zinc-700 lg:hidden">
+        <div className="fixed bottom-0 left-0 w-full bg-white dark:bg-zinc-900 z-99  border-t border-t-gray-300 dark:border-t-zinc-800 lg:hidden">
             <div className="max-w-7xl ">
-                <div className="grid w-full grid-cols-4 divide-x divide-zinc-700">
+                <div className="grid w-full grid-cols-4 divide-x divide-gray-300 dark:divide-zinc-700">
                     <MenuNav href='/' icon={HomeIcon} iconSize="size-5 sm:size-6">Home</MenuNav>
                     <MenuNav href='/soundboard' icon={RectangleGroupIcon} iconSize="size-6 sm:size-7">Soundboard</MenuNav>
                     {
