@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef, useState, ReactNode } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Para } from './Ui'
 
 interface GoogleAdProps {
@@ -17,25 +17,34 @@ export default function GoogleAd({
 }: GoogleAdProps) {
 
   const adRef = useRef<HTMLModElement | null>(null)
-  const [loaded, setLoaded] = useState(false)
 
+  const [checked, setChecked] = useState(false)
+  const [filled, setFilled] = useState(true) // assume filled until proven empty
+
+  // Load ad immediately
   useEffect(() => {
     try {
-      ; (window as any).adsbygoogle =
+      ;(window as any).adsbygoogle =
         (window as any).adsbygoogle || []
-        ; (window as any).adsbygoogle.push({})
-    } catch { }
+      ;(window as any).adsbygoogle.push({})
+    } catch {}
 
+    // After delay → check if ad actually filled
     const timer = setTimeout(() => {
-      if (adRef.current && adRef.current.offsetHeight > 0) {
-        setLoaded(true)
+      if (adRef.current) {
+        const height = adRef.current.offsetHeight
+        if (height === 0) {
+          setFilled(false) // collapse if empty
+        }
+        setChecked(true)
       }
-    }, 3500)
+    }, 2500)
 
     return () => clearTimeout(timer)
   }, [])
 
-  if (!loaded) return null
+  // After check → hide empty ads
+  if (checked && !filled) return null
 
   const adElement = (
     <ins
@@ -49,56 +58,34 @@ export default function GoogleAd({
     />
   )
 
-  // ⭐ Layout variants (no functions crossing boundary)
-
+  // Layout variants
   if (variant === 'sidebar') {
     return (
-      <div className="hidden xl:block fixed right-6 top-28 w-75 z-999">
-        <div className="w-75 min-h-150">
-          {adElement}
-        </div>
+      <div className="hidden xl:block fixed right-6 top-28 w-75 z-50">
+        <div className="w-75 min-h-150">{adElement}</div>
       </div>
     )
   }
 
   if (variant === 'header') {
-    return (
-      <div className="max-w-7xl m-auto px-5 sm:px-7">
-        {adElement}
-      </div>
-    )
+    return <div className="max-w-7xl m-auto px-5 sm:px-7">{adElement}</div>
   }
 
   if (variant === 'post-infeed') {
-    return (
-      <div className="col-span-1 sm:col-span-2">
-        {adElement}
-      </div>
-    )
+    return <div className="col-span-full my-8 flex justify-center">{adElement}</div>
   }
 
   if (variant === 'multiplex') {
     return (
-      <div className="col-span-full">
-        <Para>
-          You may also like
-        </Para>
-
+      <div className="col-span-full my-12">
+        <Para>You may also like</Para>
         {adElement}
       </div>
     )
   }
 
   if (variant === 'below-sound-btn') {
-    return (
-      <div className="col-span-full">
-        <div className="my-8">
-          {adElement}
-        </div>
-
-        {adElement}
-      </div>
-    )
+    return <div className="my-8">{adElement}</div>
   }
 
   return adElement
