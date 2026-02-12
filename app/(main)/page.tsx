@@ -4,7 +4,7 @@ import SoundCard, { SoundCardSkelton } from "../components/SoundCard";
 import { fileService } from "../services/fileService";
 import { useInfiniteLoader } from "../hooks/useInfiniteLoader";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { SoundGrid, Head2,  Para } from "../components/Ui";
+import { SoundGrid, Head2, Para } from "../components/Ui";
 import Link from "next/link";
 import { PAGE_SIZE } from '../global';
 import Soundboard, { SoundboardSkelton } from "../components/Soundboard";
@@ -150,22 +150,16 @@ export default function HomePage() {
                 />
 
                 {(index + 1) % 8 === 0 && (
-                  <div className="col-span-1 sm:col-span-2">
-                    <GoogleAd slot="8414307791" format="fluid" />
-                  </div>
+                  <GoogleAd slot="8414307791" format="fluid" variant="post-infeed" />
                 )}
 
                 {(index + 1) % 50 === 0 && (
-                  <div className="col-span-full">
-                    <Para>
-                      You may also like
-                    </Para>
+                  <GoogleAd
+                    slot="7619276466"
+                    format="autorelaxed"
+                    variant="multiplex"
+                  />
 
-                    <GoogleAd
-                      slot="7619276466"
-                      format="autorelaxed"
-                    />
-                  </div>
                 )}
 
               </React.Fragment>

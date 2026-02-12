@@ -293,9 +293,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
               }
             </div>
           </div>
-          <div className="my-8">
-            <GoogleAd slot="5332024478" format="fluid" />
-          </div>
+          <GoogleAd slot="5332024478" format="fluid" variant='below-sound-btn' />
 
         </div>
       </section >
@@ -308,22 +306,16 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
               <SoundCard key={obj.s_id} obj={obj} sessionUser={session?.user.uid === obj.user.uid} />
 
               {(index + 1) % 8 === 0 && (
-                <div className="col-span-1 sm:col-span-2">
-                  <GoogleAd slot="8414307791" format="fluid" />
-                </div>
+                <GoogleAd slot="8414307791" format="fluid" variant="post-infeed" />
               )}
 
               {(index + 1) % 50 === 0 && (
-                <div className="col-span-full">
-                  <Para>
-                    You may also like
-                  </Para>
+                <GoogleAd
+                  slot="7619276466"
+                  format="autorelaxed"
+                  variant="multiplex"
+                />
 
-                  <GoogleAd
-                    slot="7619276466"
-                    format="autorelaxed"
-                  />
-                </div>
               )}
 
             </React.Fragment>
