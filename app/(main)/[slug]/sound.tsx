@@ -1,5 +1,5 @@
 "use client"
-import React,{ useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SoundButton from '../../components/SoundButton';
 import { fileService } from '../../services/fileService';
 import Loading from '../loading';
@@ -157,8 +157,8 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
     <div className=" min-h-screen text-zinc-200">
       <section >
         {/* breadcrumps */}
-        <Breadcrumps cat={{label: sfxInfo?.category ? sfxInfo?.category : 'Random', link: `/category/${sfxInfo?.category ? sfxInfo?.category : 'Random'}`}} title={sfxInfo?.title} className='mb-5' />
-       
+        <Breadcrumps cat={{ label: sfxInfo?.category ? sfxInfo?.category : 'Random', link: `/category/${sfxInfo?.category ? sfxInfo?.category : 'Random'}` }} title={sfxInfo?.title} className='mb-5' />
+
         <div className="grid grid-cols-1 md:grid-cols-[1.5fr_2fr] gap-8 mb-12">
           {/* sound player */}
           <div className="bg-linear-to-br from-white to-gray-100/70 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl p-6 flex flex-col gap-5 justify-between min-h-97.5 ring-1 ring-gray-300/80 dark:ring-0 shadow-xl shadow-gray-300/60 dark:shadow-none">
@@ -166,9 +166,6 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
               <div className="w-55 h-46  flex items-center justify-center">
                 <SoundButton onClick={playing ? pause : play} className={`scale-220  hue-rotate-${sfxInfo?.btnColor} ${loading ? 'saturate-0 animate-pulse pointer-events-none' : ''} ${playing ? 'btn-animation ' : ''}`} />
               </div>
-            </div>
-            <div>
-             <GoogleAd slot='7839390248' />
             </div>
 
             <div className="grid grid-cols-2 gap-3 ">
@@ -200,6 +197,8 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
               </Button>
 
             </div>
+
+
           </div>
 
           {/* sound details */}
@@ -294,6 +293,10 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
               }
             </div>
           </div>
+          <div className="my-8">
+            <GoogleAd slot="5332024478" format="fluid" />
+          </div>
+
         </div>
       </section >
       <section>
@@ -301,16 +304,29 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
 
         <SoundGrid className='mt-5'>
           {relatedSounds.map((obj: IFileWithFav, index) => (
-              <React.Fragment key={obj.s_id}>
-                        <SoundCard key={obj.s_id} obj={obj} sessionUser={session?.user.uid === obj.user.uid} />
+            <React.Fragment key={obj.s_id}>
+              <SoundCard key={obj.s_id} obj={obj} sessionUser={session?.user.uid === obj.user.uid} />
 
-                        {(index + 1) % 20 === 0 && (
-                            <div className="col-span-full">
-                                <GoogleAd slot="4718938506" />
-                            </div>
-                        )}
+              {(index + 1) % 8 === 0 && (
+                <div className="col-span-1 sm:col-span-2">
+                  <GoogleAd slot="8414307791" format="fluid" />
+                </div>
+              )}
 
-                    </React.Fragment>
+              {(index + 1) % 50 === 0 && (
+                <div className="col-span-full">
+                  <Para>
+                    You may also like
+                  </Para>
+
+                  <GoogleAd
+                    slot="7619276466"
+                    format="autorelaxed"
+                  />
+                </div>
+              )}
+
+            </React.Fragment>
           ))}
           {
             (isRelatedLoading || isFetchingNextPage) &&

@@ -70,8 +70,14 @@ export default function RootLayout({
         <Providers>
           <Navbar />
           <BottomMenu />
+          <div className="hidden xl:block fixed right-6 top-28 w-75">
+            <div className="w-75 min-h-150">
+              <GoogleAd slot="4761169093" />
+            </div>
+          </div>
+
           <div className="max-w-7xl m-auto px-5 sm:px-7">
-            <GoogleAd slot='3080916601' />
+            <GoogleAd slot='3089004514' />
           </div>
           <Modal_Root />
           <FetchLoading />

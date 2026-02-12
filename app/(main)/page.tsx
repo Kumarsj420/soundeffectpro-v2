@@ -1,11 +1,10 @@
 "use client"
 import React from "react";
-import TagScroller from "../components/TagScroller";
 import SoundCard, { SoundCardSkelton } from "../components/SoundCard";
 import { fileService } from "../services/fileService";
 import { useInfiniteLoader } from "../hooks/useInfiniteLoader";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { SoundGrid, Head2, Head1 } from "../components/Ui";
+import { SoundGrid, Head2,  Para } from "../components/Ui";
 import Link from "next/link";
 import { PAGE_SIZE } from '../global';
 import Soundboard, { SoundboardSkelton } from "../components/Soundboard";
@@ -25,7 +24,7 @@ export default function HomePage() {
     isLoading: isBoardLoading,
   } = useQuery({
     queryKey: ['soundboard', 'monthly-trending'],
-    queryFn: () => categoryService.getCategory({ limit: 5, thumb: true , sortBy: 'stats.monthly.views', order: 'desc'}),
+    queryFn: () => categoryService.getCategory({ limit: 5, thumb: true, sortBy: 'stats.monthly.views', order: 'desc' }),
     staleTime: 1000 * 60 * 5,
   })
 
@@ -57,17 +56,6 @@ export default function HomePage() {
   const recentSounds =
     data?.pages.flatMap(page => page.data) ?? [];
 
-
-  const {
-    data: popularSfx,
-    isLoading: isPopularSfxLoading,
-  } = useQuery({
-    queryKey: ['popular-sfx'],
-    queryFn: () => fileService.getFiles({ sortBy: 'stats.downloads', order: 'desc', limit: 5 }),
-    staleTime: 1000 * 60 * 5,
-  })
-
-  const popularSfxFiles = popularSfx?.data ?? null;
 
   const {
     data: trendingSfx,
@@ -121,7 +109,7 @@ export default function HomePage() {
         </section>
 
 
-
+        <GoogleAd slot="5332024478" format="fluid" />
 
         <section className="space-y-4 mt-10">
           <div className="flex items-center justify-between">
@@ -161,9 +149,22 @@ export default function HomePage() {
                   sessionUser={session?.user.uid === obj.user.uid}
                 />
 
-                {(index + 1) % 20 === 0 && (
+                {(index + 1) % 8 === 0 && (
+                  <div className="col-span-1 sm:col-span-2">
+                    <GoogleAd slot="8414307791" format="fluid" />
+                  </div>
+                )}
+
+                {(index + 1) % 50 === 0 && (
                   <div className="col-span-full">
-                    <GoogleAd slot="4718938506" />
+                    <Para>
+                      You may also like
+                    </Para>
+
+                    <GoogleAd
+                      slot="7619276466"
+                      format="autorelaxed"
+                    />
                   </div>
                 )}
 
