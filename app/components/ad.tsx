@@ -30,7 +30,7 @@ export default function GoogleAd({
       if (adRef.current && adRef.current.offsetHeight > 0) {
         setLoaded(true)
       }
-    }, 2500)
+    }, 3500)
 
     return () => clearTimeout(timer)
   }, [])
