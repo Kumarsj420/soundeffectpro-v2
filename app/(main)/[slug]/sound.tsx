@@ -305,7 +305,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
             <React.Fragment key={obj.s_id}>
               <SoundCard key={obj.s_id} obj={obj} sessionUser={session?.user.uid === obj.user.uid} />
 
-              {(index + 1) % 8 === 0 && (
+              {(index + 1) % 10 === 0 && (
                 <GoogleAd slot="8414307791" format="fluid" variant="post-infeed" />
               )}
 
