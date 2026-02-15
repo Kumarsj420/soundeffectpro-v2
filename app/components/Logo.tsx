@@ -1,29 +1,25 @@
 'use client'
 import React from 'react';
+import Image from 'next/image';
 
 export default function Logo() {
   return (
     <div className="flex items-center space-x-2 select-none">
-      <div className="flex items-center space-x-0.5">
-        <div className="w-0.5 bg-blue-300 rounded-full animate-pulse" 
-             style={{ height: '8px', animationDelay: '0ms', animationDuration: '800ms' }}></div>
-        <div className="w-0.5 bg-blue-400 rounded-full animate-pulse" 
-             style={{ height: '14px', animationDelay: '100ms', animationDuration: '800ms' }}></div>
-        <div className="w-0.5 bg-blue-500 rounded-full animate-pulse" 
-             style={{ height: '18px', animationDelay: '200ms', animationDuration: '800ms' }}></div>
-        <div className="w-0.5 bg-blue-400 rounded-full animate-pulse" 
-             style={{ height: '12px', animationDelay: '300ms', animationDuration: '800ms' }}></div>
-        <div className="w-0.5 bg-blue-300 rounded-full animate-pulse" 
-             style={{ height: '10px', animationDelay: '400ms', animationDuration: '800ms' }}></div>
-      </div>
+      <img src="/licon.webp" alt="logo icon" className='size-8' />
 
-      <div className="relative">
-        <span className="text-lg font-bold  dark:text-zinc-200 tracking-tight">
-          SOUND EFFECT
+      <div className="relative py-2">
+        <span className="text-lg font-extrabold  dark:text-zinc-200 tracking-tight">
+          SOUND <span className='font-medium'>EFFECT</span>
         </span>
-        <span className="absolute -top-2 -right-7 text-xs font-bold text-blue-400 tracking-tight">
-          PRO
-        </span>
+        <div className="wrapper ten absolute top-0 right-0 -translate-y-12 translate-x-8.5">
+          <span>
+            <span className="text-bounce text-xs font-extrabold text-blue-500 dark:text-blue-200">
+              <span>P</span>
+              <span>R</span>
+              <span>O</span>
+            </span>
+          </span>
+        </div>
       </div>
     </div>
   );

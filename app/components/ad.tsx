@@ -58,7 +58,7 @@ export default function GoogleAd({
           setStatus('filled')
         }
       }
-    }, 2500)
+    }, 3500)
 
     return () => clearTimeout(timer)
   }, [])

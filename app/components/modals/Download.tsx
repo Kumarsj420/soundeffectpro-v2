@@ -159,8 +159,7 @@ function DownloadModal() {
                         )}
                     </div>
 
-                    {/* Ad Space */}
-                    <GoogleAd slot='7537739191' />
+                  
                 </div>
 
             </ModalBody>

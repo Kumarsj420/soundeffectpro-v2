@@ -293,10 +293,10 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
               }
             </div>
           </div>
-          <GoogleAd slot="5332024478" format="fluid" variant='below-sound-btn' />
 
         </div>
       </section >
+      <GoogleAd slot="5332024478" format="fluid" variant='below-sound-btn' />
       <section>
         <Head2>Related Sounds</Head2>
 
