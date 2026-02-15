@@ -47,7 +47,7 @@ export default function Recent() {
 
     return (
         <>
-           <Breadcrumps cat={{label: 'Sounds', link: '/popular'}} title='Recent Sounds' className='mb-5'/>
+            <Breadcrumps cat={{ label: 'Sounds', link: '/popular' }} title='Recent Sounds' className='mb-5' />
             <Head1>Recently Uploaded Sound Effect Buttons</Head1>
 
             <SoundGrid className='mt-5'>
@@ -55,10 +55,17 @@ export default function Recent() {
                     <React.Fragment key={obj.s_id}>
                         <SoundCard key={obj.s_id} obj={obj} sessionUser={session?.user.uid === obj.user.uid} />
 
-                        {(index + 1) % 20 === 0 && (
-                            <div className="col-span-full">
-                                <GoogleAd slot="4718938506" />
-                            </div>
+                        {(index + 1) % 10 === 0 && (
+                            <GoogleAd slot="8414307791" format="fluid" variant="post-infeed" />
+                        )}
+
+                        {(index + 1) % 50 === 0 && (
+                            <GoogleAd
+                                slot="7619276466"
+                                format="autorelaxed"
+                                variant="multiplex"
+                            />
+
                         )}
 
                     </React.Fragment>
@@ -76,6 +83,11 @@ export default function Recent() {
                 <p className="text-center mt-4 text-gray-500">No more sounds to load</p>
             )}
             <div ref={loadMoreRef} className="h-10" />
+            <GoogleAd
+                slot="7619276466"
+                format="autorelaxed"
+                variant="multiplex"
+            />
         </>
 
     )

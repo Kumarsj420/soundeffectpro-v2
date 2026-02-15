@@ -5,6 +5,7 @@ import Button from '../../components/form/Button';
 import { Head1, Para } from '../../components/Ui';
 import { toast } from 'react-toastify';
 import { useSearchParams } from 'next/navigation';
+import GoogleAd from '@/app/components/ad';
 
 export default function LoginClient() {
     const [email, setEmail] = useState('');
@@ -37,7 +38,7 @@ export default function LoginClient() {
 
 
     return (
-        <div className="min-h-screen bg-gradient-to-br flex justify-center ">
+        <div className="min-h-screen bg-linear-to-br flex justify-center ">
 
             <div className="relative w-full max-w-lg">
                 {/* Logo placeholder */}
@@ -140,6 +141,11 @@ export default function LoginClient() {
                     </p>
                 </div>
             </div>
+            <GoogleAd
+                slot="7619276466"
+                format="autorelaxed"
+                variant="multiplex"
+            />
         </div>
     );
 }

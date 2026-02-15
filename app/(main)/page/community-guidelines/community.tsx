@@ -3,6 +3,7 @@ import { Head1, Para, Head2, Head3, ListItem } from '@/app/components/Ui'
 import InfoRow from '@/app/components/InfoRow'
 import { CalendarDateRangeIcon, GlobeAltIcon, EnvelopeIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
+import GoogleAd from '@/app/components/ad';
 
 function Community() {
     return (
@@ -114,6 +115,11 @@ function Community() {
                     <InfoRow icon={EnvelopeIcon} label='Email' value={process.env.NEXT_PUBLIC_SUPPORT_EMAIL!} />
                 </div>
             </section>
+            <GoogleAd
+                slot="7619276466"
+                format="autorelaxed"
+                variant="multiplex"
+            />
         </>
     )
 }

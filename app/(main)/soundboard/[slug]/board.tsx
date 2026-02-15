@@ -1,4 +1,5 @@
 "use client"
+import React from 'react';
 import { Share2, Music } from 'lucide-react';
 import SoundCard, { SoundCardSkelton } from '@/app/components/SoundCard';
 import { notFound } from 'next/navigation';
@@ -14,6 +15,7 @@ import { getR2Url } from '@/app/lib/r2/r2Url';
 import { useSession } from 'next-auth/react';
 import { IFileWithFav } from '@/app/services/fileService';
 import Breadcrumps from '@/app/components/Breadcrumps';
+import GoogleAd from '@/app/components/ad';
 
 interface SoundboardPageProps {
     id: string;
@@ -79,7 +81,7 @@ export default function SoundboardPage({
 
     return (
         <div className="min-h-screen text-gray-900 dark:text-zinc-100">
-            <Breadcrumps cat={{label: 'Soundboard', link: '/soundboard'}} title={boardData.name} className='mb-5' />
+            <Breadcrumps cat={{ label: 'Soundboard', link: '/soundboard' }} title={boardData.name} className='mb-5' />
             <div>
                 {/* Soundboard Header */}
                 <section className="flex flex-col md:flex-row gap-6 items-start ">
@@ -122,8 +124,22 @@ export default function SoundboardPage({
                     <Head2>Sounds in this Board</Head2>
                     <SoundGrid className='mt-5'>
                         {
-                            sbSounds.map((obj: IFileWithFav) => (
-                                <SoundCard key={obj.s_id} obj={obj} userBoard={userID === boardData.user.uid ? boardData.sb_id : null} />
+                            sbSounds.map((obj: IFileWithFav, index) => (
+                                <React.Fragment key={obj.s_id}>
+                                    <SoundCard key={obj.s_id} obj={obj} userBoard={userID === boardData.user.uid ? boardData.sb_id : null} />
+                                    {(index + 1) % 10 === 0 && (
+                                        <GoogleAd slot="8414307791" format="fluid" variant="post-infeed" />
+                                    )}
+
+                                    {(index + 1) % 50 === 0 && (
+                                        <GoogleAd
+                                            slot="7619276466"
+                                            format="autorelaxed"
+                                            variant="multiplex"
+                                        />
+
+                                    )}
+                                </React.Fragment>
                             ))
                         }
                         {
@@ -137,6 +153,12 @@ export default function SoundboardPage({
                         <p className="text-center mt-4 text-gray-500">No more sounds to load</p>
                     )}
                     <div ref={loadMoreRef} className="h-10" />
+
+                    <GoogleAd
+                        slot="7619276466"
+                        format="autorelaxed"
+                        variant="multiplex"
+                    />
 
                 </section>
             </div>

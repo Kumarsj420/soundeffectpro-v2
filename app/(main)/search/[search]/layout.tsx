@@ -2,6 +2,7 @@ import SearchTab from "./tab";
 import { Head1 } from "@/app/components/Ui";
 import Breadcrumps from "@/app/components/Breadcrumps";
 
+
 export default async function PopularLayout({ children, params }: { children: React.ReactNode, params: Promise<{ search: string }> }) {
     const { search } = await params;
 

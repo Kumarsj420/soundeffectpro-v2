@@ -220,7 +220,7 @@ const UploadForm: React.FC<UploadFormProps> = ({ metadata, onMetadataChange, onS
 
         <CardSpan >
           Remember to keep your content spam-free, respectful and to follow our{' '}
-          <Link href="#" className="text-blue-500 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300 underline">
+          <Link href="/page/community-guidelines" className="text-blue-500 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300 underline">
             Community Guidelines
           </Link>.
         </CardSpan>

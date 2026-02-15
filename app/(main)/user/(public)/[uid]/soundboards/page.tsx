@@ -8,13 +8,14 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { PAGE_SIZE } from '@/app/global';
 import { Para } from "@/app/components/Ui";
 import { CategoryInterface } from "@/app/models/Category";
+import GoogleAd from "@/app/components/ad";
 
 export default function SoundboardPage({
   params,
 }: {
   params: Promise<{ uid: string }>;
 }) {
-  const {uid} = React.use(params);
+  const { uid } = React.use(params);
 
   const {
     data,
@@ -74,8 +75,23 @@ export default function SoundboardPage({
   return (
     <div>
       <SoundGrid className="mt-5">
-        {soundboards.map((obj: CategoryInterface) => (
-          <Soundboard key={obj.sb_id} obj={obj} />
+        {soundboards.map((obj: CategoryInterface, index) => (
+          <React.Fragment key={obj.sb_id}>
+            <Soundboard key={obj.sb_id} obj={obj} />
+            
+            {(index + 1) % 10 === 0 && (
+              <GoogleAd slot="8414307791" format="fluid" variant="post-infeed" />
+            )}
+
+            {(index + 1) % 50 === 0 && (
+              <GoogleAd
+                slot="7619276466"
+                format="autorelaxed"
+                variant="multiplex"
+              />
+
+            )}
+          </React.Fragment>
         ))}
 
         {isFetchingNextPage &&
@@ -91,6 +107,12 @@ export default function SoundboardPage({
       )}
 
       <div ref={loadMoreRef} className="h-10" />
+      <GoogleAd
+        slot="7619276466"
+        format="autorelaxed"
+        variant="multiplex"
+      />
     </div>
+
   );
 }

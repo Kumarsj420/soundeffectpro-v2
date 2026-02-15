@@ -176,6 +176,11 @@ export default function HomePage() {
             <p className="text-center mt-4 text-gray-500">No more sounds to load</p>
           )}
           <div ref={loadMoreRef} className="h-10" />
+          <GoogleAd
+            slot="7619276466"
+            format="autorelaxed"
+            variant="multiplex"
+          />
         </section>
       </div>
     </main>

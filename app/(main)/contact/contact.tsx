@@ -10,11 +10,12 @@ import Label from '@/app/components/form/Label';
 import Input from '@/app/components/form/Input';
 import Textarea from '@/app/components/form/Textarea';
 import { Select, Option } from '@/app/components/form/Select';
-import { Para , Head1} from '@/app/components/Ui';
+import { Para, Head1 } from '@/app/components/Ui';
 import { messageCreateSchema } from '@/app/lib/validators/message.schema';
 import { userService } from '@/app/services/userService';
 import { useFetchLoading } from '@/app/hooks/useFetchLoading';
 import type { MessageType } from "@/app/services/userService";
+import GoogleAd from '@/app/components/ad';
 
 export const messageTypes = [
     { id: 1, label: "Contact", value: "contact" },
@@ -120,9 +121,9 @@ function ContactPage() {
         setTriggerValidation(true);
         await new Promise(resolve => setTimeout(resolve, 0));
 
-        const isValid = 
-            emailSchema.safeParse(emailInp).success && 
-            typeSchema.safeParse(typeInp).success && 
+        const isValid =
+            emailSchema.safeParse(emailInp).success &&
+            typeSchema.safeParse(typeInp).success &&
             contentSchema.safeParse(contentInp).success;
 
         if (!isValid) {
@@ -145,7 +146,7 @@ function ContactPage() {
             if (res.success) {
                 toast.success('Message sent successfully');
                 toast.info('We will get back to you soon');
-                
+
                 // Reset form
                 setEmailInp(email ?? '');
                 setTypeInp('contact');
@@ -157,9 +158,9 @@ function ContactPage() {
             }
 
         } catch (error) {
-            const err = error as AxiosError<{ 
-                message: string; 
-                errors?: Array<{ field: string; message: string }> 
+            const err = error as AxiosError<{
+                message: string;
+                errors?: Array<{ field: string; message: string }>
             }>;
 
             if (err.response?.data?.errors) {
@@ -264,6 +265,11 @@ function ContactPage() {
                     </Button>
                 </form>
             </Card>
+            <GoogleAd
+                slot="7619276466"
+                format="autorelaxed"
+                variant="multiplex"
+            />
         </div>
     );
 }

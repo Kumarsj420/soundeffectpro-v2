@@ -10,6 +10,7 @@ import { notFound } from 'next/navigation';
 import { IFileWithFav } from '../../../services/fileService';
 import { useSession } from 'next-auth/react';
 import GoogleAd from '@/app/components/ad';
+import Breadcrumps from '@/app/components/Breadcrumps';
 
 export default function TagRes({
     tag,
@@ -55,6 +56,8 @@ export default function TagRes({
 
     return (
         <>
+            <Breadcrumps cat={{ label: 'Sounds', link: '/popular' }} title={`${tag} Sound Buttons`} className='mb-5' />
+
             <Head1>{tag} Tag Sound Buttons</Head1>
 
             <SoundGrid className='mt-5'>
@@ -62,12 +65,18 @@ export default function TagRes({
                     <React.Fragment key={obj.s_id}>
                         <SoundCard key={obj.s_id} obj={obj} sessionUser={session?.user.uid === obj.user.uid} />
 
-                        {(index + 1) % 20 === 0 && (
-                            <div className="col-span-full">
-                                <GoogleAd slot="4718938506" />
-                            </div>
+                        {(index + 1) % 10 === 0 && (
+                            <GoogleAd slot="8414307791" format="fluid" variant="post-infeed" />
                         )}
 
+                        {(index + 1) % 50 === 0 && (
+                            <GoogleAd
+                                slot="7619276466"
+                                format="autorelaxed"
+                                variant="multiplex"
+                            />
+
+                        )}
                     </React.Fragment>
 
                 ))}
@@ -83,6 +92,11 @@ export default function TagRes({
                 <p className="text-center mt-4 text-gray-500">No more sounds to load</p>
             )}
             <div ref={loadMoreRef} className="h-10" />
+            <GoogleAd
+                slot="7619276466"
+                format="autorelaxed"
+                variant="multiplex"
+            />
         </>
     )
 }

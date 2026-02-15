@@ -6,6 +6,7 @@ import { fileService } from '@/app/services/fileService';
 import { useInfiniteLoader } from '@/app/hooks/useInfiniteLoader';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { PAGE_SIZE } from '@/app/global';
+import GoogleAd from '@/app/components/ad';
 
 function UserIDPage({
     params,
@@ -65,12 +66,28 @@ function UserIDPage({
     return (
         <>
             <SoundGrid>
-                {userSounds.map(obj => (
-                    <SoundCard
-                        key={obj.s_id}
-                        obj={obj}
-                        sessionUser={uid === obj.user.uid}
-                    />
+                {userSounds.map((obj, index) => (
+                    <React.Fragment key={obj.s_id}>
+                        <SoundCard
+                            key={obj.s_id}
+                            obj={obj}
+                            sessionUser={uid === obj.user.uid}
+                        />
+
+                        {(index + 1) % 10 === 0 && (
+                            <GoogleAd slot="8414307791" format="fluid" variant="post-infeed" />
+                        )}
+
+                        {(index + 1) % 50 === 0 && (
+                            <GoogleAd
+                                slot="7619276466"
+                                format="autorelaxed"
+                                variant="multiplex"
+                            />
+
+                        )}
+                    </React.Fragment>
+
                 ))}
 
                 {isFetchingNextPage &&
@@ -86,6 +103,11 @@ function UserIDPage({
             )}
 
             <div ref={loadMoreRef} className="h-10" />
+            <GoogleAd
+                slot="7619276466"
+                format="autorelaxed"
+                variant="multiplex"
+            />
         </>
     );
 }

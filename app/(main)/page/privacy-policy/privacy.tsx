@@ -1,9 +1,9 @@
 'use client'
-import { Head1,  Para, Head2, Head3, ListItem } from '@/app/components/Ui'
+import { Head1, Para, Head2, Head3, ListItem } from '@/app/components/Ui'
 import InfoRow from '@/app/components/InfoRow'
 import { CalendarDateRangeIcon, GlobeAltIcon, EnvelopeIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
-
+import GoogleAd from '@/app/components/ad';
 
 function Privacy() {
   return (
@@ -207,6 +207,11 @@ function Privacy() {
         </div>
         <Para className="mt-2">We aim to respond within a reasonable timeframe.</Para>
       </section>
+      <GoogleAd
+        slot="7619276466"
+        format="autorelaxed"
+        variant="multiplex"
+      />
     </>
   )
 }

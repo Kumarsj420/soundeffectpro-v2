@@ -3,7 +3,7 @@ import { Head1, Para, Head2, Head3, ListItem } from '@/app/components/Ui'
 import InfoRow from '@/app/components/InfoRow'
 import { CalendarDateRangeIcon, GlobeAltIcon, EnvelopeIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
-
+import GoogleAd from '@/app/components/ad';
 
 function Dmca() {
     return (
@@ -17,7 +17,7 @@ function Dmca() {
             </div>
             <section className='mt-7'>
                 <Para>
-                   <Link href='/' className='text-blue-500 dark:text-blue-400 hover:underline'>Sound Effect Pro</Link> respects the intellectual property rights of others and expects users of our platform to do the same. This policy outlines how copyright owners can report alleged infringements and how we respond to such notices in accordance with the Digital Millennium Copyright Act (DMCA) and international copyright laws.
+                    <Link href='/' className='text-blue-500 dark:text-blue-400 hover:underline'>Sound Effect Pro</Link> respects the intellectual property rights of others and expects users of our platform to do the same. This policy outlines how copyright owners can report alleged infringements and how we respond to such notices in accordance with the Digital Millennium Copyright Act (DMCA) and international copyright laws.
                 </Para>
             </section>
             <section className="mt-7">
@@ -151,6 +151,11 @@ function Dmca() {
                 </div>
                 <Para className="mt-2">We aim to respond within a reasonable timeframe.</Para>
             </section>
+            <GoogleAd
+                slot="7619276466"
+                format="autorelaxed"
+                variant="multiplex"
+            />
         </>
     )
 }

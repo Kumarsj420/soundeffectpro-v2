@@ -57,10 +57,17 @@ function SearchBoard(
                     <React.Fragment key={obj.sb_id}>
                         <Soundboard key={obj.sb_id} obj={obj} />
 
-                        {(index + 1) % 20 === 0 && (
-                            <div className="col-span-full">
-                                <GoogleAd slot="4718938506" />
-                            </div>
+                        {(index + 1) % 10 === 0 && (
+                            <GoogleAd slot="8414307791" format="fluid" variant="post-infeed" />
+                        )}
+
+                        {(index + 1) % 50 === 0 && (
+                            <GoogleAd
+                                slot="7619276466"
+                                format="autorelaxed"
+                                variant="multiplex"
+                            />
+
                         )}
 
                     </React.Fragment>
@@ -78,6 +85,11 @@ function SearchBoard(
                 <p className="text-center mt-4 text-gray-500">No more soundboards to load</p>
             )}
             <div ref={loadMoreRef} className="h-10" />
+            <GoogleAd
+                slot="7619276466"
+                format="autorelaxed"
+                variant="multiplex"
+            />
         </>
     )
 }

@@ -9,7 +9,7 @@ import { useInfiniteLoader } from '../../hooks/useInfiniteLoader';
 import { SoundGrid, Head2 } from '../../components/Ui';
 import SoundCard, { SoundCardSkelton } from '../../components/SoundCard';
 import { PAGE_SIZE } from '../../global';
-import { PlusIcon, CodeBracketIcon, ArrowDownOnSquareStackIcon, HeartIcon, ClockIcon, EyeIcon, ShareIcon, FlagIcon, HomeIcon, ChevronRightIcon, TrashIcon, PencilSquareIcon } from '@heroicons/react/24/solid';
+import { PlusIcon, CodeBracketIcon, ArrowDownOnSquareStackIcon, HeartIcon, ClockIcon, EyeIcon, ShareIcon, FlagIcon, TrashIcon, PencilSquareIcon } from '@heroicons/react/24/solid';
 import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline';
 import Button from '../../components/form/Button';
 import { useModal } from '../../hooks/useModal';
@@ -332,6 +332,12 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
           <p className="text-center mt-4 text-gray-500">No more sounds to load</p>
         )}
         <div ref={loadMoreRef} className="h-10" />
+
+        <GoogleAd
+          slot="7619276466"
+          format="autorelaxed"
+          variant="multiplex"
+        />
 
       </section>
 
