@@ -6,7 +6,27 @@ interface GoogleAdProps {
   slot: string
   format?: string
   responsive?: boolean
-  variant?: 'default' | 'sidebar' | 'post-infeed' | 'multiplex' | 'header' | 'below-sound-btn'
+  variant?: 'default' | 'sidebar' | 'post-infeed' | 'multiplex' | 'header' | 'below-sound-btn' | 'below-popular'
+}
+
+
+function AdWrapper({
+  children,
+  loading,
+  height = 90
+}: {
+  children: React.ReactNode
+  loading: boolean
+  height?: number
+}) {
+  return (
+    <div className="inline-block relative w-full" style={{ minHeight: height }}>
+      {loading && (
+        <div className="absolute inset-0 z-30 animate-pulse bg-gray-200 dark:bg-zinc-800 rounded-xl" />
+      )}
+      {children}
+    </div>
+  )
 }
 
 export default function GoogleAd({
@@ -17,34 +37,34 @@ export default function GoogleAd({
 }: GoogleAdProps) {
 
   const adRef = useRef<HTMLModElement | null>(null)
+  const [status, setStatus] = useState<'loading' | 'filled' | 'empty'>('loading');
+  const [dismissed, setDismissed] = useState(false)
 
-  const [checked, setChecked] = useState(false)
-  const [filled, setFilled] = useState(true) // assume filled until proven empty
 
-  // Load ad immediately
   useEffect(() => {
     try {
-      ;(window as any).adsbygoogle =
+      ; (window as any).adsbygoogle =
         (window as any).adsbygoogle || []
-      ;(window as any).adsbygoogle.push({})
-    } catch {}
+        ; (window as any).adsbygoogle.push({})
+    } catch { }
 
-    // After delay → check if ad actually filled
     const timer = setTimeout(() => {
       if (adRef.current) {
         const height = adRef.current.offsetHeight
         if (height === 0) {
-          setFilled(false) // collapse if empty
+          setStatus('empty')
+        } else {
+          setStatus('filled')
         }
-        setChecked(true)
       }
     }, 2500)
 
     return () => clearTimeout(timer)
   }, [])
 
-  // After check → hide empty ads
-  if (checked && !filled) return null
+
+  if (status === 'empty') return null
+
 
   const adElement = (
     <ins
@@ -58,21 +78,55 @@ export default function GoogleAd({
     />
   )
 
-  // Layout variants
+
   if (variant === 'sidebar') {
+
+    if (dismissed) return null
+
     return (
-      <div className="hidden xl:block fixed right-6 top-28 w-75 z-50">
-        <div className="w-75 min-h-150">{adElement}</div>
+      <div className="hidden xl:block fixed right-6 top-28 w-[300px] z-50">
+
+        {/* Close button */}
+        <button
+          aria-label="Close ad"
+          onClick={() => {
+            setDismissed(true)
+            localStorage.setItem('sidebarAdClosed', 'true')
+          }}
+          className="absolute -left-3 top-0 bg-white dark:bg-zinc-900 
+                   border border-gray-300 dark:border-zinc-700
+                   rounded-full w-7 h-7 text-xs shadow-md
+                   hover:scale-105 transition"
+        >
+          ✕
+        </button>
+
+        {/* Ad container */}
+        <div className="w-[300px] min-h-[600px]">
+          {adElement}
+        </div>
       </div>
     )
   }
 
+
   if (variant === 'header') {
-    return <div className="max-w-7xl m-auto px-5 sm:px-7">{adElement}</div>
+    return (
+      <div className="max-w-7xl m-auto px-5 sm:px-7 mt-3">
+        <AdWrapper loading={status === 'loading'} height={90}>
+          {adElement}
+        </AdWrapper>
+      </div>
+    )
   }
 
+
   if (variant === 'post-infeed') {
-    return <div className="col-span-full my-8 flex justify-center">{adElement}</div>
+    return <div className="sm:col-span-1 md:col-span-2 my-8 flex justify-center">
+      <AdWrapper loading={status === 'loading'} height={20}>
+        {adElement}
+      </AdWrapper>
+    </div>
   }
 
   if (variant === 'multiplex') {
@@ -86,6 +140,14 @@ export default function GoogleAd({
 
   if (variant === 'below-sound-btn') {
     return <div className="my-8">{adElement}</div>
+  }
+
+  if (variant === 'below-popular') {
+    return <div className="my-2 mx-auto">
+      <AdWrapper loading={status === 'loading'} height={90}>
+        {adElement}
+      </AdWrapper>
+    </div>
   }
 
   return adElement

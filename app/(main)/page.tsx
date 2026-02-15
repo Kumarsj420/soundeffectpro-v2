@@ -109,7 +109,7 @@ export default function HomePage() {
         </section>
 
 
-        <GoogleAd slot="5332024478" format="fluid" />
+        <GoogleAd slot="5332024478" format="fluid" variant="below-popular" />
 
         <section className="space-y-4 mt-10">
           <div className="flex items-center justify-between">
