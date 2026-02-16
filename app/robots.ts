@@ -6,11 +6,13 @@ export default function robots(): MetadataRoute.Robots {
     'https://soundeffectpro.com'
 
   return {
-    rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: ['/login', '/upload', '/api/'],
-    },
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        disallow: ['/login', '/upload', '/api/'],
+      },
+    ],
     sitemap: `${baseUrl}/sitemap.xml`,
   }
 }
