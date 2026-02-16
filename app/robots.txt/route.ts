@@ -1,13 +1,16 @@
-import { NextResponse } from 'next/server';
+import { MetadataRoute } from 'next'
 
-export function GET() {
-  return new NextResponse(
-    `User-agent: *
-Allow: /`,
-    {
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-    }
-  );
+export default function robots(): MetadataRoute.Robots {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, '') ||
+    'https://soundeffectpro.com'
+
+  return {
+    rules: {
+      userAgent: '*',
+      allow: '/',
+      disallow: ['/login', '/upload', '/api/'],
+    },
+    sitemap: `${baseUrl}/sitemap.xml`,
+  }
 }
