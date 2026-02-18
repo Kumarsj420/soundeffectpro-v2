@@ -2,6 +2,13 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 @theme {
   --color-success-50: oklch(0.979 0.021 166.113);
   --color-success-100: oklch(0.95 0.052 163.051);
@@ -495,34 +502,40 @@ button {
 
 
 .text-bounce {
-    width: 100%;
-    margin: 3rem auto;
-    display: inline-flex;
-    justify-content: center;
-    -webkit-box-reflect: below -20px linear-gradient(transparent, #211e1e2e);
-}
-.text-bounce span {
-    display: inline-flex;
-    font-family: "Play", sans-serif;
-    animation: text-bounce 2s infinite;
-}
-@keyframes text-bounce {
-    0%,
-    50%,
-    100% {
-        transform: translateY(0);
-    }
-    25% {
-        transform: translateY(-9px);
-    }
-}
-.ten span:nth-of-type(1) {
-    animation-delay: 0.2s;
-}
-.ten span:nth-of-type(2) {
-    animation-delay: 0.4s;
-}
-.ten span:nth-of-type(3) {
-    animation-delay: 0.6s;
+  width: 100%;
+  margin: 3rem auto;
+  display: inline-flex;
+  justify-content: center;
+  -webkit-box-reflect: below -20px linear-gradient(transparent, #211e1e2e);
 }
 
+.text-bounce span {
+  display: inline-flex;
+  font-family: "Play", sans-serif;
+  animation: text-bounce 2s infinite;
+}
+
+@keyframes text-bounce {
+
+  0%,
+  50%,
+  100% {
+    transform: translateY(0);
+  }
+
+  25% {
+    transform: translateY(-9px);
+  }
+}
+
+.ten span:nth-of-type(1) {
+  animation-delay: 0.2s;
+}
+
+.ten span:nth-of-type(2) {
+  animation-delay: 0.4s;
+}
+
+.ten span:nth-of-type(3) {
+  animation-delay: 0.6s;
+}

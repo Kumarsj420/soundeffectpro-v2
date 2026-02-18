@@ -25,6 +25,7 @@ import Tag from '../../components/Tag';
 import GoogleAd from '../../components/ad';
 import { usePathname } from 'next/navigation';
 import Breadcrumps from '@/app/components/Breadcrumps';
+import { useT } from '@/app/hooks/useT';
 
 interface SoundDetailsPageProps {
   id: string;
@@ -38,6 +39,8 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
   const { data: session } = useSession();
   const userId = session?.user?.uid;
   const openModal = useModal((s) => s.openModal);
+
+  const t = useT();
 
   const pathname = usePathname();
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!.replace(/\/$/, "");
@@ -177,23 +180,23 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
                     <HeartOutline className='text-gray-500/80 dark:text-zinc-500 size-5' />
                   )
                 }
-                Like <span className="hidden sm:inline">Sound</span>
+                {t('like')} <span className="hidden sm:inline">{t('sound')}</span>
               </Button>
               <Button variant='outline' onClick={() => openModal('ats-modal', { s_id: id, title: sfxInfo?.title, btnColor: sfxInfo?.btnColor })}>
                 <PlusIcon className='text-gray-500/80 dark:text-zinc-500 size-5' />
-                Soundboard
+                {t('soundboard')}
               </Button>
 
               <Button variant='outline' onClick={() => openModal('embed-modal', { s_id: id })}>
                 <span>
                   <CodeBracketIcon className='text-gray-500/80 dark:text-zinc-500 size-5' />
                 </span>
-                Embed <span className="hidden sm:inline">Button</span>
+                {t('embed')} <span className="hidden sm:inline">{t('button')}</span>
               </Button>
 
               <Button onClick={() => openModal('download-modal', { s_id: id, title: sfxInfo?.title, btnColor: sfxInfo?.btnColor })}>
                 <ArrowDownOnSquareStackIcon className='size-5' />
-                Download <span className="hidden sm:inline">Sound</span>
+                {t('download')} <span className="hidden sm:inline">{t('sound')}</span>
               </Button>
 
             </div>
@@ -209,7 +212,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
                 {sfxInfo?.title} | Sound Effect Pro
               </Head1>
               <Para className='space-x-1'>
-                <span>by</span>
+                <span>{t('byAuthor')}</span>
                 <Link href={`/user/${sfxInfo?.user.uid}`} className="text-blue-500 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300 hover:underline font-medium">
                   {sfxInfo?.user.name}
                 </Link>
@@ -243,7 +246,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
 
             {/* Description */}
             <div>
-              <CardSpan className='text-sm' paraHighlight>Description</CardSpan>
+              <CardSpan className='text-sm' paraHighlight>{t('description')}</CardSpan>
               <Para paraHighlight>
                 {sfxInfo?.description}
                 {!sfxInfo?.description && ('There is no description available for this sound..')}
@@ -257,7 +260,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
                 onClick={() => openModal('share-modal', { url })}
               >
                 <ShareIcon className='text-gray-500/80 dark:text-zinc-400/75 size-4' />
-                Share Sound
+                {t('shareSound')}
               </Button>
 
               {
@@ -269,7 +272,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
                       onClick={() => openModal('edit-sound-modal', { title: sfxInfo?.title, s_id: sfxInfo?.s_id, btnColor: sfxInfo?.btnColor, tags: sfxInfo?.tags, description: sfxInfo?.description })}
                     >
                       <PencilSquareIcon className='text-gray-500/80 dark:text-zinc-400/75 size-4' />
-                      Edit Sound
+                      {t('editSound')}
                     </Button>
                     <Button
                       variant='error'
@@ -277,7 +280,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
                       onClick={() => openModal('del-sound-modal', { title: sfxInfo?.title, s_id: sfxInfo?.s_id, btnColor: sfxInfo?.btnColor })}
                     >
                       <TrashIcon className='text-error-100 size-4' />
-                      Delete Sound
+                      {t('deleteSound')}
                     </Button>
                   </>
                 ) : (
@@ -287,7 +290,7 @@ const SoundDetailsPage = ({ id }: SoundDetailsPageProps) => {
                     onClick={() => openModal('report-modal', { title: sfxInfo?.title, s_id: sfxInfo?.s_id, btnColor: sfxInfo?.btnColor })}
                   >
                     <FlagIcon className='text-error-100 size-4' />
-                    Report Sound
+                    {t('reportSound')}
                   </Button>
                 )
               }

@@ -10,6 +10,7 @@ import { notFound } from 'next/navigation';
 import { IFileWithFav } from '../../../services/fileService';
 import GoogleAd from '@/app/components/ad';
 import { useSession } from 'next-auth/react';
+import Breadcrumps from '@/app/components/Breadcrumps';
 
 export default function CategoryRes({
     name,
@@ -55,6 +56,7 @@ export default function CategoryRes({
 
     return (
         <>
+              <Breadcrumps cat={{ label: 'Sounds', link: '/popular' }} title={`${name} Sound Effect Buttons`} className='mb-5' />
             <Head1>{name} Sound Effect Buttons</Head1>
 
             <SoundGrid className='mt-5'>

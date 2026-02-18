@@ -15,9 +15,12 @@ import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import { IFileWithFav } from "../services/fileService";
 import GoogleAd from "../components/ad";
 import { SiAudioboom } from "react-icons/si";
+import { useT } from "../hooks/useT";
 
 export default function HomePage() {
   const { data: session } = useSession();
+
+  const t = useT();
 
   const {
     data: boardData,
@@ -84,10 +87,10 @@ export default function HomePage() {
 
         <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <Head2>Popular Soundboards</Head2>
+            <Head2>{t('popularSoundboards')}</Head2>
             <Link href='/soundboard/filter-board?period=month&field=views'>
               <Button variant="outline" size="sm">
-                More
+                {t('more')}
                 <ChevronRightIcon className="text-zinc-400/80 size-4" />
               </Button>
             </Link>
@@ -113,10 +116,10 @@ export default function HomePage() {
 
         <section className="space-y-4 mt-10">
           <div className="flex items-center justify-between">
-            <Head2>Weekly Trending <span className="text-gray-600/90 dark:text-zinc-300/80 font-light">| Sound Buttons</span></Head2>
+            <Head2>{t('weeklyTrending')} <span className="text-gray-600/90 dark:text-zinc-300/80 font-light">| {t('soundEffectButtons')}</span></Head2>
             <Link href='/filter-buttons?period=week&field=views'>
               <Button variant="outline" size="sm">
-                More
+                {t('more')}
                 <ChevronRightIcon className="text-zinc-500 size-4" />
               </Button>
             </Link>
@@ -138,7 +141,7 @@ export default function HomePage() {
         <section className="space-y-4 mt-10">
           <div className="flex items-center gap-2">
             <SiAudioboom className="text-gray-500/80 dark:text-zinc-300/80" size={25} />
-            <Head2>Viral Sound Effect Buttons</Head2>
+            <Head2>{t('viralSound')} {t('soundEffectButtons')}</Head2>
           </div>
 
           <SoundGrid>
@@ -173,7 +176,7 @@ export default function HomePage() {
           </SoundGrid>
 
           {!hasNextPage && recentSounds.length > 0 && (
-            <p className="text-center mt-4 text-gray-500">No more sounds to load</p>
+            <p className="text-center mt-4 text-gray-500">{t('noMoreSoundsToLoad')}</p>
           )}
           <div ref={loadMoreRef} className="h-10" />
           <GoogleAd

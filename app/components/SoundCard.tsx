@@ -27,7 +27,7 @@ import { useFetchLoading } from "../hooks/useFetchLoading";
 import { toast } from "react-toastify";
 import { useModal } from "../hooks/useModal";
 import { IFileWithFav } from "../services/fileService";
-
+import { useT } from "../hooks/useT";
 
 export interface SoundCardProps {
   obj: IFileWithFav,
@@ -40,6 +40,8 @@ const SoundCard: React.FC<SoundCardProps> = ({
   sessionUser = false,
   userBoard = null,
 }) => {
+
+  const t = useT();
 
   const { play, pause, loading, playing } =
     useLazyAudio(getR2Url(`store/${obj.s_id}.mp3`));
@@ -128,7 +130,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
       <div className="mt-1.5 flex justify-between gap-3 overflow-hidden">
         <CardSpan>{obj.duration}</CardSpan>
         <CardSpan className="block  truncate">
-          <Link href={`/user/${obj.user.uid}?name=${obj.user.name}`} className="group/anker ">by <span className="text-gray-900 dark:text-white group-hover/anker:text-blue-400">{obj.user.name}</span></Link>
+          <Link href={`/user/${obj.user.uid}?name=${obj.user.name}`} className="group/anker ">{t('byAuthor')} <span className="text-gray-900 dark:text-white group-hover/anker:text-blue-400">{obj.user.name}</span></Link>
         </CardSpan>
       </div>
 
@@ -175,7 +177,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
                         aria-hidden="true"
                         className="mr-3 size-5  text-gray-400 group-hover:text-gray-500 dark:text-zinc-500 dark:group-hover:text-white"
                       />
-                      Add To Soundboard
+                      {t('addToSoundboard')}
                     </button>
                   </li>
                   <li>
@@ -187,7 +189,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
                         aria-hidden="true"
                         className="mr-3 size-5  text-gray-400 group-hover:text-gray-500 dark:text-zinc-500 dark:group-hover:text-white"
                       />
-                      Embed Button
+                      {t('embedButton')}
                     </button>
                   </li>
                   {
@@ -202,7 +204,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
                               aria-hidden="true"
                               className="mr-3 size-5 scale-90  text-gray-400 group-hover:text-gray-500 dark:text-zinc-500 dark:group-hover:text-white"
                             />
-                            Edit
+                           {t('edit')}
                           </button>
                         </li>
                       </>
@@ -221,7 +223,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
                           className="scale-85 size-4 dark:text-zinc-400/90"
                         />
                       </Badge>
-                      Share
+                      {t('share')}
                     </button>
                   </li>
 
@@ -238,7 +240,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
                               className="scale-85 size-4 text-error-500 dark:text-error-300 group-hover:text-error-600 dark:group-hover:text-error-200 "
                             />
                           </Badge>
-                          Remove Board
+                          {t('removeBoard')}
                         </button>
                       </li>
                     )
@@ -257,7 +259,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
                               className="scale-85 size-4 text-error-500 dark:text-error-300 group-hover:text-error-600 dark:group-hover:text-error-200 "
                             />
                           </Badge>
-                          Delete
+                          {t('delete')}
                         </button>
                       </li>
                     ) : (
@@ -272,7 +274,7 @@ const SoundCard: React.FC<SoundCardProps> = ({
                               className="scale-85 size-4 text-error-500 dark:text-error-300 group-hover:text-error-600 dark:group-hover:text-error-200 "
                             />
                           </Badge>
-                          Report
+                          {t('report')}
                         </button>
                       </li>
                     )

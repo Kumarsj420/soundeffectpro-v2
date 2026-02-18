@@ -6,8 +6,10 @@ import { Head3, CardSpan } from './Ui';
 import Link from 'next/link';
 import { RectangleGroupIcon } from '@heroicons/react/24/solid';
 import { getR2Url } from '../lib/r2/r2Url';
+import { useT } from '../hooks/useT';
 
 function Soundboard({ obj }: { obj: CategoryInterface }) {
+  const t = useT();
   return (
     <div className='group w-full aspect-3/2 rounded-2xl overflow-hidden relative isolate flex flex-col justify-end bg-gray-50 dark:bg-zinc-900 px-2.5 py-2'>
       <div className="absolute size-6 bg-gray-800/35 dark:bg-zinc-900/35 top-3.5 left-3.5 rounded-md flex justify-center items-center backdrop-blur-[1px]">
@@ -24,20 +26,20 @@ function Soundboard({ obj }: { obj: CategoryInterface }) {
       <div className="absolute inset-0 -z-10 bg-linear-to-t from-gray-800 via-gray-800/40 dark:from-zinc-900 dark:via-zinc-900/40" />
       <div className="absolute inset-0 -z-10 rounded-2xl inset-ring inset-ring-gray-900/10" />
       <div className="flex justify-between gap-1 overflow-hidden">
-        <CardSpan>
+        <CardSpan >
           <time dateTime='june 25' className="mr-8 whitespace-nowrap text-gray-200 dark:text-zinc-400">
             {new Date(
               obj.createdAt
             ).toLocaleDateString()}
           </time>
         </CardSpan>
-        <CardSpan className="block  truncate text-gray-200 dark:text-zinc-400">
-          <span className="group/anker ">by <span className="text-white group-hover/anker:text-blue-400">{obj.user.name ?? 'Anonymous'}</span></span>
+        <CardSpan className="block truncate text-gray-200 dark:text-zinc-400 ">
+          <Link href={`/user/${obj.user.uid}?name=${obj.user.name}`} className="group/anker ">{t('byAuthor')} <span className="text-white group-hover/anker:text-blue-400">{obj.user.name ?? 'Anonymous'}</span></Link>
         </CardSpan>
       </div>
       <Head3 className='line-clamp-2 mt-1 leading-tight'>
         <Link href={`/soundboard/${obj.slug}-${obj.sb_id}`} className='group-hover:underline text-white'>
-          <span className="absolute inset-0 " />
+          <span className="absolute inset-0 -z-10" />
           {obj.name}
         </Link>
       </Head3>
