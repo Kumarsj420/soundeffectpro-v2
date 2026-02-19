@@ -34,7 +34,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
-, "app/lib/mp3enocder.js"  ],
+, "app/lib/mp3enocder.js", "app/components/ad.jsx"  ],
   "exclude": [
     "node_modules"
   ]

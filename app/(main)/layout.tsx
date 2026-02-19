@@ -70,7 +70,7 @@ export default function RootLayout({
         <Providers>
           <Navbar />
           <BottomMenu />
-          <GoogleAd slot="4761169093" variant="sidebar" />
+          {/* <GoogleAd slot="4761169093" variant="sidebar" /> */}
           <GoogleAd slot='3089004514' variant="header" />
 
           <Modal_Root />
@@ -88,8 +88,11 @@ export default function RootLayout({
             draggable
             pauseOnHover
           />
-          <div className="max-w-7xl 2xl:max-w-450 m-auto px-5 sm:px-7 py-5 sm:py-7">
-            {children}
+          <div className="max-w-7xl 2xl:max-w-450 m-auto px-5 sm:px-7 py-5 sm:py-7 flex gap-5 flex-row">
+            <div className="flex-1">
+              {children}
+            </div>
+            <GoogleAd slot="4761169093" variant="sidebar" />
           </div>
         </Providers>
       </body>

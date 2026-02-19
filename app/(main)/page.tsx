@@ -79,8 +79,8 @@ export default function HomePage() {
 
 
   return (
-    <main className="min-h-screen text-white">
-      <div className="space-y-8">
+    <main className="min-h-screen text-white ">
+      <div className="space-y-8 ">
 
         <h1 className="sr-only">Welcome to Sound Effect Pro — discover meme sound buttons and download viral, trending, and popular sound effects in one place for free.</h1>
 

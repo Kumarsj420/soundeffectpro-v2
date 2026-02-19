@@ -7,28 +7,70 @@ interface GoogleAdProps {
   slot: string
   format?: string
   responsive?: boolean
-  variant?: 'default' | 'sidebar' | 'post-infeed' | 'multiplex' | 'header' | 'below-sound-btn' | 'below-popular'
+  variant?:
+    | 'default'
+    | 'sidebar'
+    | 'post-infeed'
+    | 'multiplex'
+    | 'header'
+    | 'below-sound-btn'
+    | 'below-popular'
 }
 
+const SIDEBAR_STORAGE_KEY = 'sidebar_ad_closed'
 
-function AdWrapper({
-  children,
-  loading,
-  height = 90
-}: {
-  children: React.ReactNode
-  loading: boolean
-  height?: number
-}) {
-  return (
-    <div className="inline-block relative w-full" style={{ minHeight: height }}>
-      {loading && (
-        <div className="absolute inset-0 z-30 animate-pulse bg-gray-400 dark:bg-zinc-700 rounded-xl" />
-      )}
-      {children}
-    </div>
-  )
+/* ----------------------------
+   Intersection Observer Hook
+----------------------------- */
+function useInView(ref: React.RefObject<Element>) {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    if (!ref.current) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '250px' }
+    )
+
+    observer.observe(ref.current)
+
+    return () => observer.disconnect()
+  }, [ref])
+
+  return visible
 }
+
+/* ----------------------------
+   Safe Ad Push Hook
+----------------------------- */
+function useAdPush(
+  visible: boolean,
+  adRef: React.RefObject<HTMLModElement | null>
+) {
+  const pushedRef = useRef(false)
+
+  useEffect(() => {
+    if (!visible) return
+    if (!adRef.current) return
+    if (pushedRef.current) return
+
+    try {
+      ;(window as any).adsbygoogle =
+        (window as any).adsbygoogle || []
+      ;(window as any).adsbygoogle.push({})
+      pushedRef.current = true
+    } catch {}
+
+  }, [visible, adRef])
+}
+
+/* ===================================================== */
 
 export default function GoogleAd({
   slot,
@@ -38,36 +80,37 @@ export default function GoogleAd({
 }: GoogleAdProps) {
 
   const adRef = useRef<HTMLModElement | null>(null)
-  const [status, setStatus] = useState<'loading' | 'filled' | 'empty'>('loading');
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+
+  const visible = useInView(wrapperRef as React.RefObject<Element>)
+  useAdPush(visible, adRef)
+
   const [dismissed, setDismissed] = useState(false)
 
-
+  /* ----------------------------
+     Sidebar 24h Expiry Logic
+  ----------------------------- */
   useEffect(() => {
-    try {
-      ; (window as any).adsbygoogle =
-        (window as any).adsbygoogle || []
-        ; (window as any).adsbygoogle.push({})
-    } catch { }
+    if (variant !== 'sidebar') return
 
-    const timer = setTimeout(() => {
-      if (adRef.current) {
-        const height = adRef.current.offsetHeight
-        if (height === 0) {
-          setStatus('empty')
-        } else {
-          setStatus('filled')
-        }
-      }
-    }, 3500)
+    const closedAt = localStorage.getItem(SIDEBAR_STORAGE_KEY)
+    if (!closedAt) return
 
-    return () => clearTimeout(timer)
-  }, [])
+    const hoursPassed = (Date.now() - Number(closedAt)) / 36e5
+    if (hoursPassed < 24) {
+      setDismissed(true)
+    }
+  }, [variant])
 
+  const closeSidebar = () => {
+    setDismissed(true)
+    localStorage.setItem(
+      SIDEBAR_STORAGE_KEY,
+      Date.now().toString()
+    )
+  }
 
-  if (status === 'empty') return null
-
-
-  const adElement = (
+  const baseAd = (
     <ins
       ref={adRef}
       className="adsbygoogle"
@@ -75,80 +118,110 @@ export default function GoogleAd({
       data-ad-client={process.env.NEXT_PUBLIC_GOOGLE_AD_CLIENT}
       data-ad-slot={slot}
       data-ad-format={format}
+      data-ad-layout-key="-gw-1+2a-9x+5c"
       data-full-width-responsive={responsive.toString()}
     />
   )
 
+  /* ===================================================== */
+  /* ===================== VARIANTS ====================== */
+  /* ===================================================== */
 
+  // ⭐ SIDEBAR
   if (variant === 'sidebar') {
-
     if (dismissed) return null
 
     return (
-      <div className="hidden xl:block fixed right-6 top-28 w-75 z-50">
+      <div className="hidden xl:block w-75" ref={wrapperRef}>
+        <div className="sticky top-40">
 
-        {/* Close button */}
-        <Button
-          variant='outline'
-          aria-label="Close ad"
-          onClick={() => {
-            setDismissed(true)
-          }}
-          size='auto'
-          className="absolute -right-3 top-0 size-8 text-xs
-                   hover:scale-105 transition z-33 rounded-full flex justify-center items-center"
-        >
-          ✕
-        </Button>
+          <Button
+            variant="outline"
+            aria-label="Close ad"
+            onClick={closeSidebar}
+            size="auto"
+            className="absolute -right-3 -top-3 size-8 text-xs rounded-full z-30"
+          >
+            ✕
+          </Button>
 
-        {/* Ad container */}
-        <div className="w-75 min-h-150 flex justify-center items-center bg-gray-300 dark:bg-zinc-800 rounded-2xl">
-          {adElement}
+          <div className="w-75 h-150 flex justify-center items-center bg-gray-300 dark:bg-zinc-800 rounded-2xl relative z-10">
+            {visible && baseAd}
+          </div>
+
         </div>
       </div>
     )
   }
 
-
+  // ⭐ HEADER
   if (variant === 'header') {
     return (
-      <div className="max-w-7xl m-auto px-5 sm:px-7 mt-3 flex justify-center items-center min-h-55 bg-gray-300 dark:bg-zinc-800 rounded-2xl">
-        <AdWrapper loading={status === 'loading'} height={90}>
-          {adElement}
-        </AdWrapper>
+      <div
+        ref={wrapperRef}
+        className="max-w-7xl m-auto px-5 sm:px-7 mt-3 min-h-22.5 bg-gray-300 dark:bg-zinc-800 rounded-2xl flex justify-center items-center relative z-10"
+      >
+        {visible && baseAd}
       </div>
     )
   }
 
-
+  // ⭐ POST INFEED
   if (variant === 'post-infeed') {
-    return <div className="sm:col-span-full my-8 flex justify-center items-center min-h-55 bg-gray-300 dark:bg-zinc-800 rounded-2xl">
-      <AdWrapper loading={status === 'loading'} height={20}>
-        {adElement}
-      </AdWrapper>
-    </div>
+    return (
+      <div
+        ref={wrapperRef}
+        className="my-8 min-h-70 col-span-full flex justify-center items-center bg-gray-300 dark:bg-zinc-800 rounded-2xl relative z-10"
+      >
+        {visible && baseAd}
+      </div>
+    )
   }
 
+  // ⭐ MULTIPLEX
   if (variant === 'multiplex') {
     return (
-      <div className="col-span-full my-12 flex justify-center items-center min-h-55 bg-gray-300 dark:bg-zinc-800 rounded-2xl">
+      <div
+        ref={wrapperRef}
+        className="col-span-full min-h-62.5 my-12 bg-gray-300 dark:bg-zinc-800 rounded-2xl p-4 relative z-10"
+      >
         <Para>You may also like</Para>
-        {adElement}
+        {visible && baseAd}
       </div>
     )
   }
 
-  if (variant === 'below-sound-btn') {
-    return <div className="flex justify-center items-center min-h-55 bg-gray-300 dark:bg-zinc-800 rounded-2xl mt-4">{adElement}</div>
-  }
-
+  // ⭐ BELOW POPULAR
   if (variant === 'below-popular') {
-    return <div className="my-2 mx-auto flex justify-center items-center min-h-55 bg-gray-300 dark:bg-zinc-800 rounded-2xl">
-      <AdWrapper loading={status === 'loading'} height={90}>
-        {adElement}
-      </AdWrapper>
-    </div>
+    return (
+      <div
+        ref={wrapperRef}
+        className="my-4 min-h-62.5 bg-gray-300 dark:bg-zinc-800 rounded-2xl flex items-center justify-center relative z-10"
+      >
+        {visible && baseAd}
+      </div>
+    )
   }
 
-  return adElement
+  // ⭐ BELOW SOUND BUTTON
+  if (variant === 'below-sound-btn') {
+    return (
+      <div
+        ref={wrapperRef}
+        className="mt-4 min-h-62.5 bg-gray-300 dark:bg-zinc-800 rounded-2xl flex items-center justify-center relative z-10"
+      >
+        {visible && baseAd}
+      </div>
+    )
+  }
+
+  // ⭐ DEFAULT
+  return (
+    <div
+      ref={wrapperRef}
+      className="min-h-50 flex justify-center items-center bg-gray-300 dark:bg-zinc-800 rounded-2xl relative z-10"
+    >
+      {visible && baseAd}
+    </div>
+  )
 }
