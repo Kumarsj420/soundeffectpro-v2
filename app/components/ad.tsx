@@ -159,7 +159,7 @@ export default function GoogleAd({
     return (
       <div
         ref={wrapperRef}
-        className="max-w-7xl m-auto px-5 sm:px-7 mt-3 min-h-22.5 bg-gray-300 dark:bg-zinc-800 rounded-2xl flex justify-center items-center relative z-10"
+        className="max-w-7xl m-auto px-5 sm:px-7 mt-3 min-h-62.5 bg-gray-300 dark:bg-zinc-800 rounded-2xl flex justify-center items-center relative z-10"
       >
         {visible && baseAd}
       </div>
