@@ -19,59 +19,6 @@ interface GoogleAdProps {
 
 const SIDEBAR_STORAGE_KEY = 'sidebar_ad_closed'
 
-/* ----------------------------
-   Intersection Observer Hook
------------------------------ */
-function useInView(ref: React.RefObject<Element>) {
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    if (!ref.current) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true)
-          observer.disconnect()
-        }
-      },
-      { rootMargin: '250px' }
-    )
-
-    observer.observe(ref.current)
-
-    return () => observer.disconnect()
-  }, [ref])
-
-  return visible
-}
-
-/* ----------------------------
-   Safe Ad Push Hook
------------------------------ */
-function useAdPush(
-  visible: boolean,
-  adRef: React.RefObject<HTMLModElement | null>
-) {
-  const pushedRef = useRef(false)
-
-  useEffect(() => {
-    if (!visible) return
-    if (!adRef.current) return
-    if (pushedRef.current) return
-
-    try {
-      ;(window as any).adsbygoogle =
-        (window as any).adsbygoogle || []
-      ;(window as any).adsbygoogle.push({})
-      pushedRef.current = true
-    } catch {}
-
-  }, [visible, adRef])
-}
-
-/* ===================================================== */
-
 export default function GoogleAd({
   slot,
   format = 'auto',
@@ -82,14 +29,51 @@ export default function GoogleAd({
   const adRef = useRef<HTMLModElement | null>(null)
   const wrapperRef = useRef<HTMLDivElement | null>(null)
 
-  const visible = useInView(wrapperRef as React.RefObject<Element>)
-  useAdPush(visible, adRef)
-
+  const [visible, setVisible] = useState(false)
   const [dismissed, setDismissed] = useState(false)
+  const pushedRef = useRef(false)
 
-  /* ----------------------------
-     Sidebar 24h Expiry Logic
-  ----------------------------- */
+  /* ---------------------------------------
+     Fix 1: Proper Intersection Observer
+  ---------------------------------------- */
+  useEffect(() => {
+    const element = wrapperRef.current
+    if (!element) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '300px' }
+    )
+
+    observer.observe(element)
+
+    return () => observer.disconnect()
+  }, [])
+
+  /* ---------------------------------------
+     Fix 2: Push Ad ONLY after <ins> exists
+  ---------------------------------------- */
+  useEffect(() => {
+    if (!visible) return
+    if (!adRef.current) return
+    if (pushedRef.current) return
+
+    try {
+      ; (window as any).adsbygoogle =
+        (window as any).adsbygoogle || []
+      ; (window as any).adsbygoogle.push({})
+      pushedRef.current = true
+    } catch { }
+  }, [visible])
+
+  /* ---------------------------------------
+     Sidebar 24h Expiry
+  ---------------------------------------- */
   useEffect(() => {
     if (variant !== 'sidebar') return
 
@@ -97,9 +81,7 @@ export default function GoogleAd({
     if (!closedAt) return
 
     const hoursPassed = (Date.now() - Number(closedAt)) / 36e5
-    if (hoursPassed < 24) {
-      setDismissed(true)
-    }
+    if (hoursPassed < 24) setDismissed(true)
   }, [variant])
 
   const closeSidebar = () => {
@@ -123,11 +105,8 @@ export default function GoogleAd({
     />
   )
 
-  /* ===================================================== */
   /* ===================== VARIANTS ====================== */
-  /* ===================================================== */
 
-  // ⭐ SIDEBAR
   if (variant === 'sidebar') {
     if (dismissed) return null
 
@@ -145,7 +124,7 @@ export default function GoogleAd({
             ✕
           </Button>
 
-          <div className="w-75 h-150 flex justify-center items-center bg-gray-300 dark:bg-zinc-800 rounded-2xl relative z-10">
+          <div className="w-75 h-150 flex justify-center items-center bg-gray-300 dark:bg-zinc-800 rounded-2xl">
             {visible && baseAd}
           </div>
 
@@ -154,36 +133,33 @@ export default function GoogleAd({
     )
   }
 
-  // ⭐ HEADER
   if (variant === 'header') {
     return (
       <div
         ref={wrapperRef}
-        className="max-w-7xl m-auto px-5 sm:px-7 mt-3 min-h-62.5 bg-gray-300 dark:bg-zinc-800 rounded-2xl flex justify-center items-center relative z-10"
+        className="max-w-7xl m-auto px-5 sm:px-7 mt-3 min-h-62.5 bg-gray-300 dark:bg-zinc-800 rounded-2xl flex justify-center items-center"
       >
         {visible && baseAd}
       </div>
     )
   }
 
-  // ⭐ POST INFEED
   if (variant === 'post-infeed') {
     return (
       <div
         ref={wrapperRef}
-        className="my-8 min-h-70 col-span-full flex justify-center items-center bg-gray-300 dark:bg-zinc-800 rounded-2xl relative z-10"
+        className="my-8 min-h-70 col-span-full flex justify-center items-center bg-gray-300 dark:bg-zinc-800 rounded-2xl"
       >
         {visible && baseAd}
       </div>
     )
   }
 
-  // ⭐ MULTIPLEX
   if (variant === 'multiplex') {
     return (
       <div
         ref={wrapperRef}
-        className="col-span-full min-h-62.5 my-12 bg-gray-300 dark:bg-zinc-800 rounded-2xl p-4 relative z-10"
+        className="col-span-full min-h-62.5 my-12 bg-gray-300 dark:bg-zinc-800 rounded-2xl p-4"
       >
         <Para>You may also like</Para>
         {visible && baseAd}
@@ -191,35 +167,32 @@ export default function GoogleAd({
     )
   }
 
-  // ⭐ BELOW POPULAR
   if (variant === 'below-popular') {
     return (
       <div
         ref={wrapperRef}
-        className="my-4 min-h-62.5 bg-gray-300 dark:bg-zinc-800 rounded-2xl flex items-center justify-center relative z-10"
+        className="my-4 min-h-62.5 bg-gray-300 dark:bg-zinc-800 rounded-2xl flex items-center justify-center"
       >
         {visible && baseAd}
       </div>
     )
   }
 
-  // ⭐ BELOW SOUND BUTTON
   if (variant === 'below-sound-btn') {
     return (
       <div
         ref={wrapperRef}
-        className="mt-4 min-h-62.5 bg-gray-300 dark:bg-zinc-800 rounded-2xl flex items-center justify-center relative z-10"
+        className="mt-4 min-h-62.5 bg-gray-300 dark:bg-zinc-800 rounded-2xl flex items-center justify-center"
       >
         {visible && baseAd}
       </div>
     )
   }
 
-  // ⭐ DEFAULT
   return (
     <div
       ref={wrapperRef}
-      className="min-h-50 flex justify-center items-center bg-gray-300 dark:bg-zinc-800 rounded-2xl relative z-10"
+      className="min-h-50 flex justify-center items-center bg-gray-300 dark:bg-zinc-800 rounded-2xl"
     >
       {visible && baseAd}
     </div>
