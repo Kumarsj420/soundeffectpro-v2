@@ -2,6 +2,8 @@ import SoundDetailsPage from "./sound";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 
+export const revalidate = 600; 
+
 type Props = {
   params: Promise<{ slug?: string }>;
 };

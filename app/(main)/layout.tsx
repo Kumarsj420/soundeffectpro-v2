@@ -70,7 +70,6 @@ export default function RootLayout({
         <Providers>
           <Navbar />
           <BottomMenu />
-          {/* <GoogleAd slot="4761169093" variant="sidebar" /> */}
           <GoogleAd slot='3089004514' variant="header" />
 
           <Modal_Root />
@@ -92,7 +91,6 @@ export default function RootLayout({
             <div className="flex-1">
               {children}
             </div>
-            <GoogleAd slot="4761169093" variant="sidebar" />
           </div>
         </Providers>
       </body>

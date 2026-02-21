@@ -80,35 +80,6 @@ export default function GoogleAd({
   )
 
 
-  if (variant === 'sidebar') {
-
-    if (dismissed) return null
-
-    return (
-      <div className="hidden xl:block fixed right-6 top-28 w-75 z-50">
-
-        {/* Close button */}
-        <Button
-          variant='outline'
-          aria-label="Close ad"
-          onClick={() => {
-            setDismissed(true)
-          }}
-          size='auto'
-          className="absolute -right-3 top-0 size-8 text-xs
-                   hover:scale-105 transition z-33 rounded-full flex justify-center items-center"
-        >
-          ✕
-        </Button>
-
-        {/* Ad container */}
-        <div className="w-75 min-h-150 flex justify-center items-center bg-gray-300 dark:bg-zinc-800 rounded-2xl">
-          {adElement}
-        </div>
-      </div>
-    )
-  }
-
 
   if (variant === 'header') {
     return (
