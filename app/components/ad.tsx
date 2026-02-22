@@ -20,7 +20,6 @@ function AdWrapper({
 }) {
   return (
     <div className="inline-block relative w-full" style={{ minHeight: height }}>
-      <div className="absolute inset-0 z-30 animate-pulse bg-gray-400 dark:bg-zinc-700 rounded-xl" />
       {children}
     </div>
   )
