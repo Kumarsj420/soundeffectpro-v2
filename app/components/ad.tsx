@@ -13,18 +13,14 @@ interface GoogleAdProps {
 
 function AdWrapper({
   children,
-  loading,
   height = 90
 }: {
   children: React.ReactNode
-  loading: boolean
   height?: number
 }) {
   return (
     <div className="inline-block relative w-full" style={{ minHeight: height }}>
-      {loading && (
-        <div className="absolute inset-0 z-30 animate-pulse bg-gray-400 dark:bg-zinc-700 rounded-xl" />
-      )}
+      <div className="absolute inset-0 z-30 animate-pulse bg-gray-400 dark:bg-zinc-700 rounded-xl" />
       {children}
     </div>
   )
@@ -38,8 +34,6 @@ export default function GoogleAd({
 }: GoogleAdProps) {
 
   const adRef = useRef<HTMLModElement | null>(null)
-  const [status, setStatus] = useState<'loading' | 'filled' | 'empty'>('loading');
-
 
   useEffect(() => {
     if (!adRef.current) return;
@@ -69,7 +63,7 @@ export default function GoogleAd({
   if (variant === 'header') {
     return (
       <div className="max-w-7xl m-auto px-5 sm:px-7 mt-3 flex justify-center items-center min-h-55 bg-gray-300 dark:bg-zinc-800 rounded-2xl">
-        <AdWrapper loading={status === 'loading'} height={90}>
+        <AdWrapper height={90}>
           {adElement}
         </AdWrapper>
       </div>
@@ -79,7 +73,7 @@ export default function GoogleAd({
 
   if (variant === 'post-infeed') {
     return <div className="sm:col-span-full my-8 flex justify-center items-center min-h-55 bg-gray-300 dark:bg-zinc-800 rounded-2xl">
-      <AdWrapper loading={status === 'loading'} height={20}>
+      <AdWrapper height={20}>
         {adElement}
       </AdWrapper>
     </div>
@@ -100,7 +94,7 @@ export default function GoogleAd({
 
   if (variant === 'below-popular') {
     return <div className="my-2 mx-auto flex justify-center items-center min-h-55 bg-gray-300 dark:bg-zinc-800 rounded-2xl">
-      <AdWrapper loading={status === 'loading'} height={90}>
+      <AdWrapper height={90}>
         {adElement}
       </AdWrapper>
     </div>
