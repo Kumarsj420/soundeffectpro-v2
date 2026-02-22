@@ -15,3 +15,10 @@ declare global {
     gtag: (...args: any[]) => void
   }
 }
+
+declare global {
+  interface Window {
+    adsbygoogle: unknown[];
+  }
+}
+
