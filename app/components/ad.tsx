@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { Para } from './Ui'
-import Button from './form/Button'
+
 
 interface GoogleAdProps {
   slot: string
@@ -39,32 +39,17 @@ export default function GoogleAd({
 
   const adRef = useRef<HTMLModElement | null>(null)
   const [status, setStatus] = useState<'loading' | 'filled' | 'empty'>('loading');
-  const [dismissed, setDismissed] = useState(false)
 
 
   useEffect(() => {
+    if (!adRef.current) return;
+
     try {
-      ; (window as any).adsbygoogle =
-        (window as any).adsbygoogle || []
-        ; (window as any).adsbygoogle.push({})
-    } catch { }
-
-    const timer = setTimeout(() => {
-      if (adRef.current) {
-        const height = adRef.current.offsetHeight
-        if (height === 0) {
-          setStatus('empty')
-        } else {
-          setStatus('filled')
-        }
-      }
-    }, 3500)
-
-    return () => clearTimeout(timer)
-  }, [])
-
-
-  if (status === 'empty') return null
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      console.error(e);
+    }
+  }, [slot]);
 
 
   const adElement = (
