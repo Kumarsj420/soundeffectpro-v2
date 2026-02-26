@@ -15,9 +15,6 @@ export async function GET(
 
         const { id } = await params;
 
-        const session = await requireAuth();
-        const uid = session?.user?.uid || null;
-
         const { searchParams } = new URL(request.url);
 
         const page = Number(searchParams.get("page")) || 1;
@@ -61,16 +58,7 @@ export async function GET(
 
         let favSet = new Set<string>();
 
-        if (uid && files.length) {
-            const favs = await Fav.find({
-                uid,
-                s_id: { $in: files.map(f => f.s_id) }
-            })
-                .select("s_id -_id")
-                .lean<{ s_id: string }[]>();
 
-            favSet = new Set(favs.map(f => f.s_id));
-        }
 
         const filesWithFav = files.map(file => ({
             ...file,

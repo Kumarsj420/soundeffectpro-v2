@@ -6,14 +6,13 @@ import { FilterQuery } from "mongoose";
 import { FileSchema } from "@/app/lib/validators/file.schema";
 import { uploadAudioToR2 } from "@/app/lib/r2/r2audioUpload";
 import User from "@/app/models/User";
-import Fav from "@/app/models/Fav";
 
+export const dynamic = "force-static"; 
 
 type SortOrder = 1 | -1;
 
 export const runtime = "nodejs";
 
-export const dynamic = "force-static"; 
 
 export async function GET(request: NextRequest) {
   try {
