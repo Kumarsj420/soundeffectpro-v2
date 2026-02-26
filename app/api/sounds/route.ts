@@ -13,31 +13,29 @@ type SortOrder = 1 | -1;
 
 export const runtime = "nodejs";
 
+export const dynamic = "force-static"; 
+
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
 
-    const session = await requireAuth();
-    const sessionUid = session?.user?.uid || null;
-
     const searchParams = request.nextUrl.searchParams;
 
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "20");
+    const page = Math.max(parseInt(searchParams.get("page") || "1"), 1);
+    const limit = Math.min(parseInt(searchParams.get("limit") || "20"), 50); // prevent abuse
 
     const category = searchParams.get("category");
     const search = searchParams.get("search");
-
     const sortBy = searchParams.get("sortBy") || "createdAt";
     const order = searchParams.get("order") || "desc";
-
     const userId = searchParams.get("userId");
     const tag = searchParams.get("tag");
 
     const skip = (page - 1) * limit;
 
-
-    const query: FilterQuery<IFile> = {};
+    const query: FilterQuery<IFile> = {
+      visibility: true,
+    };
 
     if (category) {
       query.category = { $regex: `^${category}$`, $options: "i" };
@@ -51,43 +49,29 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    if (search) query.$text = { $search: search };
-
-    // visibility rule
-    if (userId && sessionUid === userId) {
-      query.$or = [{ visibility: true }, { "user.uid": sessionUid }];
-    } else {
-      query.visibility = true;
+    if (search) {
+      query.$text = { $search: search };
     }
 
-    // -----------------------
-    // Detect Period Sorting
-    // -----------------------
+    let sounds: IFile[] = [];
+    let total = 0;
+
     const isPeriodSort =
       sortBy.startsWith("stats.weekly.") ||
       sortBy.startsWith("stats.monthly.") ||
       sortBy.startsWith("stats.halfYearly.");
 
-    let sounds: IFile[] = [];
-    let total = 0;
-
     if (isPeriodSort) {
       const [, period, metric] = sortBy.split(".");
-   
 
       const aggPipeline: any[] = [
         { $match: query },
-
         { $unwind: `$stats.${period}` },
-
-        // newest period first
         {
           $sort: {
             [`stats.${period}.periodStart`]: -1
           }
         },
-
-        // ⭐ collapse duplicates → keep latest stat per file
         {
           $group: {
             _id: "$_id",
@@ -95,38 +79,27 @@ export async function GET(request: NextRequest) {
             latestStat: { $first: `$stats.${period}` }
           }
         },
-
-        // attach latest stat to doc
         {
           $addFields: {
             "doc.latestPeriodStat": "$latestStat"
           }
         },
         { $replaceRoot: { newRoot: "$doc" } },
-
-        // now sort by metric
         {
           $sort: {
             [`latestPeriodStat.${metric}`]: -1,
             _id: -1
           }
         },
-
         { $skip: skip },
         { $limit: limit },
-
         { $project: { __v: 0 } }
       ];
 
       sounds = await File.aggregate(aggPipeline);
       total = await File.countDocuments(query);
-    }
-
-    // =====================================================
-    // ⭐ NORMAL SORT → USE FIND (FAST PATH)
-    // =====================================================
-    else {
-      let sort: Record<string, SortOrder> = {
+    } else {
+      const sort: Record<string, 1 | -1> = {
         [sortBy]: order === "asc" ? 1 : -1,
         _id: order === "asc" ? 1 : -1
       };
@@ -136,40 +109,28 @@ export async function GET(request: NextRequest) {
         .skip(skip)
         .limit(limit)
         .select("-__v")
-        .lean<IFile[]>();
+        .lean();
 
       total = await File.countDocuments(query);
     }
 
-    // -----------------------
-    // Fetch Favorites
-    // -----------------------
-    const favs = sessionUid
-      ? await Fav.find({ uid: sessionUid })
-          .select("s_id -_id")
-          .lean<{ s_id: string }[]>()
-      : [];
-
-    const favSet = new Set(favs.map(f => f.s_id));
-
-    const soundsWithFav = sounds.map(sound => ({
-      ...sound,
-      isFav: favSet.has(sound.s_id)
-    }));
-
-    // -----------------------
-    // Response
-    // -----------------------
-    return NextResponse.json({
-      success: true,
-      data: soundsWithFav,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit)
+    return NextResponse.json(
+      {
+        success: true,
+        data: sounds,
+        pagination: {
+          page,
+          limit,
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      },
+      {
+        headers: {
+          "Cache-Control": "s-maxage=120, stale-while-revalidate=300"
+        }
       }
-    });
+    );
 
   } catch (error) {
     console.error(error);
@@ -184,7 +145,6 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
 
 export async function POST(req: NextRequest) {
   try {
