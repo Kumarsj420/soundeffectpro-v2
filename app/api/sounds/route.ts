@@ -20,8 +20,8 @@ export async function GET(request: NextRequest) {
 
     const searchParams = request.nextUrl.searchParams;
 
-    const page = Math.max(parseInt(searchParams.get("page") || "1"), 1);
-    const limit = Math.min(parseInt(searchParams.get("limit") || "20"), 50); // prevent abuse
+    const page = Math.max(parseInt(searchParams.get("page") ?? "1"), 1);
+    const limit = Math.min(parseInt(searchParams.get("limit") ?? "20"), 50); 
 
     const category = searchParams.get("category");
     const search = searchParams.get("search");

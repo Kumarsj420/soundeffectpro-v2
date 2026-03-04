@@ -15,8 +15,6 @@ export async function GET(
 
     const { id } = await params;
 
-    const session = await requireAuth();
-    const uid = session?.user?.uid || null;
 
     const sound = await File.findOne({
       $or: [{ s_id: id }, { slug: id }],
@@ -37,14 +35,7 @@ export async function GET(
 
     let isFav = false;
 
-    if (uid) {
-      const favExists = await Fav.exists({
-        uid,
-        s_id: soundObj.s_id
-      });
 
-      isFav = Boolean(favExists);
-    }
 
     return NextResponse.json({
       success: true,
@@ -60,6 +51,11 @@ export async function GET(
         success: false,
         message: "Failed to fetch sound",
         error: String(error)
+      },
+      {
+        headers: {
+          "Cache-Control": "s-maxage=120, stale-while-revalidate=300"
+        }
       },
       { status: 500 }
     );
