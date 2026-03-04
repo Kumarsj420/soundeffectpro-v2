@@ -53,11 +53,11 @@ export async function GET(
         error: String(error)
       },
       {
+        status: 500,
         headers: {
           "Cache-Control": "s-maxage=120, stale-while-revalidate=300"
         }
-      },
-      { status: 500 }
+      }
     );
   }
 }
